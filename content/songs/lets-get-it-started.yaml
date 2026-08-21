@@ -1,0 +1,21 @@
+# Let's Get It Started
+# Eksik alanları görmek için: npm run content:check
+
+id: lets-get-it-started
+title: "Let's Get It Started"
+artist: "The Black Eyed Peas"
+# key:               # TODO — örn. Am, Bb, F#m
+tempo: 105
+meter: "4/4"
+style: funk
+
+structure: []        # TODO — bölümler ve akorlar
+#  - id: intro
+#    label: "Intro"
+#    chords: "| Am | F | C | G |"   # % = önceki barı tekrarla
+
+# Şarkı sözleri buraya. [Bölüm] başlıkları kullanın; akorları
+# istersen satır içinde [Am] şeklinde yazabilirsin.
+# lyrics: |
+#   [Verse 1]
+#   ...

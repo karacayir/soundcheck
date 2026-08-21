@@ -1,0 +1,45 @@
+# Bad Romance
+# Eksik alanları görmek için: npm run content:check
+
+id: bad-romance
+title: "Bad Romance"
+artist: "Lady Gaga"
+key: Am
+tempo: 119
+meter: "4/4"
+style: pop
+
+structure:
+  - id: intro
+    label: "Intro"
+    chords: "| F | G | Am E/G# | C/A |"
+    cue: "Synth intro — 2 bar"
+  - id: a
+    label: "A"
+    chords: "| Am Am#5 | Am Am#5 | Am Am#5 | Am Am#5 |"
+  - id: b
+    label: "B"
+    chords: "| Am | C F | Am | C G |"
+  - id: c
+    label: "C"
+    chords: "| Am | Am#5 | Am6 | Am#5 |"
+  - id: d
+    label: "D"
+    chords: "| F | G | Am | C |"
+    cue: "E.Piano — break down"
+
+cues:
+  - { at: intro, text: "2 SawSynth chords intro, E.Piano on break downs" }
+  - { at: intro, text: "START - KEYS AND VOX" }
+  - { at: d, text: "END - END WITH RA RA.... FINISH W/ TAG LINE" }
+  - { text: "ACAPELLA RA RAs in free time - NO CLICK" }
+
+transitions:
+  in: "Get Lucky biter bitmez, ara vermeden"
+  out: "Kandırdım'a davul fill ile geç"
+
+# Şarkı sözleri buraya. [Bölüm] başlıkları kullanın; akorları
+# istersen satır içinde [Am] şeklinde yazabilirsin.
+# lyrics: |
+#   [Verse 1]
+#   ...

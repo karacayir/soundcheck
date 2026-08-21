@@ -1,0 +1,31 @@
+# Get Lucky
+# Eksik alanları görmek için: npm run content:check
+
+id: get-lucky
+title: "Get Lucky"
+artist: "Daft Punk"
+key: Bm
+tempo: 116
+meter: "4/4"
+style: disco
+
+structure:
+  - id: intro
+    label: "Intro"
+    chords: "| Bm | D | F#m | E |"
+  - id: verse
+    label: "Verse"
+    chords: "| Bm | D | F#m | E |"
+  - id: chorus
+    label: "Chorus"
+    chords: "| Bm | D | F#m | E |"
+  - id: break
+    label: "Vocoder break"
+    chords: "| Bm | D | F#m | E |"
+    cue: "Sadece bas + davul, gitar boş"
+
+# Şarkı sözleri buraya. [Bölüm] başlıkları kullanın; akorları
+# istersen satır içinde [Am] şeklinde yazabilirsin.
+# lyrics: |
+#   [Verse 1]
+#   ...

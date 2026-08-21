@@ -1,0 +1,21 @@
+# Beggin'
+# Eksik alanları görmek için: npm run content:check
+
+id: beggin
+title: "Beggin'"
+artist: "Måneskin"
+# key:               # TODO — örn. Am, Bb, F#m
+tempo: 134
+meter: "4/4"
+style: rock
+
+structure: []        # TODO — bölümler ve akorlar
+#  - id: intro
+#    label: "Intro"
+#    chords: "| Am | F | C | G |"   # % = önceki barı tekrarla
+
+# Şarkı sözleri buraya. [Bölüm] başlıkları kullanın; akorları
+# istersen satır içinde [Am] şeklinde yazabilirsin.
+# lyrics: |
+#   [Verse 1]
+#   ...

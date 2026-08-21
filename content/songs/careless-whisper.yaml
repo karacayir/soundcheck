@@ -1,0 +1,28 @@
+# Careless Whisper
+# Eksik alanları görmek için: npm run content:check
+
+id: careless-whisper
+title: "Careless Whisper"
+artist: "George Michael"
+key: Dm
+tempo: 77
+meter: "4/4"
+style: ballad
+
+structure:
+  - id: intro
+    label: "Sax intro"
+    chords: "| Dm7 | Bbmaj7 | Gm7 | Am7 |"
+    cue: "Riff — herkes sussun"
+  - id: verse
+    label: "Verse"
+    chords: "| Dm7 | Bbmaj7 | Gm7 | Am7 |"
+  - id: chorus
+    label: "Chorus"
+    chords: "| Dm7 | Bbmaj7 | Gm7 | Am7 |"
+
+# Şarkı sözleri buraya. [Bölüm] başlıkları kullanın; akorları
+# istersen satır içinde [Am] şeklinde yazabilirsin.
+# lyrics: |
+#   [Verse 1]
+#   ...

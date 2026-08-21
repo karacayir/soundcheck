@@ -1,0 +1,21 @@
+# Cake By The Ocean
+# Eksik alanları görmek için: npm run content:check
+
+id: cake-by-the-ocean
+title: "Cake By The Ocean"
+artist: "DNCE"
+# key:               # TODO — örn. Am, Bb, F#m
+tempo: 119
+meter: "4/4"
+style: pop
+
+structure: []        # TODO — bölümler ve akorlar
+#  - id: intro
+#    label: "Intro"
+#    chords: "| Am | F | C | G |"   # % = önceki barı tekrarla
+
+# Şarkı sözleri buraya. [Bölüm] başlıkları kullanın; akorları
+# istersen satır içinde [Am] şeklinde yazabilirsin.
+# lyrics: |
+#   [Verse 1]
+#   ...

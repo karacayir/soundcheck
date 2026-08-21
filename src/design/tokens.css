@@ -1,0 +1,158 @@
+@import 'tailwindcss';
+
+/* ==========================================================================
+   Soundcheck design tokens
+
+   Monochrome, square, hairline. There are exactly two colours; everything
+   else is a step on a neutral ramp. Depth comes from 1px lines, never from
+   shadows or radii. Dark is the default because this app lives on a stage.
+   ========================================================================== */
+
+@theme {
+  --color-bg: var(--sc-bg);
+  --color-surface: var(--sc-surface);
+  --color-surface-2: var(--sc-surface-2);
+  --color-fg: var(--sc-fg);
+  --color-muted: var(--sc-muted);
+  --color-dim: var(--sc-dim);
+  --color-line: var(--sc-line);
+  --color-line-strong: var(--sc-line-strong);
+
+  --font-sans: 'Inter Variable', 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI',
+    sans-serif;
+  --font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo,
+    monospace;
+
+  --text-2xs: 0.6875rem;
+  --text-2xs--line-height: 1rem;
+  --text-xs: 0.75rem;
+  --text-xs--line-height: 1rem;
+  --text-sm: 0.875rem;
+  --text-sm--line-height: 1.25rem;
+  --text-base: 1rem;
+  --text-base--line-height: 1.5rem;
+  --text-lg: 1.25rem;
+  --text-lg--line-height: 1.6rem;
+  --text-xl: 1.75rem;
+  --text-xl--line-height: 2rem;
+  --text-2xl: 2.5rem;
+  --text-2xl--line-height: 2.6rem;
+  --text-3xl: 4rem;
+  --text-3xl--line-height: 4.2rem;
+
+  /* Square. On purpose. */
+  --radius-xs: 0px;
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
+  --radius-2xl: 0px;
+  --radius-3xl: 0px;
+
+  --ease-out-quick: cubic-bezier(0.2, 0, 0, 1);
+}
+
+@layer base {
+  :root,
+  [data-theme='dark'] {
+    --sc-bg: #000000;
+    --sc-surface: #0a0a0a;
+    --sc-surface-2: #141414;
+    --sc-fg: #ffffff;
+    --sc-muted: #8a8a8a;
+    --sc-dim: #4d4d4d;
+    --sc-line: #262626;
+    --sc-line-strong: #404040;
+    color-scheme: dark;
+  }
+
+  [data-theme='light'] {
+    --sc-bg: #ffffff;
+    --sc-surface: #fafafa;
+    --sc-surface-2: #f2f2f2;
+    --sc-fg: #000000;
+    --sc-muted: #6b6b6b;
+    --sc-dim: #a3a3a3;
+    --sc-line: #e2e2e2;
+    --sc-line-strong: #c9c9c9;
+    color-scheme: light;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    scrollbar-width: thin;
+    scrollbar-color: var(--sc-line-strong) transparent;
+  }
+
+  body {
+    background-color: var(--sc-bg);
+    color: var(--sc-fg);
+    font-family: var(--font-sans);
+    font-feature-settings: 'cv05' 1, 'ss03' 1;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overscroll-behavior-y: none;
+    /* Nobody wants a grey flash when they tap a song mid-set. */
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  ::selection {
+    background: var(--sc-fg);
+    color: var(--sc-bg);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--sc-fg);
+    outline-offset: 0;
+  }
+
+  button,
+  a {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  /* The uppercase micro-label that runs above every block. */
+  .sc-label {
+    font-size: var(--text-2xs);
+    line-height: 1;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--sc-muted);
+    font-weight: 500;
+  }
+
+  /* Numbers that must not jitter: tempo, bar counts, timers. */
+  .sc-num {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum' 1;
+  }
+
+  .sc-tight {
+    letter-spacing: -0.022em;
+  }
+
+  /* Full-bleed 1px rule that ignores container padding. */
+  .sc-rule {
+    border-top: 1px solid var(--sc-line);
+  }
+}
+
+@utility safe-b {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+@utility safe-t {
+  padding-top: env(safe-area-inset-top, 0px);
+}

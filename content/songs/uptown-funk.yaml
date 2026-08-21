@@ -1,0 +1,21 @@
+# Uptown Funk
+# Eksik alanları görmek için: npm run content:check
+
+id: uptown-funk
+title: "Uptown Funk"
+artist: "Mark Ronson ft. Bruno Mars"
+key: Dm
+tempo: 115
+meter: "4/4"
+style: funk
+
+structure: []        # TODO — bölümler ve akorlar
+#  - id: intro
+#    label: "Intro"
+#    chords: "| Am | F | C | G |"   # % = önceki barı tekrarla
+
+# Şarkı sözleri buraya. [Bölüm] başlıkları kullanın; akorları
+# istersen satır içinde [Am] şeklinde yazabilirsin.
+# lyrics: |
+#   [Verse 1]
+#   ...

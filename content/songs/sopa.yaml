@@ -1,0 +1,21 @@
+# Sopa
+# Eksik alanları görmek için: npm run content:check
+
+id: sopa
+title: "Sopa"
+# artist:            # TODO
+# key:               # TODO — örn. Am, Bb, F#m
+# tempo:             # TODO - BPM
+meter: "4/4"
+style: pop
+
+structure: []        # TODO — bölümler ve akorlar
+#  - id: intro
+#    label: "Intro"
+#    chords: "| Am | F | C | G |"   # % = önceki barı tekrarla
+
+# Şarkı sözleri buraya. [Bölüm] başlıkları kullanın; akorları
+# istersen satır içinde [Am] şeklinde yazabilirsin.
+# lyrics: |
+#   [Verse 1]
+#   ...

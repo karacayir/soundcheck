@@ -1,0 +1,21 @@
+# You Give Love A Bad Name
+# Eksik alanları görmek için: npm run content:check
+
+id: you-give-love-a-bad-name
+title: "You Give Love A Bad Name"
+artist: "Bon Jovi"
+key: C#m
+tempo: 123
+meter: "4/4"
+style: rock
+
+structure: []        # TODO — bölümler ve akorlar
+#  - id: intro
+#    label: "Intro"
+#    chords: "| Am | F | C | G |"   # % = önceki barı tekrarla
+
+# Şarkı sözleri buraya. [Bölüm] başlıkları kullanın; akorları
+# istersen satır içinde [Am] şeklinde yazabilirsin.
+# lyrics: |
+#   [Verse 1]
+#   ...

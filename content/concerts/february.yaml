@@ -1,0 +1,104 @@
+# Şubat konseri — geçen yılki Excel'in yerini alan dosya.
+#
+# Sıra buradaki sıra. Bir şarkıyı taşımak için satırı taşıyın.
+# `lineup` içindeki isimler content/band.yaml'daki id'ler olmalı —
+# yanlış yazarsanız `npm run content:check` hemen söyler.
+# Vokal listesinde ilk isim solisttir.
+# `segue: true` = sonraki şarkıya ara vermeden geçilir.
+
+slug: february
+title: Şubat Konseri
+# date: 2026-02-14   # TODO — kesinleşince yazın
+# venue:             # TODO
+notes: |
+  Geçen yılın kadrosuyla hazırlandı. Şarkı sırası ve kadro değişebilir.
+
+setlist:
+  - song: you-give-love-a-bad-name
+    lineup: { vokal: [doga], gitar: [gonen], klavye: [seco], bas: [dogukan], davul: [burak] }
+
+  - song: this-love
+    lineup: { vokal: [doga, berfin], gitar: [itri, yilmaz], klavye: [seco], bas: [doruk], davul: [burak] }
+
+  - song: yalniz
+    lineup: { vokal: [doga, berfin], gitar: [itri, yilmaz], klavye: [seco], bas: [doruk], davul: [burak] }
+
+  - song: haydi-gel-icelim
+    lineup: { vokal: [doga, berfin], gitar: [itri, yilmaz], klavye: [seco], bas: [kerem], davul: [burak] }
+
+  - song: tbd-1
+    lineup: { vokal: [doga, berfin], gitar: [gonen], klavye: [seco], bas: [doruk], davul: [burak] }
+
+  - song: tbd-2
+    lineup: { vokal: [doga, berfin], gitar: [gonen], klavye: [seco], bas: [doruk], davul: [burak] }
+
+  - song: opucuk
+    lineup: { vokal: [doga], gitar: [yilmaz], bas: [doruk], davul: [burak] }
+
+  - song: kara-sevda
+    lineup: { vokal: [doga, berfin], gitar: [ozan-a, yilmaz], klavye: [misra], bas: [doruk], davul: [burak] }
+
+  - song: hysteria
+    lineup: { vokal: [doga], gitar: [ozan-a, yilmaz], klavye: [misra], bas: [doruk], davul: [burak] }
+
+  - song: yapboz
+    lineup: { vokal: [doga], gitar: [ozan-a], klavye: [misra], davul: [burak] }
+
+  - song: cambaz
+    lineup: { vokal: [doga], gitar: [ozan-a, yilmaz], klavye: [misra], bas: [doruk], davul: [selcuk] }
+
+  - song: bir-derdim-var
+    lineup: { vokal: [doga], gitar: [ozan-a, yilmaz], klavye: [misra], bas: [dogukan], davul: [selcuk] }
+
+  - song: deli
+    lineup: { vokal: [doga], gitar: [ozan-a, yilmaz], klavye: [misra], bas: [dogukan], davul: [doruk] }
+
+  - song: englishman-in-new-york
+    lineup: { vokal: [doga], klavye: [seco], bas: [dogukan], davul: [burak] }
+
+  - song: careless-whisper
+    lineup: { vokal: [doga], gitar: [gonen, yilmaz], klavye: [seco], bas: [dogukan], davul: [burak] }
+
+  - break: KISA BİR ARA
+    minutes: 15
+
+  - song: lets-get-it-started
+    lineup: { vokal: [seco, doga], gitar: [itri], bas: [doruk], davul: [burak] }
+
+  - song: uptown-funk
+    lineup: { vokal: [doga, berfin], gitar: [itri], klavye: [seco], bas: [dogukan], davul: [doruk] }
+
+  - song: i-want-it-that-way
+    lineup: { vokal: [doga, ekin], gitar: [yilmaz], klavye: [seco], bas: [dogukan], davul: [burak] }
+
+  - song: beggin
+    lineup: { vokal: [doga, itri], gitar: [yilmaz], klavye: [seco], bas: [dogukan], davul: [burak] }
+
+  - song: cake-by-the-ocean
+    lineup: { vokal: [berfin, doga], gitar: [itri], klavye: [seco], bas: [dogukan], davul: [doruk] }
+
+  - song: price-tag
+    lineup: { vokal: [berfin, doga], gitar: [itri], klavye: [seco], bas: [dogukan], davul: [burak] }
+
+  - song: get-lucky
+    segue: true
+    lineup: { vokal: [berfin, doga], gitar: [itri], klavye: [seco], bas: [dogukan], davul: [burak] }
+
+  - song: bad-romance
+    segue: true
+    lineup: { vokal: [berfin, doga], gitar: [itri], klavye: [seco], bas: [dogukan], davul: [burak] }
+
+  - song: kandirdim
+    lineup: { vokal: [berfin, doga], gitar: [itri], klavye: [seco], bas: [dogukan], davul: [burak] }
+
+  - song: tas
+    lineup: { vokal: [berfin, doga], gitar: [itri], klavye: [seco], bas: [dogukan], davul: [burak] }
+
+  - song: sopa
+    lineup: { vokal: [berfin, doga], gitar: [itri], klavye: [seco], bas: [dogukan], davul: [burak] }
+
+  - song: kelepce
+    lineup: { vokal: [berfin, doga], gitar: [itri], klavye: [seco], bas: [dogukan], davul: [burak] }
+
+  - song: bi-dans-etsek
+    lineup: { vokal: [berfin, doga], gitar: [itri], klavye: [seco], bas: [dogukan], davul: [burak] }

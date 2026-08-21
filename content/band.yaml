@@ -1,0 +1,32 @@
+# The band, and the roles that make up the lineup grid.
+#
+# `slots` is how many columns a role gets on the setlist screen — Vokal had
+# three columns on last year's sheet, Gitar had two.
+# `view` decides which reading mode a member lands on by default.
+
+slug: funky-monkey
+name: Funky Monkey
+tagline: Canlı performans arkadaşınız
+
+roles:
+  - { id: vokal,  label: Vokal,  slots: 3, view: singer }
+  - { id: gitar,  label: Gitar,  slots: 2, view: musician }
+  - { id: klavye, label: Klavye, slots: 1, view: musician }
+  - { id: bas,    label: Bas,    slots: 1, view: musician }
+  - { id: davul,  label: Davul,  slots: 1, view: musician }
+
+members:
+  - { id: doga,    name: Doğa,           roles: [vokal] }
+  - { id: berfin,  name: Berfin,         roles: [vokal] }
+  - { id: ekin,    name: Ekin Berkyürek, roles: [vokal] }
+  - { id: itri,    name: Itri,           roles: [gitar, vokal] }
+  - { id: yilmaz,  name: Yılmaz,         roles: [gitar] }
+  - { id: gonen,   name: Gönen,          roles: [gitar] }
+  - { id: ozan-a,  name: Ozan A,         roles: [gitar] }
+  - { id: seco,    name: Seço,           roles: [klavye, vokal] }
+  - { id: misra,   name: Mısra,          roles: [klavye] }
+  - { id: dogukan, name: Doğukan,        roles: [bas] }
+  - { id: doruk,   name: Doruk,          roles: [bas, davul] }
+  - { id: kerem,   name: Kerem,          roles: [bas] }
+  - { id: burak,   name: Burak,          roles: [davul] }
+  - { id: selcuk,  name: Selçuk,         roles: [davul] }
