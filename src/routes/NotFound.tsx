@@ -4,13 +4,11 @@ import { Button, Label } from '@/design/primitives'
 
 export function NotFound() {
   return (
-    <div className="mx-auto flex min-h-dvh w-full max-w-3xl flex-col justify-center gap-6 px-4">
+    <div className="mx-auto flex min-h-dvh w-full max-w-2xl flex-col justify-center gap-7 px-5">
       <div>
         <Label>404</Label>
-        <h1 className="mt-2 text-xl font-semibold sc-tight">Burada bir şey yok.</h1>
-        <p className="mt-2 text-sm text-muted">
-          Aradığın konser ya da şarkı bulunamadı.
-        </p>
+        <h1 className="sc-display mt-3 text-2xl">Nothing here.</h1>
+        <p className="mt-2 text-sm text-muted">That concert or song doesn&rsquo;t exist.</p>
       </div>
       <div>
         <Link to={`/${band.slug}`}>

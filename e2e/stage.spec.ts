@@ -24,17 +24,17 @@ test('works with the network switched off', async ({ page, context }) => {
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Bad Romance')
 
   await page.goto('/funky-monkey/february')
-  await expect(page.getByText('KISA BİR ARA')).toBeVisible()
+  await expect(page.getByText('SHORT BREAK')).toBeVisible()
 
   await context.setOffline(false)
 })
 
 test('the click advances through the bar', async ({ page }) => {
   await page.goto('/funky-monkey/february/bad-romance')
-  await page.getByRole('button', { name: 'Çal' }).click()
+  await page.getByRole('button', { name: 'Play' }).click()
 
   // Bad Romance is 119 BPM, so a bar is a little over two seconds.
-  await expect(page.getByText(/giriş sayımı|bar \d+\//)).toBeVisible({ timeout: 5000 })
+  await expect(page.getByText(/count in|bar \d+\//)).toBeVisible({ timeout: 5000 })
   await expect(page.getByText(/bar \d+\/\d+/)).toBeVisible({ timeout: 10_000 })
 
   const first = await page.getByText(/bar \d+\/\d+/).innerText()
@@ -42,6 +42,6 @@ test('the click advances through the bar', async ({ page }) => {
   const second = await page.getByText(/bar \d+\/\d+/).innerText()
   expect(second).not.toBe(first)
 
-  await page.getByRole('button', { name: 'Durdur' }).click()
+  await page.getByRole('button', { name: 'Stop' }).click()
   await expect(page.getByText(/bar \d+\/\d+/)).toBeHidden()
 })

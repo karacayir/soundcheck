@@ -1,6 +1,7 @@
-import { useEffect, useMemo, useRef } from 'react'
+import { AArrowDown, AArrowUp, Info } from 'lucide-react'
+import { useEffect, useMemo } from 'react'
 import type { Song } from '@/content/types'
-import { Empty, IconButton, Label } from '@/design/primitives'
+import { Empty, IconButton, Label, Num, cx } from '@/design/primitives'
 import { parseLyrics } from '@/features/music/lyrics'
 import { setPrefs, usePrefs } from '@/features/session/prefs'
 
@@ -8,20 +9,13 @@ const MIN_SIZE = 18
 const MAX_SIZE = 64
 
 /**
- * Lyrics, sized for a music stand rather than a desk. Sections are labelled so
+ * Lyrics sized for a music stand rather than a desk. Sections are labelled so
  * you can find the second chorus at a glance, and cues sit inline where they
  * happen instead of in a footnote nobody reads mid-song.
  */
-export function SingerView({
-  song,
-  autoScroll,
-}: {
-  song: Song
-  autoScroll: boolean
-}) {
+export function SingerView({ song, autoScroll }: { song: Song; autoScroll: boolean }) {
   const prefs = usePrefs()
   const sections = useMemo(() => parseLyrics(song.lyrics), [song.lyrics])
-  const containerRef = useRef<HTMLDivElement>(null)
 
   useAutoScroll(autoScroll)
 
@@ -36,22 +30,24 @@ export function SingerView({
 
   if (sections.length === 0) {
     return (
-      <div className="flex flex-col gap-6 pb-8">
+      <div className="flex flex-col gap-7 pb-8">
         <Empty>
-          Bu şarkının sözleri henüz girilmedi.
+          No lyrics for this song yet.
           <br />
-          <code className="mt-2 inline-block text-2xs text-dim">
+          <code className="sc-num mt-2 inline-block text-2xs text-dim">
             content/songs/{song.id}.yaml → lyrics:
           </code>
         </Empty>
         {song.structure.length > 0 && (
           <section className="flex flex-col gap-3">
-            <Label>Bölümler</Label>
-            <ol className="flex flex-col gap-px bg-line">
+            <Label>Form</Label>
+            <ol className="sc-panel divide-y divide-line overflow-hidden">
               {song.structure.map((section) => (
-                <li key={section.id} className="flex items-baseline gap-3 bg-bg px-3 py-2.5">
+                <li key={section.id} className="flex items-baseline gap-3 px-3.5 py-2.5">
                   <span className="text-sm font-medium">{section.label}</span>
-                  {section.repeat > 1 && <span className="text-2xs text-dim">×{section.repeat}</span>}
+                  {section.repeat > 1 && (
+                    <Num className="text-2xs text-dim">×{section.repeat}</Num>
+                  )}
                   {section.cue && <span className="text-xs text-muted italic">{section.cue}</span>}
                 </li>
               ))}
@@ -63,64 +59,71 @@ export function SingerView({
   }
 
   return (
-    <div className="flex flex-col gap-4 pb-8">
+    <div className="flex flex-col gap-5 pb-8">
       <div className="flex items-center justify-between gap-3">
-        <Label>Sözler</Label>
-        <div className="flex items-center gap-px">
+        <Label>Lyrics</Label>
+        <div className="flex items-center gap-1.5">
+          <Num className="mr-1 text-2xs text-dim">{prefs.lyricSize}px</Num>
           <IconButton
-            aria-label="Yazıyı küçült"
+            aria-label="Smaller text"
             disabled={prefs.lyricSize <= MIN_SIZE}
             onClick={() => setPrefs({ lyricSize: Math.max(MIN_SIZE, prefs.lyricSize - 3) })}
           >
-            <span className="text-xs">A</span>
+            <AArrowDown size={16} strokeWidth={1.75} />
           </IconButton>
           <IconButton
-            aria-label="Yazıyı büyült"
+            aria-label="Bigger text"
             disabled={prefs.lyricSize >= MAX_SIZE}
             onClick={() => setPrefs({ lyricSize: Math.min(MAX_SIZE, prefs.lyricSize + 3) })}
           >
-            <span className="text-lg leading-none">A</span>
+            <AArrowUp size={16} strokeWidth={1.75} />
           </IconButton>
         </div>
       </div>
 
-      <div ref={containerRef} className="flex flex-col gap-8">
-        {sections.map((section, sectionIndex) => (
-          <section key={`${section.label}-${sectionIndex}`}>
-            {section.label && (
-              <div className="mb-2 flex flex-wrap items-baseline gap-3">
-                <Label className="!text-fg">{section.label}</Label>
-                {cuesBySection.get(slugish(section.label))?.map((cue) => (
-                  <span key={cue} className="text-2xs text-muted italic">
-                    {cue}
+      <div className="flex flex-col gap-9">
+        {sections.map((section, sectionIndex) => {
+          const cues = section.label ? cuesBySection.get(slugish(section.label)) : undefined
+          return (
+            <section key={`${section.label}-${sectionIndex}`}>
+              {section.label && (
+                <div className="mb-3 flex flex-wrap items-center gap-2.5">
+                  <span className="rounded-sm bg-surface-2 px-2 py-1 text-2xs font-semibold tracking-[0.11em] text-fg uppercase">
+                    {section.label}
                   </span>
-                ))}
-              </div>
-            )}
-            <div
-              style={{ fontSize: `${prefs.lyricSize}px`, lineHeight: 1.34 }}
-              className="font-medium sc-tight"
-            >
-              {section.lines.map((line, lineIndex) => (
-                <p key={lineIndex} className={line.chordsOnly ? 'text-muted' : undefined}>
-                  {line.chunks.map((chunk, chunkIndex) => (
-                    <span key={chunkIndex} className={chunk.chord ? 'relative' : undefined}>
-                      {chunk.chord && (
-                        <span
-                          className="sc-num mr-1 align-super text-[0.5em] font-normal text-muted"
-                          aria-hidden
-                        >
-                          {chunk.chord}
-                        </span>
-                      )}
-                      {chunk.text || ' '}
+                  {cues?.map((cue) => (
+                    <span key={cue} className="flex items-center gap-1.5 text-xs text-accent">
+                      <Info size={12} strokeWidth={2} />
+                      {cue}
                     </span>
                   ))}
-                </p>
-              ))}
-            </div>
-          </section>
-        ))}
+                </div>
+              )}
+              <div
+                style={{ fontSize: `${prefs.lyricSize}px`, lineHeight: 1.32 }}
+                className="sc-tight font-medium"
+              >
+                {section.lines.map((line, lineIndex) => (
+                  <p key={lineIndex} className={cx(line.chordsOnly && 'text-muted')}>
+                    {line.chunks.map((chunk, chunkIndex) => (
+                      <span key={chunkIndex}>
+                        {chunk.chord && (
+                          <span
+                            className="sc-num mr-1 align-super text-[0.46em] font-medium text-accent"
+                            aria-hidden
+                          >
+                            {chunk.chord}
+                          </span>
+                        )}
+                        {chunk.text || ' '}
+                      </span>
+                    ))}
+                  </p>
+                ))}
+              </div>
+            </section>
+          )
+        })}
       </div>
     </div>
   )
@@ -128,12 +131,12 @@ export function SingerView({
 
 function slugish(label: string): string {
   return label
-    .toLocaleLowerCase('tr')
+    .toLocaleLowerCase('en')
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-|-$/g, '')
 }
 
-/** Slow, steady scroll. Any touch or wheel input hands control straight back. */
+/** Slow, steady scroll that stops once the page bottoms out. */
 function useAutoScroll(active: boolean): void {
   useEffect(() => {
     if (!active) return
@@ -148,9 +151,7 @@ function useAutoScroll(active: boolean): void {
       last = now
       if (!stopped) {
         window.scrollBy(0, PIXELS_PER_SECOND * delta)
-        const atBottom =
-          window.scrollY + window.innerHeight >= document.body.scrollHeight - 2
-        if (atBottom) stopped = true
+        if (window.scrollY + window.innerHeight >= document.body.scrollHeight - 2) stopped = true
       }
       raf = requestAnimationFrame(step)
     }

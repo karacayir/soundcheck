@@ -14,14 +14,14 @@ export function UpdatePrompt() {
   if (!needRefresh) return null
 
   return (
-    <div className="fixed inset-x-4 bottom-4 z-50 flex items-center justify-between gap-4 border border-fg bg-bg px-4 py-3">
-      <span className="text-xs">Yeni sürüm hazır.</span>
-      <div className="flex gap-px">
+    <div className="fixed inset-x-5 bottom-5 z-50 flex items-center justify-between gap-4 rounded-lg border border-line-2 bg-surface-2 px-4 py-3 shadow-lg backdrop-blur">
+      <span className="text-xs">A new version is ready.</span>
+      <div className="flex gap-1.5">
         <Button size="sm" variant="ghost" onClick={() => setNeedRefresh(false)}>
-          Sonra
+          Later
         </Button>
-        <Button size="sm" variant="solid" onClick={() => void updateServiceWorker(true)}>
-          Güncelle
+        <Button size="sm" variant="accent" onClick={() => void updateServiceWorker(true)}>
+          Update
         </Button>
       </div>
     </div>

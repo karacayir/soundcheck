@@ -1,21 +1,75 @@
-# You Give Love A Bad Name
-# Eksik alanları görmek için: npm run content:check
+# You Give Love A Bad Name — Bon Jovi
+#
+# Lyrics go in the `lyrics:` block at the bottom.
+# To see what is still missing across the whole set: npm run content:check
 
 id: you-give-love-a-bad-name
 title: "You Give Love A Bad Name"
 artist: "Bon Jovi"
-key: C#m
+key: Cm
 tempo: 123
 meter: "4/4"
 style: rock
+duration: "3:43"
 
-structure: []        # TODO — bölümler ve akorlar
-#  - id: intro
-#    label: "Intro"
-#    chords: "| Am | F | C | G |"   # % = önceki barı tekrarla
+notes: |
+  Chart transcribed from the band's iReal book — played in Cm, not the record's C#m.
 
-# Şarkı sözleri buraya. [Bölüm] başlıkları kullanın; akorları
-# istersen satır içinde [Am] şeklinde yazabilirsin.
+structure:
+  - id: intro
+    label: "Intro"
+    chords: "| Cm Ab | Bb Cm | Ab Bb | Eb Cm |"
+    cue: "Vocals only — no click"
+  - id: intro-band
+    label: "Intro (band)"
+    chords: "| Cm Ab | Bb Cm | Ab Bb | Eb Cm |"
+    cue: "Band in"
+    repeat: 2
+  - id: intro-out
+    label: "Into the riff"
+    chords: "| Ab Bb | N.C. | % |"
+  - id: riff
+    label: "A — Riff"
+    chords: "| Cm | % |"
+    repeat: 6
+  - id: riff-turn
+    label: "A — Riff turnaround"
+    chords: "| F | % | Cm | % | Bb | % | F | G |"
+  - id: verse
+    label: "Verse"
+    chords: "| Cm Ab | Bb Cm | Ab Bb | Eb Cm |"
+    repeat: 2
+  - id: verse-out
+    label: "Verse out"
+    chords: "| Ab Bb | N.C. | % |"
+    cue: "D.S. al Coda"
+  - id: solo
+    label: "Solo"
+    chords: "| Cm Ab | Bb Cm |"
+    repeat: 3
+  - id: solo-out
+    label: "Solo out"
+    chords: "| Cm Ab | G | % |"
+  - id: breakdown
+    label: "Breakdown"
+    chords: "| N.C. | % | % |"
+    cue: "Vocals and drums only"
+  - id: verse-last
+    label: "Verse (last)"
+    chords: "| Cm Ab | Bb Cm | Ab Bb | Eb Cm |"
+  - id: outro
+    label: "Outro"
+    chords: "| Ab Bb | Eb Cm |"
+    cue: "Fade out"
+    repeat: 4
+
+cues:
+  - { at: intro, text: "Opens on vocals alone — band waits, no click" }
+  - { at: breakdown, text: "Vocals and drums only, then straight back in" }
+
+# Lyrics. Use [Section] headings; chords can go inline as [Am] if you want
+# them shown on the chart view.
+#
 # lyrics: |
 #   [Verse 1]
 #   ...

@@ -1,32 +1,32 @@
 # The band, and the roles that make up the lineup grid.
 #
-# `slots` is how many columns a role gets on the setlist screen — Vokal had
-# three columns on last year's sheet, Gitar had two.
+# `slots` is how many columns a role gets on the printable setlist — vocals had
+# three columns on last year's sheet, guitar had two.
 # `view` decides which reading mode a member lands on by default.
 
 slug: funky-monkey
 name: Funky Monkey
-tagline: Canlı performans arkadaşınız
+tagline: Live performance companion
 
 roles:
-  - { id: vokal,  label: Vokal,  slots: 3, view: singer }
-  - { id: gitar,  label: Gitar,  slots: 2, view: musician }
-  - { id: klavye, label: Klavye, slots: 1, view: musician }
-  - { id: bas,    label: Bas,    slots: 1, view: musician }
-  - { id: davul,  label: Davul,  slots: 1, view: musician }
+  - { id: vocals, label: Vocals, slots: 3, view: singer }
+  - { id: guitar, label: Guitar, slots: 2, view: musician }
+  - { id: keys,   label: Keys,   slots: 1, view: musician }
+  - { id: bass,   label: Bass,   slots: 1, view: musician }
+  - { id: drums,  label: Drums,  slots: 1, view: musician }
 
 members:
-  - { id: doga,    name: Doğa,           roles: [vokal] }
-  - { id: berfin,  name: Berfin,         roles: [vokal] }
-  - { id: ekin,    name: Ekin Berkyürek, roles: [vokal] }
-  - { id: itri,    name: Itri,           roles: [gitar, vokal] }
-  - { id: yilmaz,  name: Yılmaz,         roles: [gitar] }
-  - { id: gonen,   name: Gönen,          roles: [gitar] }
-  - { id: ozan-a,  name: Ozan A,         roles: [gitar] }
-  - { id: seco,    name: Seço,           roles: [klavye, vokal] }
-  - { id: misra,   name: Mısra,          roles: [klavye] }
-  - { id: dogukan, name: Doğukan,        roles: [bas] }
-  - { id: doruk,   name: Doruk,          roles: [bas, davul] }
-  - { id: kerem,   name: Kerem,          roles: [bas] }
-  - { id: burak,   name: Burak,          roles: [davul] }
-  - { id: selcuk,  name: Selçuk,         roles: [davul] }
+  - { id: doga,    name: Doğa,           roles: [vocals] }
+  - { id: berfin,  name: Berfin,         roles: [vocals] }
+  - { id: ekin,    name: Ekin Berkyürek, roles: [vocals] }
+  - { id: itri,    name: Itri,           roles: [guitar, vocals] }
+  - { id: yilmaz,  name: Yılmaz,         roles: [guitar] }
+  - { id: gonen,   name: Gönen,          roles: [guitar] }
+  - { id: ozan-a,  name: Ozan A,         roles: [guitar] }
+  - { id: seco,    name: Seço,           roles: [keys, vocals] }
+  - { id: misra,   name: Mısra,          roles: [keys] }
+  - { id: dogukan, name: Doğukan,        roles: [bass] }
+  - { id: doruk,   name: Doruk,          roles: [bass, drums] }
+  - { id: kerem,   name: Kerem,          roles: [bass] }
+  - { id: burak,   name: Burak,          roles: [drums] }
+  - { id: selcuk,  name: Selçuk,         roles: [drums] }

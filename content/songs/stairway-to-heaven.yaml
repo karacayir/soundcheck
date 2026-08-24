@@ -1,0 +1,68 @@
+# Stairway To Heaven — Led Zeppelin
+#
+# Lyrics go in the `lyrics:` block at the bottom.
+# To see what is still missing across the whole set: npm run content:check
+
+id: stairway-to-heaven
+title: "Stairway To Heaven"
+artist: "Led Zeppelin"
+key: Am
+tempo: 72
+meter: "4/4"
+style: ballad
+duration: "8:02"
+
+notes: |
+  Chart transcribed from the band's iReal book. Not in the February setlist — here if you want it.
+
+structure:
+  - id: a
+    label: "A"
+    chords: "| Am | Cmaj7#5/G# | Am/G | D/F# | Fmaj7 | G/B Am | % |"
+  - id: b
+    label: "B"
+    chords: "| C D | Fmaj7 Am | C G | Dsus D | % | C D | Fmaj7 Am | C D | Fmaj7 |"
+  - id: a2
+    label: "A (2nd)"
+    chords: "| Am | G#+ | Am/G | D/F# | Fmaj7 | G/B Am | % |"
+  - id: c
+    label: "C"
+    chords: "| Am7 | A7sus/D D | Am7 | Cmaj7/D Bm7/D Am7/D Bm7/D |"
+  - id: d
+    label: "D"
+    chords: "| C | G/B | Am | C | G/B | F Am | % |"
+    cue: "Bass and drums in on the 3rd time"
+    repeat: 4
+  - id: d-turn
+    label: "D — Turnaround"
+    chords: "| C | G/B | D | Dsus D | Cadd9 | % |"
+  - id: d-end
+    label: "D — Into the solo"
+    chords: "| Cadd9 | Gmaj7/B |"
+  - id: solo
+    label: "Solo"
+    chords: "| Am/G | Fmaj7 |"
+    cue: "Guitar solo"
+  - id: solo-b
+    label: "Solo (main)"
+    chords: "| Am | G | F | G |"
+    repeat: 10
+  - id: solo-c
+    label: "Solo (out)"
+    chords: "| Am | G | Fmaj7 |"
+    repeat: 7
+  - id: outro
+    label: "Outro"
+    chords: "| Am/G | Fmaj7 |"
+    cue: "Last time rit."
+    repeat: 4
+
+cues:
+  - { at: d, text: "Bass and drums join on the third time round" }
+
+# Lyrics. Use [Section] headings; chords can go inline as [Am] if you want
+# them shown on the chart view.
+#
+# lyrics: |
+#   [Verse 1]
+#   ...

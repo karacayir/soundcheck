@@ -34,8 +34,8 @@ export function PrintScreen() {
         <thead>
           <tr>
             <th className="w-6 border border-black px-1 py-1 text-left">#</th>
-            <th className="border border-black px-1 py-1 text-left">Şarkı</th>
-            <th className="w-10 border border-black px-1 py-1 text-left">Ton</th>
+            <th className="border border-black px-1 py-1 text-left">Song</th>
+            <th className="w-10 border border-black px-1 py-1 text-left">Key</th>
             <th className="w-10 border border-black px-1 py-1 text-left">BPM</th>
             {band.roles.map((role) => (
               <th key={role.id} className="border border-black px-1 py-1 text-left">
@@ -53,7 +53,7 @@ export function PrintScreen() {
                   className="border border-black bg-black px-1 py-1 text-center text-[10px] font-bold tracking-[0.14em] text-white uppercase"
                 >
                   {item.title}
-                  {item.minutes ? ` — ${item.minutes} dk` : ''}
+                  {item.minutes ? ` — ${item.minutes} MIN` : ''}
                 </td>
               </tr>
             ) : (
@@ -85,14 +85,14 @@ export function PrintScreen() {
         </tbody>
       </table>
 
-      <p className="mt-3 text-[9px] opacity-60">↓ = sonraki şarkıya ara vermeden geçilir</p>
+      <p className="mt-3 text-[9px] opacity-60">↓ = runs straight on into the next song</p>
 
       <button
         type="button"
         onClick={() => window.print()}
         className="no-print mt-6 border border-black px-4 py-2 text-[11px] tracking-[0.09em] uppercase"
       >
-        Yazdır
+        Print
       </button>
     </div>
   )

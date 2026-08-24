@@ -1,21 +1,29 @@
-# Beggin'
-# Eksik alanları görmek için: npm run content:check
+# Beggin' — Måneskin
+#
+# Lyrics go in the `lyrics:` block at the bottom.
+# To see what is still missing across the whole set: npm run content:check
 
 id: beggin
 title: "Beggin'"
 artist: "Måneskin"
-# key:               # TODO — örn. Am, Bb, F#m
+# key:               # TODO - e.g. Am, Bb, F#m
 tempo: 134
 meter: "4/4"
 style: rock
+duration: "3:31"
 
-structure: []        # TODO — bölümler ve akorlar
+notes: |
+  No chart in the band's book yet.
+
+structure: []        # TODO - sections and chords
 #  - id: intro
 #    label: "Intro"
-#    chords: "| Am | F | C | G |"   # % = önceki barı tekrarla
+#    chords: "| Am | F | C | G |"   # % repeats the previous bar
+#    repeat: 2
 
-# Şarkı sözleri buraya. [Bölüm] başlıkları kullanın; akorları
-# istersen satır içinde [Am] şeklinde yazabilirsin.
+# Lyrics. Use [Section] headings; chords can go inline as [Am] if you want
+# them shown on the chart view.
+#
 # lyrics: |
 #   [Verse 1]
 #   ...

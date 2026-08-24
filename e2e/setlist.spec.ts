@@ -4,9 +4,10 @@ test.describe('setlist', () => {
   test('shows the whole concert in order, with the break in place', async ({ page }) => {
     await page.goto('/funky-monkey/february')
 
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Şubat Konseri')
-    await expect(page.locator('a[href*="/february/"]').filter({ hasNot: page.getByText('Yazdırılabilir') })).toHaveCount(28)
-    await expect(page.getByText('KISA BİR ARA')).toBeVisible()
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('February Show')
+    // The print link shares the URL prefix, so match on rows that carry a title.
+    await expect(page.locator('a[href*="/february/"]').filter({ has: page.locator('h2') })).toHaveCount(28)
+    await expect(page.getByText('SHORT BREAK')).toBeVisible()
 
     // Order matters more than anything else on this screen.
     const titles = await page.locator('h2').allInnerTexts()
@@ -21,18 +22,17 @@ test.describe('setlist', () => {
     await expect(page).toHaveURL(/\/funky-monkey$/)
   })
 
-  test('picking a member marks their songs and dims the rest', async ({ page }) => {
+  test('picking a member marks their songs and fades the rest', async ({ page }) => {
     await page.goto('/funky-monkey/february')
-    await page.getByRole('button', { name: /Ben/ }).click()
+    await page.getByRole('button', { name: /Who are you/ }).click()
     await page.getByRole('button', { name: 'Mısra', exact: false }).first().click()
 
-    // Mısra plays keys on six songs in this set.
-    await expect(page.getByText('bu konserde')).toBeVisible()
+    await expect(page.getByText(/You.re on/)).toBeVisible()
     await expect(page.locator('a', { has: page.getByText('Kara Sevda') })).not.toHaveClass(
-      /opacity-35/,
+      /opacity-40/,
     )
     await expect(page.locator('a', { has: page.getByText('Uptown Funk') })).toHaveClass(
-      /opacity-35/,
+      /opacity-40/,
     )
   })
 })
@@ -42,22 +42,22 @@ test.describe('song', () => {
     await page.goto('/funky-monkey/february/bad-romance')
   })
 
-  test('shows the chart imported from the iReal file', async ({ page }) => {
+  test('shows the chart from the band iReal book', async ({ page }) => {
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Bad Romance')
-    await page.getByRole('button', { name: 'Akorlar' }).click()
+    await page.getByRole('tab', { name: 'Chart' }).click()
 
-    await expect(page.getByText('KADRO')).toBeVisible()
-    await expect(page.getByText("Kandırdım'a davul fill ile geç")).toBeVisible()
+    await expect(page.getByText(/Who.s on this/)).toBeVisible()
+    await expect(page.getByText('Drum fill into Kandırdım')).toBeVisible()
     await expect(page.getByText('Intro', { exact: true })).toBeVisible()
   })
 
   test('transposes the key and every chord with it', async ({ page }) => {
-    await page.getByRole('button', { name: 'Akorlar' }).click()
-    const grid = page.locator('section').filter({ hasText: 'INTRO' }).first()
+    await page.getByRole('tab', { name: 'Chart' }).click()
+    const grid = page.locator('section').filter({ hasText: 'Intro' }).first()
     await expect(grid).toContainText('F')
 
-    await page.getByRole('button', { name: 'Bir ses yukarı' }).click()
-    await page.getByRole('button', { name: 'Bir ses yukarı' }).click()
+    await page.getByRole('button', { name: 'Up a semitone' }).click()
+    await page.getByRole('button', { name: 'Up a semitone' }).click()
 
     await expect(page.getByText('Am → Bm (+2)')).toBeVisible()
     // Intro bar 1 was F; two semitones up is G.
@@ -65,23 +65,23 @@ test.describe('song', () => {
   })
 
   test('remembers the transposition after a reload', async ({ page }) => {
-    await page.getByRole('button', { name: 'Bir ses yukarı' }).click()
+    await page.getByRole('button', { name: 'Up a semitone' }).click()
     await page.reload()
     await expect(page.getByText('Am → Bbm (+1)')).toBeVisible()
   })
 
   test('moves through the setlist in order', async ({ page }) => {
-    await page.getByRole('button', { name: 'Sonraki şarkı' }).click()
+    await page.getByRole('button', { name: 'Next song' }).click()
     await expect(page).toHaveURL(/kandirdim$/)
-    await page.getByRole('button', { name: 'Önceki şarkı' }).click()
+    await page.getByRole('button', { name: 'Previous song' }).click()
     await expect(page).toHaveURL(/bad-romance$/)
   })
 
-  test('switches between singer and musician views', async ({ page }) => {
-    await page.getByRole('button', { name: 'Sözler' }).click()
-    await expect(page.getByText('Bu şarkının sözleri henüz girilmedi.')).toBeVisible()
-    await page.getByRole('button', { name: 'Akorlar' }).click()
-    await expect(page.getByText('KADRO')).toBeVisible()
+  test('switches between lyrics and chart', async ({ page }) => {
+    await page.getByRole('tab', { name: 'Lyrics' }).click()
+    await expect(page.getByText('No lyrics for this song yet.')).toBeVisible()
+    await page.getByRole('tab', { name: 'Chart' }).click()
+    await expect(page.getByText(/Who.s on this/)).toBeVisible()
   })
 })
 

@@ -1,11 +1,12 @@
+import { Check, ChevronDown, Monitor, Moon, Sun, UserRound } from 'lucide-react'
 import { band, memberById, roleById } from '@/content'
-import { Button, Chip, Label, Sheet } from '@/design/primitives'
+import { Button, Label, SegmentedControl, Sheet, cx } from '@/design/primitives'
 import { setPrefs, usePrefs } from './prefs'
 
 /**
  * "I am ___". Picking yourself once turns the setlist from a spreadsheet into
- * *your* setlist: your songs highlighted, the ones you sit out dimmed, and
- * songs opening in the view your instrument needs.
+ * *your* setlist: your songs marked, the ones you sit out dimmed, and each
+ * song opening in the view your instrument actually needs.
  */
 export function IdentityButton({ onClick }: { onClick: () => void }) {
   const { memberId } = usePrefs()
@@ -15,11 +16,27 @@ export function IdentityButton({ onClick }: { onClick: () => void }) {
     <button
       type="button"
       onClick={onClick}
-      className="group flex items-center gap-2 border border-line px-3 py-2 text-left transition-colors hover:border-line-strong hover:bg-surface"
+      className={cx(
+        'group flex items-center gap-2.5 rounded-lg border py-2 pr-3 pl-3 transition-all',
+        'duration-150 ease-[var(--ease-out-quick)] active:scale-[0.98]',
+        member
+          ? 'border-line bg-surface hover:border-line-2 hover:bg-surface-2'
+          : 'border-accent/40 bg-accent/10 hover:bg-accent/15',
+      )}
     >
-      <span className="sc-label">Ben</span>
-      <span className="text-sm font-medium sc-tight">{member ? member.name : 'Seç'}</span>
-      <span className="text-dim transition-colors group-hover:text-muted">▾</span>
+      <UserRound size={14} strokeWidth={1.75} className={member ? 'text-muted' : 'text-accent'} />
+      {member ? (
+        <span className="sc-tight text-sm font-medium">{member.name}</span>
+      ) : (
+        <span className="text-xs font-medium tracking-[0.07em] text-accent uppercase">
+          Who are you?
+        </span>
+      )}
+      <ChevronDown
+        size={14}
+        strokeWidth={2}
+        className="text-dim transition-colors group-hover:text-muted"
+      />
     </button>
   )
 }
@@ -28,8 +45,13 @@ export function IdentitySheet({ open, onClose }: { open: boolean; onClose: () =>
   const prefs = usePrefs()
 
   return (
-    <Sheet open={open} onClose={onClose} title="Ben kimim?">
-      <div className="grid grid-cols-2 gap-px bg-line sm:grid-cols-3">
+    <Sheet open={open} onClose={onClose} title="Who are you?">
+      <p className="mb-5 text-sm text-muted">
+        Your songs get marked, the ones you sit out fade back, and each song opens in the view your
+        instrument needs.
+      </p>
+
+      <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
         {band.members.map((member) => {
           const selected = prefs.memberId === member.id
           return (
@@ -37,22 +59,24 @@ export function IdentitySheet({ open, onClose }: { open: boolean; onClose: () =>
               key={member.id}
               type="button"
               onClick={() => {
-                // Choosing a person clears any manual view override so the
+                // Choosing a person clears any manual view override, so the
                 // default follows the new instrument.
                 setPrefs({ memberId: member.id, view: null })
                 onClose()
               }}
-              className={
-                'flex flex-col items-start gap-1.5 px-3 py-3 text-left transition-colors ' +
-                (selected ? 'bg-fg text-bg' : 'bg-bg hover:bg-surface')
-              }
+              className={cx(
+                'flex flex-col items-start gap-1.5 rounded-lg border px-3 py-3 text-left',
+                'transition-all duration-150 ease-[var(--ease-out-quick)] active:scale-[0.98]',
+                selected
+                  ? 'border-accent bg-accent/12'
+                  : 'border-line bg-surface hover:border-line-2 hover:bg-surface-2',
+              )}
             >
-              <span className="text-sm font-medium sc-tight">{member.name}</span>
-              <span
-                className={
-                  'text-2xs uppercase tracking-[0.09em] ' + (selected ? 'text-bg/70' : 'text-muted')
-                }
-              >
+              <span className="flex w-full items-center justify-between gap-2">
+                <span className="sc-tight truncate text-sm font-medium">{member.name}</span>
+                {selected && <Check size={13} strokeWidth={2.5} className="shrink-0 text-accent" />}
+              </span>
+              <span className={cx('sc-label', selected && '!text-accent')}>
                 {member.roles.map((r) => roleById.get(r)?.label ?? r).join(' · ')}
               </span>
             </button>
@@ -60,21 +84,21 @@ export function IdentitySheet({ open, onClose }: { open: boolean; onClose: () =>
         })}
       </div>
 
-      <div className="mt-6 flex flex-wrap items-center gap-3">
-        <Button
-          size="sm"
-          variant="ghost"
-          onClick={() => {
-            setPrefs({ memberId: null, view: null })
-            onClose()
-          }}
-        >
-          Seçimi temizle
-        </Button>
-        <span className="text-2xs text-dim">
-          Bu seçim yalnızca bu cihazda saklanır.
-        </span>
-      </div>
+      {prefs.memberId && (
+        <div className="mt-5 flex items-center gap-3">
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={() => {
+              setPrefs({ memberId: null, view: null })
+              onClose()
+            }}
+          >
+            Clear
+          </Button>
+          <span className="text-2xs text-dim">Saved on this device only.</span>
+        </div>
+      )}
     </Sheet>
   )
 }
@@ -83,65 +107,74 @@ export function SettingsSheet({ open, onClose }: { open: boolean; onClose: () =>
   const prefs = usePrefs()
 
   return (
-    <Sheet open={open} onClose={onClose} title="Ayarlar">
-      <div className="flex flex-col gap-6">
-        <div className="flex flex-col gap-2">
-          <Label>Tema</Label>
-          <div className="flex gap-px">
-            {(['dark', 'light'] as const).map((theme) => (
-              <Button
-                key={theme}
-                size="md"
-                active={prefs.theme === theme}
-                onClick={() => setPrefs({ theme })}
-              >
-                {theme === 'dark' ? 'Karanlık' : 'Aydınlık'}
-              </Button>
-            ))}
-          </div>
-          <p className="text-2xs text-dim">Sahnede karanlık tema gözü yormaz.</p>
-        </div>
+    <Sheet open={open} onClose={onClose} title="Settings">
+      <div className="flex flex-col gap-7">
+        <section className="flex flex-col gap-2.5">
+          <Label>Appearance</Label>
+          <SegmentedControl
+            value={prefs.theme}
+            onChange={(theme) => setPrefs({ theme })}
+            options={[
+              {
+                value: 'dark',
+                label: (
+                  <>
+                    <Moon size={13} strokeWidth={1.75} /> Dark
+                  </>
+                ),
+              },
+              {
+                value: 'light',
+                label: (
+                  <>
+                    <Sun size={13} strokeWidth={1.75} /> Light
+                  </>
+                ),
+              },
+            ]}
+          />
+          <p className="text-2xs text-dim">Dark is easier on the eyes under stage lighting.</p>
+        </section>
 
-        <div className="flex flex-col gap-2">
-          <Label>Ekran</Label>
+        <section className="flex flex-col gap-2.5">
+          <Label>Default view</Label>
+          <SegmentedControl
+            value={prefs.view ?? 'auto'}
+            onChange={(view) => setPrefs({ view: view === 'auto' ? null : view })}
+            options={[
+              {
+                value: 'auto',
+                label: (
+                  <>
+                    <Monitor size={13} strokeWidth={1.75} /> Auto
+                  </>
+                ),
+              },
+              { value: 'singer', label: 'Lyrics' },
+              { value: 'musician', label: 'Chart' },
+            ]}
+          />
+          <p className="text-2xs text-dim">
+            Auto follows your instrument: vocalists get lyrics, everyone else gets the chart.
+          </p>
+        </section>
+
+        <section className="flex flex-col gap-2.5">
+          <Label>Screen</Label>
           <Button
             size="md"
             active={prefs.keepAwake}
             onClick={() => setPrefs({ keepAwake: !prefs.keepAwake })}
+            className="justify-start"
           >
-            {prefs.keepAwake ? 'Ekran açık kalsın ✓' : 'Ekran açık kalsın'}
+            {prefs.keepAwake && <Check size={13} strokeWidth={2.5} />}
+            Keep screen awake
           </Button>
-          <p className="text-2xs text-dim">
-            Bir şarkı açıkken telefon uykuya geçmez.
-          </p>
-        </div>
+          <p className="text-2xs text-dim">Your phone won&rsquo;t sleep while a song is open.</p>
+        </section>
 
-        <div className="flex flex-col gap-2">
-          <Label>Görünüm</Label>
-          <div className="flex flex-wrap gap-px">
-            <Button size="md" active={prefs.view === null} onClick={() => setPrefs({ view: null })}>
-              Enstrümanıma göre
-            </Button>
-            <Button
-              size="md"
-              active={prefs.view === 'singer'}
-              onClick={() => setPrefs({ view: 'singer' })}
-            >
-              Hep sözler
-            </Button>
-            <Button
-              size="md"
-              active={prefs.view === 'musician'}
-              onClick={() => setPrefs({ view: 'musician' })}
-            >
-              Hep akorlar
-            </Button>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-2 border-t border-line pt-4">
-          <Chip tone="quiet">v{__APP_VERSION__}</Chip>
-          <span className="text-2xs text-dim">Soundcheck</span>
+        <div className="flex items-center gap-2 border-t border-line pt-5">
+          <span className="sc-num text-2xs text-dim">Soundcheck v{__APP_VERSION__}</span>
         </div>
       </div>
     </Sheet>

@@ -1,3 +1,4 @@
+import { ArrowRight, CornerDownRight, Printer, Settings2 } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { band, getConcert, memberName, roleById, rolesInSong, setlistItems } from '@/content'
@@ -43,52 +44,67 @@ export function SetlistScreen() {
     : 0
 
   return (
-    <div className="mx-auto min-h-dvh w-full max-w-3xl px-4 pb-24 safe-t">
-      <header className="pt-8 pb-6">
+    <div className="mx-auto min-h-dvh w-full max-w-2xl px-5 pb-24 safe-t">
+      <header className="pt-10 pb-8">
         <div className="flex items-start justify-between gap-4">
           <div className="min-w-0">
-            <Label>{band.name}</Label>
-            <h1 className="mt-2 text-2xl leading-none font-semibold sc-tight">{concert.title}</h1>
-            <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted">
-              {concert.date && <Num>{formatDate(concert.date)}</Num>}
-              {concert.venue && <span>{concert.venue}</span>}
+            <div className="flex items-center gap-2">
+              <Label>{band.name}</Label>
+            </div>
+            <h1 className="sc-display mt-3 text-3xl">{concert.title}</h1>
+            <div className="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1.5 text-xs text-muted">
+              {concert.date && (
+                <>
+                  <Num>{formatDate(concert.date)}</Num>
+                  <Dot />
+                </>
+              )}
+              {concert.venue && (
+                <>
+                  <span>{concert.venue}</span>
+                  <Dot />
+                </>
+              )}
               <span>
-                <Num>{songCount}</Num> şarkı
+                <Num className="text-fg">{songCount}</Num> songs
               </span>
-              {/* An estimate built from three of twenty-eight songs is noise, not
-                  information — only show it once most songs can be estimated. */}
               {runtime.known > runtime.unknown && (
-                <span
-                  title={
-                    runtime.unknown > 0
-                      ? `${runtime.unknown} şarkının süresi bilinmiyor`
-                      : undefined
-                  }
-                >
-                  ≈ <Num>{formatDuration(runtime.seconds)}</Num>
-                  {runtime.unknown > 0 && <span className="text-dim"> +{runtime.unknown}</span>}
-                </span>
+                <>
+                  <Dot />
+                  <span>
+                    ≈<Num className="text-fg">{formatDuration(runtime.seconds)}</Num>
+                  </span>
+                </>
               )}
             </div>
           </div>
-          <IconButton onClick={() => setSheet('settings')} aria-label="Ayarlar" title="Ayarlar">
-            <GearIcon />
-          </IconButton>
+
+          <div className="flex shrink-0 gap-2">
+            <Link to={`/${band.slug}/${concert.slug}/print`}>
+              <IconButton aria-label="Printable setlist" title="Printable setlist">
+                <Printer size={16} strokeWidth={1.75} />
+              </IconButton>
+            </Link>
+            <IconButton onClick={() => setSheet('settings')} aria-label="Settings" title="Settings">
+              <Settings2 size={16} strokeWidth={1.75} />
+            </IconButton>
+          </div>
         </div>
 
-        <div className="mt-5 flex flex-wrap items-center gap-3">
+        <div className="mt-7 flex flex-wrap items-center gap-3">
           <IdentityButton onClick={() => setSheet('identity')} />
           {prefs.memberId && (
-            <span className="text-2xs text-muted">
-              bu konserde <Num>{myCount}</Num> / <Num>{songCount}</Num> şarkıda çalıyorsun
+            <span className="text-xs text-muted">
+              You&rsquo;re on <Num className="text-accent">{myCount}</Num> of{' '}
+              <Num className="text-fg">{songCount}</Num>
             </span>
           )}
         </div>
       </header>
 
-      <div className="border-t border-line">
+      <div className="flex flex-col gap-1">
         {items.length === 0 ? (
-          <Empty>Bu konserde henüz şarkı yok.</Empty>
+          <Empty>No songs in this set yet.</Empty>
         ) : (
           items.map((item, index) =>
             item.kind === 'break' ? (
@@ -106,19 +122,14 @@ export function SetlistScreen() {
         )}
       </div>
 
-      <div className="flex justify-center pt-8">
-        <Link
-          to={`/${band.slug}/${concert.slug}/print`}
-          className="text-2xs tracking-[0.09em] text-dim uppercase transition-colors hover:text-fg"
-        >
-          Yazdırılabilir liste
-        </Link>
-      </div>
-
       <IdentitySheet open={sheet === 'identity'} onClose={() => setSheet(null)} />
       <SettingsSheet open={sheet === 'settings'} onClose={() => setSheet(null)} />
     </div>
   )
+}
+
+function Dot() {
+  return <span className="text-dim">·</span>
 }
 
 function isSegue(item: SetlistItem | undefined): boolean {
@@ -141,83 +152,97 @@ function SongRow({
   const iPlay = myRoles.length > 0
   const sittingOut = Boolean(memberId) && !iPlay
 
+  const allOthers = band.roles
+    .flatMap((role) => item.lineup[role.id] ?? [])
+    .filter((id) => id !== memberId)
+  // Three names plus a count reads faster than a line that trails off mid-word.
+  const others = allOthers.slice(0, 3).map(memberName)
+  if (allOthers.length > others.length) others.push(`+${allOthers.length - others.length}`)
+
   return (
     <Link
       to={`/${band.slug}/${concertSlug}/${song.id}`}
-      className={
-        'group relative flex items-start gap-4 border-b border-line py-4 transition-colors ' +
-        'hover:bg-surface ' +
-        (sittingOut ? 'opacity-35 hover:opacity-100' : '')
-      }
+      className={[
+        'group relative flex items-center gap-3.5 rounded-lg border px-3.5 py-2.5',
+        'transition-all duration-150 ease-[var(--ease-out-quick)]',
+        iPlay
+          ? 'border-line bg-surface hover:border-line-2 hover:bg-surface-2'
+          : 'border-transparent hover:border-line hover:bg-surface',
+        sittingOut ? 'opacity-40 hover:opacity-100' : '',
+      ].join(' ')}
     >
+      {/* A left rail marks the songs you are actually on. */}
+      {iPlay && (
+        <span
+          aria-hidden
+          className="absolute inset-y-3 left-0 w-0.5 rounded-full bg-accent"
+        />
+      )}
       {segueFromPrevious && (
         <span
           aria-hidden
-          className="absolute top-0 left-[0.6rem] h-4 w-px bg-line-strong"
-          title="Önceki şarkıdan ara vermeden geçilir"
-        />
+          title="Runs straight on from the previous song"
+          className="absolute -top-2 left-8 text-dim"
+        >
+          <CornerDownRight size={11} strokeWidth={2} />
+        </span>
       )}
 
-      <div className="w-6 shrink-0 pt-0.5 text-right">
-        <Num className="text-xs text-dim">{String(item.number).padStart(2, '0')}</Num>
-      </div>
+      <Num className={'w-6 shrink-0 text-right text-xs ' + (iPlay ? 'text-muted' : 'text-dim')}>
+        {String(item.number).padStart(2, '0')}
+      </Num>
 
       <div className="min-w-0 flex-1">
         <div className="flex items-baseline gap-2">
-          <h2 className="truncate text-base leading-snug font-medium sc-tight">{song.title}</h2>
+          <h2 className="sc-tight truncate text-base font-medium">{song.title}</h2>
           {item.segue && (
-            <span className="shrink-0 text-2xs tracking-[0.09em] text-dim uppercase">segue</span>
+            <span className="shrink-0 text-2xs tracking-[0.1em] text-dim uppercase">segue</span>
           )}
         </div>
-        {song.artist && <p className="truncate text-xs text-muted">{song.artist}</p>}
-
-        <div className="mt-2 flex flex-wrap items-center gap-1.5">
-          {myRoles.length > 0 && (
-            <Chip tone="strong">
-              {myRoles.map((r) => roleById.get(r)?.label ?? r).join(' + ')}
-            </Chip>
+        <div className="mt-0.5 flex min-w-0 items-center gap-2">
+          {song.artist && <span className="shrink-0 truncate text-xs text-muted">{song.artist}</span>}
+          {song.artist && others.length > 0 && <Dot />}
+          {others.length > 0 && (
+            <span className="truncate text-xs text-dim">{others.join(', ')}</span>
           )}
-          <LineupSummary item={item} memberId={memberId} />
         </div>
       </div>
 
-      <div className="flex shrink-0 flex-col items-end gap-1 pt-0.5 text-right">
-        <Num className="text-sm">{song.key ?? '—'}</Num>
-        <Num className="text-2xs text-dim">{song.tempo ? `${song.tempo}` : '—'}</Num>
+      {myRoles.length > 0 && (
+        <Chip tone="accent" className="shrink-0">
+          {myRoles.map((r) => roleById.get(r)?.label ?? r).join(' + ')}
+        </Chip>
+      )}
+
+      <div className="flex w-11 shrink-0 flex-col items-end gap-0.5">
+        {song.key || song.tempo ? (
+          <>
+            <Num className="text-sm font-medium">{song.key ?? '·'}</Num>
+            <Num className="text-2xs text-dim">{song.tempo ?? '·'}</Num>
+          </>
+        ) : (
+          <Num className="text-sm text-dim">—</Num>
+        )}
       </div>
+
+      <ArrowRight
+        size={13}
+        strokeWidth={1.75}
+        className="shrink-0 text-line-2 transition-all duration-150 group-hover:translate-x-0.5 group-hover:text-fg"
+      />
     </Link>
-  )
-}
-
-function LineupSummary({
-  item,
-  memberId,
-}: {
-  item: Extract<SetlistItem, { kind: 'song' }>
-  memberId: string | null
-}) {
-  const people = band.roles
-    .flatMap((role) => (item.lineup[role.id] ?? []).map((id) => ({ id, role })))
-    .filter((entry) => entry.id !== memberId)
-
-  if (people.length === 0) return null
-
-  return (
-    <span className="truncate text-2xs text-dim">
-      {people.map((p) => memberName(p.id)).join(' · ')}
-    </span>
   )
 }
 
 function BreakRow({ title, minutes }: { title: string; minutes?: number }) {
   return (
-    <div className="flex items-center gap-4 border-b border-line py-6">
-      <div className="h-px flex-1 bg-line-strong" />
-      <div className="flex items-center gap-2">
+    <div className="my-3 flex items-center gap-4">
+      <div className="h-px flex-1 bg-line" />
+      <div className="flex items-center gap-2 rounded-full border border-line bg-surface px-3.5 py-1.5">
         <span className="text-2xs font-medium tracking-[0.14em] text-muted uppercase">{title}</span>
-        {minutes && <Num className="text-2xs text-dim">{minutes}′</Num>}
+        {minutes && <Num className="text-2xs text-dim">{minutes}m</Num>}
       </div>
-      <div className="h-px flex-1 bg-line-strong" />
+      <div className="h-px flex-1 bg-line" />
     </div>
   )
 }
@@ -227,27 +252,16 @@ function BreakRow({ title, minutes }: { title: string; minutes?: number }) {
 function formatDate(iso: string): string {
   const date = new Date(iso)
   if (Number.isNaN(date.getTime())) return iso
-  return new Intl.DateTimeFormat('tr-TR', { day: '2-digit', month: 'long', year: 'numeric' }).format(
-    date,
-  )
+  return new Intl.DateTimeFormat('en-GB', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  }).format(date)
 }
 
 function formatDuration(seconds: number): string {
   const total = Math.round(seconds / 60)
   const h = Math.floor(total / 60)
   const m = total % 60
-  return h > 0 ? `${h}s ${m}dk` : `${m}dk`
-}
-
-function GearIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden>
-      <rect x="1" y="3" width="14" height="1" fill="currentColor" />
-      <rect x="1" y="8" width="14" height="1" fill="currentColor" />
-      <rect x="1" y="13" width="14" height="1" fill="currentColor" />
-      <rect x="9" y="1" width="2" height="5" fill="currentColor" />
-      <rect x="4" y="6" width="2" height="5" fill="currentColor" />
-      <rect x="11" y="11" width="2" height="5" fill="currentColor" />
-    </svg>
-  )
+  return h > 0 ? `${h}h ${m}m` : `${m}m`
 }

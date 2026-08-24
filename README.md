@@ -59,7 +59,8 @@ second set. CI runs the same check on every pull request.
 | Transport | [`src/features/audio/engine.ts`](src/features/audio/engine.ts) | One AudioContext, one lookahead scheduler. |
 | Voices | [`src/features/audio/synth.ts`](src/features/audio/synth.ts) | Everything is synthesised — no samples to precache. |
 | Grooves | [`src/features/audio/styles.ts`](src/features/audio/styles.ts) | Eighth-note grid per style. |
-| Design tokens | [`src/design/tokens.css`](src/design/tokens.css) | Two colours, a neutral ramp, zero radii. |
+| Design tokens | [`src/design/tokens.css`](src/design/tokens.css) | Cool-tinted neutral ramp, one signal colour. |
+| Type | [`src/design/fonts.css`](src/design/fonts.css) | Geist + Geist Mono, self-hosted, latin + latin-ext. |
 
 ### Some decisions worth knowing about
 
@@ -78,12 +79,19 @@ no second notation system for the band to learn.
 venue; `skipWaiting: false` plus a "Güncelle" prompt means a new version never
 reloads the page in front of an audience.
 
-**The iReal Pro decoder is proven but not wired in.** The chart in
-`content/songs/bad-romance.yaml` was decoded from the band's own `.html` export
-(`irealb://` payloads de-obfuscate with a 50-character block permutation:
-swap `i ↔ 49-i` for `i ∈ [0,5) ∪ [10,24)`, leaving a trailing block shorter than
-50 characters untouched). Charts are hand-authored for now; an importer is a
-small script away if it earns its place.
+**Charts come from the band's own iReal Pro book.** Fourteen songs carry real
+charts transcribed from it, so the keys are the ones the band actually plays
+rather than the ones on the records — You Give Love A Bad Name in Cm, Price Tag
+in F, Cake By The Ocean in Em, I Want It That Way in F#m. Bad Romance was
+decoded straight from the band's `.html` export (`irealb://` payloads
+de-obfuscate with a 50-character block permutation: swap `i ↔ 49-i` for
+`i ∈ [0,5) ∪ [10,24)`, leaving a trailing block shorter than 50 characters
+untouched). An importer is a small script away if it earns its place.
+
+**One accent colour, spent carefully.** The palette is monochrome apart from an
+electric lime, and it only ever marks things that are *live*: the sounding bar
+in the chart, the running transport, downbeat one, and the parts you personally
+play. Highlighting everything would mean highlighting nothing.
 
 **No sync layer yet.** When follow-along sync is added, it plugs in at the
 transport: `engine.start()`/`engine.stop()` and the current song id are the only
@@ -100,9 +108,13 @@ npm run build   # → dist/
 
 ## Status
 
-Working today: setlist with per-song lineup, the "I am ___" identity picker,
-singer and musician views, transposition, tempo override and tap tempo, click
-with count-in, chord-driven backing band, offline/PWA, screen wake lock, stage
-mode, keyboard and pedal navigation, and a printable setlist.
+Working today: setlist with per-song lineup, the "who are you" identity picker,
+lyrics and chart views, transposition, tempo override and tap tempo, click with
+count-in, chord-driven backing band, offline/PWA, screen wake lock, stage mode,
+keyboard and pedal navigation, and a printable setlist.
 
-Not built yet: follow-along sync between devices, and score upload.
+The interface is in English throughout; song titles, artists and lyrics stay in
+whatever language they belong to.
+
+Not built yet: follow-along sync between devices, and score upload. Lyrics are
+the band's to add — see [`content/README.md`](content/README.md).

@@ -1,21 +1,30 @@
-# Price Tag
-# Eksik alanları görmek için: npm run content:check
+# Price Tag — Jessie J
+#
+# Lyrics go in the `lyrics:` block at the bottom.
+# To see what is still missing across the whole set: npm run content:check
 
 id: price-tag
 title: "Price Tag"
 artist: "Jessie J"
-# key:               # TODO — örn. Am, Bb, F#m
+key: F
 tempo: 87
 meter: "4/4"
 style: pop
+duration: "3:43"
 
-structure: []        # TODO — bölümler ve akorlar
-#  - id: intro
-#    label: "Intro"
-#    chords: "| Am | F | C | G |"   # % = önceki barı tekrarla
+notes: |
+  Chart transcribed from the band's iReal book — played in F.
 
-# Şarkı sözleri buraya. [Bölüm] başlıkları kullanın; akorları
-# istersen satır içinde [Am] şeklinde yazabilirsin.
+structure:
+  - id: loop
+    label: "Loop"
+    chords: "| F | Am | Dm | Bb |"
+    cue: "The whole song is this four-bar loop"
+    repeat: 8
+
+# Lyrics. Use [Section] headings; chords can go inline as [Am] if you want
+# them shown on the chart view.
+#
 # lyrics: |
 #   [Verse 1]
 #   ...

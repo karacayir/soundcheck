@@ -1,21 +1,45 @@
-# Sopa
-# Eksik alanları görmek için: npm run content:check
+# Sopa — Hande Yener
+#
+# Lyrics go in the `lyrics:` block at the bottom.
+# To see what is still missing across the whole set: npm run content:check
 
 id: sopa
 title: "Sopa"
-# artist:            # TODO
-# key:               # TODO — örn. Am, Bb, F#m
+artist: "Hande Yener"
+key: Cm
 # tempo:             # TODO - BPM
 meter: "4/4"
 style: pop
+feel: swing
 
-structure: []        # TODO — bölümler ve akorlar
-#  - id: intro
-#    label: "Intro"
-#    chords: "| Am | F | C | G |"   # % = önceki barı tekrarla
+notes: |
+  Chart transcribed from the band's iReal book. Marked medium swing — add the tempo.
 
-# Şarkı sözleri buraya. [Bölüm] başlıkları kullanın; akorları
-# istersen satır içinde [Am] şeklinde yazabilirsin.
+structure:
+  - id: intro
+    label: "Intro"
+    chords: "| Cm | Ab | Cm | Ab |"
+    repeat: 2
+  - id: lift
+    label: "Lift"
+    chords: "| Bb | % |"
+  - id: a
+    label: "A"
+    chords: "| Cm | Ab | Cm | Ab |"
+  - id: b
+    label: "B"
+    chords: "| Fm | Gm | Fm | Gm |"
+  - id: c
+    label: "C"
+    chords: "| Cm | Ab Fm | Cm | Ab Bb |"
+    repeat: 2
+  - id: outro
+    label: "Outro"
+    chords: "| Cm | Ab | Cm | Ab Bb |"
+
+# Lyrics. Use [Section] headings; chords can go inline as [Am] if you want
+# them shown on the chart view.
+#
 # lyrics: |
 #   [Verse 1]
 #   ...

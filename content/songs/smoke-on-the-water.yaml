@@ -1,0 +1,48 @@
+# Smoke On The Water — Deep Purple
+#
+# Lyrics go in the `lyrics:` block at the bottom.
+# To see what is still missing across the whole set: npm run content:check
+
+id: smoke-on-the-water
+title: "Smoke On The Water"
+artist: "Deep Purple"
+key: G
+tempo: 112
+meter: "4/4"
+style: rock
+duration: "5:40"
+
+notes: |
+  Chart transcribed from the band's iReal book. Not in the February setlist — here if you want it.
+
+structure:
+  - id: intro
+    label: "Intro"
+    chords: "| G |"
+  - id: riff
+    label: "A — Riff"
+    chords: "| G | % | G | % | G F | G |"
+    repeat: 6
+  - id: chorus
+    label: "B — Chorus"
+    chords: "| C | G# | G | C | G# |"
+    cue: "\"Smoke on the water\" — back to the intro after"
+  - id: solo
+    label: "Solo"
+    chords: "| G | % | G | % | G F | G |"
+    cue: "Solo over the verse"
+    repeat: 4
+  - id: outro
+    label: "Outro"
+    chords: "| G |"
+    cue: "Finish on the intro riff"
+
+cues:
+  - { text: "Order: intro · riff · verse · chorus · back to intro · solo over verse · chorus · finish on intro" }
+
+# Lyrics. Use [Section] headings; chords can go inline as [Am] if you want
+# them shown on the chart view.
+#
+# lyrics: |
+#   [Verse 1]
+#   ...

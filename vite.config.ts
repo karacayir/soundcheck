@@ -21,7 +21,7 @@ export default defineConfig({
       manifest: {
         name: 'Soundcheck',
         short_name: 'Soundcheck',
-        description: 'Sahne arkadaşınız — setlist, sözler, akorlar, tempo.',
+        description: 'The stage companion for bands — setlist, lyrics, charts, key and tempo.',
         theme_color: '#000000',
         background_color: '#000000',
         display: 'standalone',

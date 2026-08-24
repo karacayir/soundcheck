@@ -1,21 +1,39 @@
-# Bi Dans Etsek
-# Eksik alanları görmek için: npm run content:check
+# Bi Dans Etsek — Bedük
+#
+# Lyrics go in the `lyrics:` block at the bottom.
+# To see what is still missing across the whole set: npm run content:check
 
 id: bi-dans-etsek
 title: "Bi Dans Etsek"
-# artist:            # TODO
-# key:               # TODO — örn. Am, Bb, F#m
+artist: "Bedük"
+key: Gm
 # tempo:             # TODO - BPM
 meter: "4/4"
-style: pop
+style: disco
+feel: swing
 
-structure: []        # TODO — bölümler ve akorlar
-#  - id: intro
-#    label: "Intro"
-#    chords: "| Am | F | C | G |"   # % = önceki barı tekrarla
+notes: |
+  Chart transcribed from the band's iReal book. Add the tempo.
 
-# Şarkı sözleri buraya. [Bölüm] başlıkları kullanın; akorları
-# istersen satır içinde [Am] şeklinde yazabilirsin.
+structure:
+  - id: a
+    label: "A"
+    chords: "| Ebmaj7 | Ebmaj7 | Dm7 | Dm7 |"
+    repeat: 2
+  - id: b
+    label: "B"
+    chords: "| Cm7 | Dm7 | Gm7 | Gm7 |"
+    repeat: 2
+  - id: c
+    label: "C"
+    chords: "| Cm7 | Dm7 | Ebmaj7 | Dm7 |"
+  - id: d
+    label: "D"
+    chords: "| Cm7 | Dm7 | Gm7 | Fmaj7 |"
+
+# Lyrics. Use [Section] headings; chords can go inline as [Am] if you want
+# them shown on the chart view.
+#
 # lyrics: |
 #   [Verse 1]
 #   ...

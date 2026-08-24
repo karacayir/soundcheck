@@ -19,7 +19,7 @@ describe('content', () => {
 
     const breaks = february!.setlist.filter((e) => e.kind === 'break')
     expect(breaks).toHaveLength(1)
-    expect(breaks[0]).toMatchObject({ title: 'KISA BİR ARA' })
+    expect(breaks[0]).toMatchObject({ title: 'SHORT BREAK' })
 
     const songs = february!.setlist.filter((e) => e.kind === 'song')
     expect(songs).toHaveLength(28)
@@ -65,10 +65,26 @@ describe('content', () => {
     }
   })
 
-  it('carries the chart imported from the band iReal file', () => {
+  it('carries the charts transcribed from the band iReal book', () => {
     const badRomance = dataset.songs['bad-romance']
     expect(badRomance?.key).toBe('Am')
     expect(badRomance?.tempo).toBe(119)
     expect(badRomance?.structure.map((s) => s.label)).toEqual(['Intro', 'A', 'B', 'C', 'D'])
+
+    // Keys the band actually plays, which differ from the recordings.
+    expect(dataset.songs['you-give-love-a-bad-name']?.key).toBe('Cm')
+    expect(dataset.songs['price-tag']?.key).toBe('F')
+    expect(dataset.songs['cake-by-the-ocean']?.key).toBe('Em')
+    expect(dataset.songs['i-want-it-that-way']?.key).toBe('F#m')
+  })
+
+  it('uses English role ids throughout', () => {
+    expect(dataset.band.roles.map((r) => r.id)).toEqual([
+      'vocals',
+      'guitar',
+      'keys',
+      'bass',
+      'drums',
+    ])
   })
 })

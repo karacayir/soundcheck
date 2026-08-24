@@ -1,104 +1,104 @@
-# Şubat konseri — geçen yılki Excel'in yerini alan dosya.
+# February show — this file replaces last year's spreadsheet.
 #
-# Sıra buradaki sıra. Bir şarkıyı taşımak için satırı taşıyın.
-# `lineup` içindeki isimler content/band.yaml'daki id'ler olmalı —
-# yanlış yazarsanız `npm run content:check` hemen söyler.
-# Vokal listesinde ilk isim solisttir.
-# `segue: true` = sonraki şarkıya ara vermeden geçilir.
+# The order here is the order you play. To move a song, move its block.
+# Names inside `lineup` are ids from content/band.yaml — get one wrong and
+# `npm run content:check` tells you immediately.
+# First name in the vocals list is the lead.
+# `segue: true` means you run straight into the next song with no gap.
 
 slug: february
-title: Şubat Konseri
-# date: 2026-02-14   # TODO — kesinleşince yazın
+title: February Show
+# date: 2026-02-14   # TODO - fill in once it is confirmed
 # venue:             # TODO
 notes: |
-  Geçen yılın kadrosuyla hazırlandı. Şarkı sırası ve kadro değişebilir.
+  Built from last year's lineup. Song order and personnel may still change.
 
 setlist:
   - song: you-give-love-a-bad-name
-    lineup: { vokal: [doga], gitar: [gonen], klavye: [seco], bas: [dogukan], davul: [burak] }
+    lineup: { vocals: [doga], guitar: [gonen], keys: [seco], bass: [dogukan], drums: [burak] }
 
   - song: this-love
-    lineup: { vokal: [doga, berfin], gitar: [itri, yilmaz], klavye: [seco], bas: [doruk], davul: [burak] }
+    lineup: { vocals: [doga, berfin], guitar: [itri, yilmaz], keys: [seco], bass: [doruk], drums: [burak] }
 
   - song: yalniz
-    lineup: { vokal: [doga, berfin], gitar: [itri, yilmaz], klavye: [seco], bas: [doruk], davul: [burak] }
+    lineup: { vocals: [doga, berfin], guitar: [itri, yilmaz], keys: [seco], bass: [doruk], drums: [burak] }
 
   - song: haydi-gel-icelim
-    lineup: { vokal: [doga, berfin], gitar: [itri, yilmaz], klavye: [seco], bas: [kerem], davul: [burak] }
+    lineup: { vocals: [doga, berfin], guitar: [itri, yilmaz], keys: [seco], bass: [kerem], drums: [burak] }
 
   - song: tbd-1
-    lineup: { vokal: [doga, berfin], gitar: [gonen], klavye: [seco], bas: [doruk], davul: [burak] }
+    lineup: { vocals: [doga, berfin], guitar: [gonen], keys: [seco], bass: [doruk], drums: [burak] }
 
   - song: tbd-2
-    lineup: { vokal: [doga, berfin], gitar: [gonen], klavye: [seco], bas: [doruk], davul: [burak] }
+    lineup: { vocals: [doga, berfin], guitar: [gonen], keys: [seco], bass: [doruk], drums: [burak] }
 
   - song: opucuk
-    lineup: { vokal: [doga], gitar: [yilmaz], bas: [doruk], davul: [burak] }
+    lineup: { vocals: [doga], guitar: [yilmaz], bass: [doruk], drums: [burak] }
 
   - song: kara-sevda
-    lineup: { vokal: [doga, berfin], gitar: [ozan-a, yilmaz], klavye: [misra], bas: [doruk], davul: [burak] }
+    lineup: { vocals: [doga, berfin], guitar: [ozan-a, yilmaz], keys: [misra], bass: [doruk], drums: [burak] }
 
   - song: hysteria
-    lineup: { vokal: [doga], gitar: [ozan-a, yilmaz], klavye: [misra], bas: [doruk], davul: [burak] }
+    lineup: { vocals: [doga], guitar: [ozan-a, yilmaz], keys: [misra], bass: [doruk], drums: [burak] }
 
   - song: yapboz
-    lineup: { vokal: [doga], gitar: [ozan-a], klavye: [misra], davul: [burak] }
+    lineup: { vocals: [doga], guitar: [ozan-a], keys: [misra], drums: [burak] }
 
   - song: cambaz
-    lineup: { vokal: [doga], gitar: [ozan-a, yilmaz], klavye: [misra], bas: [doruk], davul: [selcuk] }
+    lineup: { vocals: [doga], guitar: [ozan-a, yilmaz], keys: [misra], bass: [doruk], drums: [selcuk] }
 
   - song: bir-derdim-var
-    lineup: { vokal: [doga], gitar: [ozan-a, yilmaz], klavye: [misra], bas: [dogukan], davul: [selcuk] }
+    lineup: { vocals: [doga], guitar: [ozan-a, yilmaz], keys: [misra], bass: [dogukan], drums: [selcuk] }
 
   - song: deli
-    lineup: { vokal: [doga], gitar: [ozan-a, yilmaz], klavye: [misra], bas: [dogukan], davul: [doruk] }
+    lineup: { vocals: [doga], guitar: [ozan-a, yilmaz], keys: [misra], bass: [dogukan], drums: [doruk] }
 
   - song: englishman-in-new-york
-    lineup: { vokal: [doga], klavye: [seco], bas: [dogukan], davul: [burak] }
+    lineup: { vocals: [doga], keys: [seco], bass: [dogukan], drums: [burak] }
 
   - song: careless-whisper
-    lineup: { vokal: [doga], gitar: [gonen, yilmaz], klavye: [seco], bas: [dogukan], davul: [burak] }
+    lineup: { vocals: [doga], guitar: [gonen, yilmaz], keys: [seco], bass: [dogukan], drums: [burak] }
 
-  - break: KISA BİR ARA
+  - break: SHORT BREAK
     minutes: 15
 
   - song: lets-get-it-started
-    lineup: { vokal: [seco, doga], gitar: [itri], bas: [doruk], davul: [burak] }
+    lineup: { vocals: [seco, doga], guitar: [itri], bass: [doruk], drums: [burak] }
 
   - song: uptown-funk
-    lineup: { vokal: [doga, berfin], gitar: [itri], klavye: [seco], bas: [dogukan], davul: [doruk] }
+    lineup: { vocals: [doga, berfin], guitar: [itri], keys: [seco], bass: [dogukan], drums: [doruk] }
 
   - song: i-want-it-that-way
-    lineup: { vokal: [doga, ekin], gitar: [yilmaz], klavye: [seco], bas: [dogukan], davul: [burak] }
+    lineup: { vocals: [doga, ekin], guitar: [yilmaz], keys: [seco], bass: [dogukan], drums: [burak] }
 
   - song: beggin
-    lineup: { vokal: [doga, itri], gitar: [yilmaz], klavye: [seco], bas: [dogukan], davul: [burak] }
+    lineup: { vocals: [doga, itri], guitar: [yilmaz], keys: [seco], bass: [dogukan], drums: [burak] }
 
   - song: cake-by-the-ocean
-    lineup: { vokal: [berfin, doga], gitar: [itri], klavye: [seco], bas: [dogukan], davul: [doruk] }
+    lineup: { vocals: [berfin, doga], guitar: [itri], keys: [seco], bass: [dogukan], drums: [doruk] }
 
   - song: price-tag
-    lineup: { vokal: [berfin, doga], gitar: [itri], klavye: [seco], bas: [dogukan], davul: [burak] }
+    lineup: { vocals: [berfin, doga], guitar: [itri], keys: [seco], bass: [dogukan], drums: [burak] }
 
   - song: get-lucky
     segue: true
-    lineup: { vokal: [berfin, doga], gitar: [itri], klavye: [seco], bas: [dogukan], davul: [burak] }
+    lineup: { vocals: [berfin, doga], guitar: [itri], keys: [seco], bass: [dogukan], drums: [burak] }
 
   - song: bad-romance
     segue: true
-    lineup: { vokal: [berfin, doga], gitar: [itri], klavye: [seco], bas: [dogukan], davul: [burak] }
+    lineup: { vocals: [berfin, doga], guitar: [itri], keys: [seco], bass: [dogukan], drums: [burak] }
 
   - song: kandirdim
-    lineup: { vokal: [berfin, doga], gitar: [itri], klavye: [seco], bas: [dogukan], davul: [burak] }
+    lineup: { vocals: [berfin, doga], guitar: [itri], keys: [seco], bass: [dogukan], drums: [burak] }
 
   - song: tas
-    lineup: { vokal: [berfin, doga], gitar: [itri], klavye: [seco], bas: [dogukan], davul: [burak] }
+    lineup: { vocals: [berfin, doga], guitar: [itri], keys: [seco], bass: [dogukan], drums: [burak] }
 
   - song: sopa
-    lineup: { vokal: [berfin, doga], gitar: [itri], klavye: [seco], bas: [dogukan], davul: [burak] }
+    lineup: { vocals: [berfin, doga], guitar: [itri], keys: [seco], bass: [dogukan], drums: [burak] }
 
   - song: kelepce
-    lineup: { vokal: [berfin, doga], gitar: [itri], klavye: [seco], bas: [dogukan], davul: [burak] }
+    lineup: { vocals: [berfin, doga], guitar: [itri], keys: [seco], bass: [dogukan], drums: [burak] }
 
   - song: bi-dans-etsek
-    lineup: { vokal: [berfin, doga], gitar: [itri], klavye: [seco], bas: [dogukan], davul: [burak] }
+    lineup: { vocals: [berfin, doga], guitar: [itri], keys: [seco], bass: [dogukan], drums: [burak] }

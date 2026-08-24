@@ -1,5 +1,7 @@
-# Uptown Funk
-# Eksik alanları görmek için: npm run content:check
+# Uptown Funk — Mark Ronson ft. Bruno Mars
+#
+# Lyrics go in the `lyrics:` block at the bottom.
+# To see what is still missing across the whole set: npm run content:check
 
 id: uptown-funk
 title: "Uptown Funk"
@@ -8,14 +10,60 @@ key: Dm
 tempo: 115
 meter: "4/4"
 style: funk
+duration: "4:30"
 
-structure: []        # TODO — bölümler ve akorlar
-#  - id: intro
-#    label: "Intro"
-#    chords: "| Am | F | C | G |"   # % = önceki barı tekrarla
+notes: |
+  Chart transcribed from the band's iReal book.
 
-# Şarkı sözleri buraya. [Bölüm] başlıkları kullanın; akorları
-# istersen satır içinde [Am] şeklinde yazabilirsin.
+structure:
+  - id: intro
+    label: "Intro"
+    chords: "| Dm7 | G7 | Dm7 | G7 |"
+    repeat: 2
+  - id: verse
+    label: "A — Verse"
+    chords: "| Dm7 | % | % | % |"
+    repeat: 2
+  - id: verse-turn
+    label: "A — Turnaround"
+    chords: "| Dm7 | G7 | Dm7 | G7 |"
+    repeat: 2
+  - id: stop
+    label: "Stop"
+    chords: "| N.C. | N.C. | N.C. | N.C. |"
+    cue: "Everything out — wait for the count"
+  - id: walkup
+    label: "Walk-up"
+    chords: "| N.C. | % |"
+    cue: "Chromatic climb: D D# E F F# G G# A / Bb B C C# D"
+  - id: chorus
+    label: "B — Chorus"
+    chords: "| Dm7 | G7 | Dm7 | G7 |"
+    repeat: 2
+  - id: chorus-hits
+    label: "B — Hits"
+    chords: "| Dm7 G9 | Dm7 G9 |"
+    repeat: 3
+  - id: chorus-out
+    label: "B — Out"
+    chords: "| Dm7 | Dm7 N.C. |"
+  - id: break
+    label: "C — Break"
+    chords: "| Dm7 | G7 |"
+    repeat: 3
+  - id: outro
+    label: "Outro"
+    chords: "| Dm7 | G7 | Dm7 | G7 |"
+    cue: "Ad lib."
+    repeat: 2
+
+cues:
+  - { at: stop, text: "Full stop before the chorus — nobody plays through it" }
+  - { at: walkup, text: "Chromatic walk-up, everyone together" }
+
+# Lyrics. Use [Section] headings; chords can go inline as [Am] if you want
+# them shown on the chart view.
+#
 # lyrics: |
 #   [Verse 1]
 #   ...
