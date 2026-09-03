@@ -25,7 +25,7 @@ export function BandsScreen() {
               <Logo className="!size-12 !rounded-xl" />
               <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-center gap-2.5">
-                  <h2 className="sc-tight m-0 text-[19px] font-bold">{b.name}</h2>
+                  <h2 className="m-0 text-[19px] font-bold">{b.name}</h2>
                   <Chip tone="accent">
                     {concerts.length} concert{concerts.length === 1 ? '' : 's'}
                   </Chip>

@@ -89,7 +89,7 @@ export function Landing() {
                 <span className="mb-4 flex size-10 items-center justify-center rounded-xl bg-accent-soft text-accent">
                   <feature.icon size={18} strokeWidth={2} />
                 </span>
-                <h3 className="sc-tight m-0 mb-1.5 text-[16px] font-bold">{feature.title}</h3>
+                <h3 className="m-0 mb-1.5 text-[16px] font-bold">{feature.title}</h3>
                 <p className="m-0 text-[14.5px] leading-relaxed text-ink-2">{feature.body}</p>
               </div>
             ))}
@@ -106,7 +106,7 @@ export function Landing() {
             <Logo className="!size-11 !rounded-xl" />
             <div className="min-w-0 flex-1">
               <div className="flex flex-wrap items-center gap-2.5">
-                <h3 className="sc-tight m-0 text-[18px] font-bold">{band.name}</h3>
+                <h3 className="m-0 text-[18px] font-bold">{band.name}</h3>
                 <Chip>{band.members.length} members</Chip>
               </div>
               <p className="m-0 mt-0.5 text-[14px] text-ink-2">

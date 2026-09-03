@@ -73,7 +73,7 @@ second set. CI runs the same check on every pull request.
 | Voices | [`src/features/audio/synth.ts`](src/features/audio/synth.ts) | Everything is synthesised — no samples to precache. |
 | Grooves | [`src/features/audio/styles.ts`](src/features/audio/styles.ts) | Eighth-note grid per style. |
 | Design tokens | [`src/design/tokens.css`](src/design/tokens.css) | Soft surfaces, generous radii, shadow instead of rule. |
-| Type | [`src/design/fonts.css`](src/design/fonts.css) | Inter, self-hosted, latin + latin-ext. |
+| Type | [`src/design/fonts.css`](src/design/fonts.css) | Archivo for titles, Inter for everything else. |
 | Shell | [`src/app/Shell.tsx`](src/app/Shell.tsx) | Top bar, page heading, logo. |
 
 ### Some decisions worth knowing about
@@ -104,10 +104,13 @@ untouched). An importer is a small script away if it earns its place.
 
 **Soft surfaces, not ruled ones.** Depth comes from elevation rather than
 hairlines, so the app reads as a set of cards you could pick up rather than a
-table you have to parse. One typeface — Inter, with tabular figures so keys,
-tempos and bar counts line up without a second monospace family. The single
-blue accent is spent only on things that are live or selected: the sounding
-bar, the songs you personally play, the running transport.
+table you have to parse. Archivo sets the titles and Inter carries everything
+else; Inter's tabular figures keep keys, tempos and bar counts aligned without
+needing a monospace family. Archivo sets tighter than Inter, so heading
+tracking is dialled back as the size drops — what looks crisp at 44px reads
+cramped at 16px. The single blue accent is spent only on things that are live
+or selected: the sounding bar, the songs you personally play, the running
+transport.
 
 **Nothing in the interface mentions how it is stored.** No file paths, no
 format names, no "add a block to". Empty states say a person hasn't added

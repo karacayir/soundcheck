@@ -57,7 +57,7 @@ function SectionBlock({ section, activeBar }: { section: ChartSection; activeBar
 
   return (
     <section className="sc-card overflow-hidden">
-      <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1.5 px-4 pt-4 pb-3">
+      <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1.5 px-4 pt-4 pb-3.5">
         <span
           className={cx(
             'sc-tight text-[15px] font-bold transition-colors',
@@ -73,20 +73,24 @@ function SectionBlock({ section, activeBar }: { section: ChartSection; activeBar
         )}
       </div>
 
-      <div className="grid grid-cols-4 gap-1.5 px-3 pb-3">
-        {section.bars.map((bar) => {
+      {/* Bars sit straight on the card, separated by barlines the way a chart
+          is actually written — no tiles. Only the sounding bar gets a fill. */}
+      <div className="grid grid-cols-4 border-t border-line">
+        {section.bars.map((bar, i) => {
           const isActive = activeBar === bar.index
           return (
             <div
               key={bar.index}
               className={cx(
-                'flex min-h-[4rem] items-center justify-center gap-1.5 rounded-lg px-1 py-3',
+                'flex min-h-[3.75rem] items-center justify-center gap-1.5 px-1 py-3',
                 'transition-colors duration-100',
-                isActive ? 'bg-accent text-on-accent' : 'bg-sunk',
+                i % 4 !== 3 && 'border-r border-line',
+                i >= 4 && 'border-t border-line',
+                isActive && 'bg-accent text-on-accent',
               )}
             >
               {bar.chords.length === 0 ? (
-                <span className={isActive ? 'text-on-accent/40' : 'text-ink-3/45'}>·</span>
+                <span className={isActive ? 'text-on-accent/40' : 'text-ink-3/40'}>·</span>
               ) : (
                 bar.chords.map((chord, index) => (
                   <ChordSymbol

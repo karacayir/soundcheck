@@ -39,7 +39,7 @@ export function TopBar({
         ) : (
           <Link to="/" className="-ml-1 flex items-center gap-2 rounded-full px-2 py-1.5">
             <Logo />
-            <span className="sc-tight text-[15px] font-bold">Soundcheck</span>
+            <span className="sc-tight font-display text-[15px] font-bold">Soundcheck</span>
           </Link>
         )}
 

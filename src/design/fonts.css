@@ -1,13 +1,38 @@
 /* ==========================================================================
-   Type — Inter, self-hosted, latin + latin-ext.
+   Type — Archivo for titles, Inter for everything else. Self-hosted,
+   latin + latin-ext.
 
-   One face for everything. Inter's tabular figures handle keys, tempos and
-   bar counts without needing a second monospace family, which keeps the
-   interface feeling like one surface rather than a document with fields.
+   Archivo is a grotesque with tight apertures and a lot of presence at
+   display sizes, which is what gives a song or show title its weight. Inter
+   takes over below that: body copy, labels, controls, lyrics, and — with its
+   tabular figures — keys, tempos and bar counts, so no monospace is needed.
 
    latin covers U+0000–00FF (ç Ç ö Ö ü Ü) plus U+0131 (ı); latin-ext covers
    U+0100–02BA, where İ ş Ş ğ Ğ live. Together: full Turkish for song titles.
    ========================================================================== */
+
+@font-face {
+  font-family: 'Archivo Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url('@fontsource-variable/archivo/files/archivo-latin-wght-normal.woff2')
+    format('woff2-variations');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304,
+    U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Archivo Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url('@fontsource-variable/archivo/files/archivo-latin-ext-wght-normal.woff2')
+    format('woff2-variations');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308,
+    U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113,
+    U+2C60-2C7F, U+A720-A7FF;
+}
 
 @font-face {
   font-family: 'Inter Variable';

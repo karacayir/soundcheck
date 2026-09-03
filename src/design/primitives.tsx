@@ -60,7 +60,7 @@ export function SectionHead({
   return (
     <div className={cx('mb-4 flex items-end justify-between gap-4', className)}>
       <div className="min-w-0">
-        <h2 className="sc-tight m-0 text-[19px] font-bold">{title}</h2>
+        <h2 className="m-0 text-[19px] font-bold">{title}</h2>
         {children && <p className="m-0 mt-1 text-[14px] leading-snug text-ink-2">{children}</p>}
       </div>
       {action && <div className="shrink-0">{action}</div>}
@@ -308,7 +308,7 @@ export function Sheet({
         style={{ animation: 'sc-rise 280ms var(--ease-smooth)' }}
       >
         <div className="sticky top-0 z-10 flex items-center justify-between bg-card px-5 pt-5 pb-3">
-          <h2 className="sc-tight m-0 text-[17px] font-bold">{title}</h2>
+          <h2 className="m-0 text-[17px] font-bold">{title}</h2>
           <IconButton size="sm" onClick={onClose} aria-label="Close">
             <X size={15} strokeWidth={2.25} />
           </IconButton>

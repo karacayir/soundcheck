@@ -179,7 +179,7 @@ function SongRow({
 
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-          <h3 className="sc-tight m-0 text-[16px] font-semibold">{song.title}</h3>
+          <h3 className="m-0 text-[16px] font-semibold">{song.title}</h3>
           {item.segue && <Chip tone="warm">segue</Chip>}
           {myRoles.length > 0 && (
             <Chip tone="accent">

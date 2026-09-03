@@ -28,6 +28,7 @@
   --color-warm: var(--sc-warm);
 
   --font-sans: 'Inter Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: 'Archivo Variable', 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
 
   --radius-xs: 6px;
   --radius-sm: 8px;
@@ -125,6 +126,23 @@
     -webkit-tap-highlight-color: transparent;
   }
 
+  /* Titles carry Archivo; everything else inherits Inter from body.
+     Archivo sets tighter than Inter, so tracking is dialled back as the size
+     drops — what looks crisp at 44px reads cramped at 16px. */
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+  }
+
+  h2 {
+    letter-spacing: -0.018em;
+  }
+
+  h3 {
+    letter-spacing: -0.008em;
+  }
+
   ::selection {
     background: var(--sc-accent);
     color: var(--sc-on-accent);
@@ -198,6 +216,7 @@
   }
 
   .sc-display {
+    font-family: var(--font-display);
     font-weight: 700;
     letter-spacing: -0.032em;
     line-height: 1.06;

@@ -54,7 +54,7 @@ export function BandScreen() {
                   </span>
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2.5">
-                      <h3 className="sc-tight m-0 text-[18px] font-bold">{concert.title}</h3>
+                      <h3 className="m-0 text-[18px] font-bold">{concert.title}</h3>
                       {concert.date ? <Chip>{concert.date}</Chip> : <Chip>Date to be confirmed</Chip>}
                     </div>
                     <p className="m-0 mt-0.5 text-[14px] text-ink-2">
