@@ -1,29 +1,26 @@
 import { Link } from 'react-router-dom'
-import { Button, Eyebrow } from '@/design/primitives'
-import { Masthead, Page } from '@/app/Shell'
+import { Page, PageHead, TopBar } from '@/app/Shell'
+import { Button } from '@/design/primitives'
 
 export function NotFound() {
   return (
     <>
-      <Masthead>
-        <Eyebrow>
-          <span>404</span>
-        </Eyebrow>
-        <h1 className="sc-display m-0 text-[clamp(30px,5.4vw,46px)]">Nothing here.</h1>
-        <p className="sc-prose m-0 max-w-[46ch] !text-[18px]">
-          That band, concert or song doesn&rsquo;t exist. It may have been renamed in{' '}
-          <code className="bg-sunk px-1 font-mono text-[0.85em]">content/</code>.
-        </p>
-        <div className="mt-1 flex gap-2">
-          <Link to="/">
-            <Button variant="solid">Home</Button>
-          </Link>
-          <Link to="/bands">
-            <Button>Bands</Button>
-          </Link>
-        </div>
-      </Masthead>
-      <Page className="pt-10">{null}</Page>
+      <TopBar back="/" backLabel="Home" />
+      <Page>
+        <PageHead
+          title="We couldn't find that."
+          lead="The band, show or song you were looking for isn't here any more."
+        >
+          <div className="flex gap-3">
+            <Link to="/">
+              <Button variant="solid">Go home</Button>
+            </Link>
+            <Link to="/bands">
+              <Button>Browse bands</Button>
+            </Link>
+          </div>
+        </PageHead>
+      </Page>
     </>
   )
 }

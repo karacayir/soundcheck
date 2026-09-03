@@ -3,100 +3,108 @@
 /* ==========================================================================
    Soundcheck — design tokens
 
-   An editorial system rather than an app-chrome one: paper and panel instead
-   of background and card, ink instead of foreground, hairline rules doing the
-   work that borders and shadows usually do. One blue accent, spent only on
-   things that are live or selected.
+   Soft surfaces, generous radii, shadow instead of rule. Depth comes from
+   elevation rather than hairlines, so the app reads as a set of cards you can
+   pick up rather than a table you have to parse.
 
-   Light is the default because the setlist is a document. Stage mode flips
-   the whole thing to the dark palette, which is where a phone on a mic stand
-   actually lives.
+   Light by default: no `data-theme` is stamped until someone picks one, so
+   the stylesheet falls through to prefers-color-scheme.
    ========================================================================== */
 
 @theme {
-  --color-paper: var(--sc-paper);
-  --color-panel: var(--sc-panel);
+  --color-bg: var(--sc-bg);
+  --color-card: var(--sc-card);
+  --color-raised: var(--sc-raised);
   --color-sunk: var(--sc-sunk);
   --color-ink: var(--sc-ink);
-  --color-ink-soft: var(--sc-ink-soft);
-  --color-muted: var(--sc-muted);
+  --color-ink-2: var(--sc-ink-2);
+  --color-ink-3: var(--sc-ink-3);
   --color-line: var(--sc-line);
-  --color-line-soft: var(--sc-line-soft);
   --color-accent: var(--sc-accent);
-  --color-accent-ink: var(--sc-accent-ink);
-  --color-accent-wash: var(--sc-accent-wash);
+  --color-accent-hover: var(--sc-accent-hover);
+  --color-accent-soft: var(--sc-accent-soft);
+  --color-on-accent: var(--sc-on-accent);
   --color-ok: var(--sc-ok);
   --color-warm: var(--sc-warm);
 
-  --font-display: 'Archivo Variable', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  --font-text: 'Newsreader Variable', Georgia, 'Times New Roman', serif;
-  --font-mono: 'JetBrains Mono Variable', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
 
-  /* Almost square. 2px is the whole radius budget. */
-  --radius-xs: 2px;
-  --radius-sm: 2px;
-  --radius-md: 2px;
-  --radius-lg: 2px;
-  --radius-xl: 2px;
-  --radius-2xl: 2px;
+  --radius-xs: 6px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-2xl: 28px;
 
-  --ease-out-quick: cubic-bezier(0.2, 0, 0, 1);
+  --ease-smooth: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @layer base {
   :root {
-    --sc-paper: #f1f2f5;
-    --sc-panel: #ffffff;
-    --sc-sunk: #e8eaf0;
-    --sc-ink: #14171f;
-    --sc-ink-soft: #3e4553;
-    --sc-muted: #6c7385;
-    --sc-line: #d8dbe4;
-    --sc-line-soft: #e5e7ee;
-    --sc-accent: #2440d9;
-    --sc-accent-ink: #1b32a8;
-    --sc-accent-wash: #e4e8fc;
-    --sc-ok: #1c6b4a;
-    --sc-warm: #8a2e63;
-    --sc-shadow: 0 1px 2px rgb(20 23 31 / 0.05), 0 8px 24px -16px rgb(20 23 31 / 0.28);
+    --sc-bg: #f6f7f9;
+    --sc-card: #ffffff;
+    --sc-raised: #ffffff;
+    --sc-sunk: #eef0f4;
+    --sc-ink: #0f1420;
+    --sc-ink-2: #59617a;
+    --sc-ink-3: #8d94a8;
+    --sc-line: #e7e9ef;
+    --sc-accent: #2f4ce0;
+    --sc-accent-hover: #2340d2;
+    --sc-accent-soft: #edf0ff;
+    --sc-on-accent: #ffffff;
+    --sc-ok: #12805c;
+    --sc-warm: #b0447c;
+
+    --sc-sh-sm: 0 1px 2px rgb(15 20 32 / 0.05);
+    --sc-sh-md: 0 4px 14px -4px rgb(15 20 32 / 0.1), 0 1px 3px -1px rgb(15 20 32 / 0.06);
+    --sc-sh-lg: 0 18px 40px -12px rgb(15 20 32 / 0.16), 0 4px 12px -6px rgb(15 20 32 / 0.08);
     color-scheme: light;
   }
 
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme='light']) {
-      --sc-paper: #0e1116;
-      --sc-panel: #161a22;
-      --sc-sunk: #1d222c;
-      --sc-ink: #e8eaf0;
-      --sc-ink-soft: #c0c6d4;
-      --sc-muted: #8a92a4;
-      --sc-line: #29303c;
-      --sc-line-soft: #232935;
-      --sc-accent: #8aa0ff;
-      --sc-accent-ink: #a9baff;
-      --sc-accent-wash: #1b2340;
-      --sc-ok: #62c79b;
+      --sc-bg: #0a0c11;
+      --sc-card: #14171f;
+      --sc-raised: #1a1e28;
+      --sc-sunk: #1e222d;
+      --sc-ink: #f0f2f7;
+      --sc-ink-2: #a2aabd;
+      --sc-ink-3: #6d7588;
+      --sc-line: #232833;
+      --sc-accent: #7d95ff;
+      --sc-accent-hover: #93a7ff;
+      --sc-accent-soft: #1a2244;
+      --sc-on-accent: #0a0c11;
+      --sc-ok: #4fc79b;
       --sc-warm: #e58fbe;
-      --sc-shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 10px 30px -18px rgb(0 0 0 / 0.9);
+
+      --sc-sh-sm: 0 1px 2px rgb(0 0 0 / 0.4);
+      --sc-sh-md: 0 4px 14px -4px rgb(0 0 0 / 0.5), 0 1px 3px -1px rgb(0 0 0 / 0.4);
+      --sc-sh-lg: 0 18px 40px -12px rgb(0 0 0 / 0.7), 0 4px 12px -6px rgb(0 0 0 / 0.5);
       color-scheme: dark;
     }
   }
 
   :root[data-theme='dark'] {
-    --sc-paper: #0e1116;
-    --sc-panel: #161a22;
-    --sc-sunk: #1d222c;
-    --sc-ink: #e8eaf0;
-    --sc-ink-soft: #c0c6d4;
-    --sc-muted: #8a92a4;
-    --sc-line: #29303c;
-    --sc-line-soft: #232935;
-    --sc-accent: #8aa0ff;
-    --sc-accent-ink: #a9baff;
-    --sc-accent-wash: #1b2340;
-    --sc-ok: #62c79b;
+    --sc-bg: #0a0c11;
+    --sc-card: #14171f;
+    --sc-raised: #1a1e28;
+    --sc-sunk: #1e222d;
+    --sc-ink: #f0f2f7;
+    --sc-ink-2: #a2aabd;
+    --sc-ink-3: #6d7588;
+    --sc-line: #232833;
+    --sc-accent: #7d95ff;
+    --sc-accent-hover: #93a7ff;
+    --sc-accent-soft: #1a2244;
+    --sc-on-accent: #0a0c11;
+    --sc-ok: #4fc79b;
     --sc-warm: #e58fbe;
-    --sc-shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 10px 30px -18px rgb(0 0 0 / 0.9);
+
+    --sc-sh-sm: 0 1px 2px rgb(0 0 0 / 0.4);
+    --sc-sh-md: 0 4px 14px -4px rgb(0 0 0 / 0.5), 0 1px 3px -1px rgb(0 0 0 / 0.4);
+    --sc-sh-lg: 0 18px 40px -12px rgb(0 0 0 / 0.7), 0 4px 12px -6px rgb(0 0 0 / 0.5);
     color-scheme: dark;
   }
 
@@ -105,11 +113,12 @@
   }
 
   body {
-    background: var(--sc-paper);
+    background: var(--sc-bg);
     color: var(--sc-ink);
-    font-family: var(--font-display);
-    font-size: 16px;
+    font-family: var(--font-sans);
+    font-size: 15px;
     line-height: 1.5;
+    font-feature-settings: 'cv05' 1;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overscroll-behavior-y: none;
@@ -118,12 +127,13 @@
 
   ::selection {
     background: var(--sc-accent);
-    color: #fff;
+    color: var(--sc-on-accent);
   }
 
   :focus-visible {
     outline: 2px solid var(--sc-accent);
     outline-offset: 2px;
+    border-radius: var(--radius-sm);
   }
 
   button,
@@ -146,102 +156,57 @@
 }
 
 @layer components {
-  /* The mono eyebrow that sits above every headline. */
-  .sc-eyebrow {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--sc-accent);
+  /* A soft card. Shadow, not border, is what separates it from the page. */
+  .sc-card {
+    background: var(--sc-card);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--sc-sh-sm);
   }
 
-  /* Quieter version, for column headings and field labels. */
+  .sc-card-hover {
+    transition:
+      box-shadow 0.22s var(--ease-smooth),
+      transform 0.22s var(--ease-smooth);
+  }
+
+  .sc-card-hover:hover {
+    box-shadow: var(--sc-sh-md);
+    transform: translateY(-1px);
+  }
+
+  .sc-sh-md {
+    box-shadow: var(--sc-sh-md);
+  }
+
+  .sc-sh-lg {
+    box-shadow: var(--sc-sh-lg);
+  }
+
+  /* Sentence-case section label. No tracking, no uppercase — this is an app,
+     not a spec sheet. */
   .sc-label {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    font-weight: 500;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--sc-muted);
-    font-variant-numeric: tabular-nums;
+    font-size: 12.5px;
+    font-weight: 600;
+    letter-spacing: -0.005em;
+    color: var(--sc-ink-3);
   }
 
-  /* Anything that must line up in a column: keys, tempos, bar numbers. */
+  /* Figures that must not jitter as they tick: tempo, bar counts, timers. */
   .sc-num {
-    font-family: var(--font-mono);
     font-variant-numeric: tabular-nums;
-    font-feature-settings: 'tnum' 1;
-  }
-
-  /* Prose. Serif is the single biggest reason this reads as edited. */
-  .sc-prose {
-    font-family: var(--font-text);
-    font-size: 17px;
-    line-height: 1.6;
-    color: var(--sc-ink-soft);
+    font-feature-settings: 'tnum' 1, 'cv05' 1;
   }
 
   .sc-display {
-    font-family: var(--font-display);
     font-weight: 700;
-    letter-spacing: -0.028em;
-    line-height: 1.04;
+    letter-spacing: -0.032em;
+    line-height: 1.06;
     text-wrap: balance;
   }
 
-  /* Small outlined mono tag. */
-  .sc-tag {
-    display: inline-block;
-    font-family: var(--font-mono);
-    font-size: 9.5px;
-    font-weight: 500;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--sc-muted);
-    border: 1px solid var(--sc-line);
-    border-radius: 2px;
-    padding: 3px 7px;
-    white-space: nowrap;
+  .sc-tight {
+    letter-spacing: -0.016em;
   }
-
-  .sc-tag-accent {
-    color: var(--sc-accent);
-    border-color: var(--sc-accent);
-  }
-
-  /* The hairline grid.
-     Each cell draws its own 1px ring rather than the container painting a
-     ground behind 1px gaps — otherwise a row that runs out of items leaves
-     filled-looking empty cells. Adjacent rings land in the same gap and
-     collapse into one clean rule. */
-  .sc-grid {
-    display: grid;
-    gap: 1px;
-    padding: 1px;
-  }
-
-  .sc-grid > * {
-    box-shadow: 0 0 0 1px var(--sc-line-soft);
-  }
-
-  .sc-panel {
-    background: var(--sc-panel);
-    border: 1px solid var(--sc-line);
-  }
-
-  .sc-shadow {
-    box-shadow: var(--sc-shadow);
-  }
-
-  /* Section rule: a heavy ink line under the heading, like a masthead. */
-  .sc-rule {
-    border-bottom: 2px solid var(--sc-ink);
-  }
-}
-
-@utility font-text {
-  font-family: var(--font-text);
 }
 
 @utility safe-b {
@@ -252,12 +217,22 @@
   padding-top: env(safe-area-inset-top, 0px);
 }
 
-@keyframes sc-pulse {
-  0%,
-  100% {
-    opacity: 1;
+@keyframes sc-rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
   }
-  50% {
-    opacity: 0.3;
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes sc-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }

@@ -3,8 +3,8 @@ import { useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { band, getConcert, memberName, roleById, rolesInSong, setlistItems } from '@/content'
 import type { SetlistItem } from '@/content/types'
-import { CrumbBar, Foot, Masthead, Page } from '@/app/Shell'
-import { Button, Empty, Eyebrow, Facts, Num, SectionHead, Tag, cx } from '@/design/primitives'
+import { Dot, Page, PageHead, TopBar } from '@/app/Shell'
+import { Chip, Empty, IconButton, Num, SectionHead, Stats, cx } from '@/design/primitives'
 import { estimateSeconds } from '@/features/music/chart'
 import { IdentityButton, IdentitySheet } from '@/features/session/IdentityPicker'
 import { usePrefs } from '@/features/session/prefs'
@@ -47,74 +47,58 @@ export function SetlistScreen() {
 
   return (
     <>
-      <Masthead>
-        <Eyebrow>
-          <span>{band.name}</span>
-          {concert.date && <span>{concert.date}</span>}
-          {concert.venue && <span>{concert.venue}</span>}
-          <span>{songCount} songs</span>
-        </Eyebrow>
+      <TopBar back={`/bands/${band.slug}`} backLabel={band.name} title={concert.title} />
 
-        <h1 className="sc-display m-0 text-[clamp(30px,5.4vw,46px)]">{concert.title}</h1>
-
-        {concert.notes && (
-          <p className="sc-prose m-0 max-w-[52ch] !text-[18px]">{concert.notes.trim()}</p>
-        )}
-
-        <div className="mt-1 flex flex-wrap items-center gap-3">
-          <IdentityButton onClick={() => setIdentityOpen(true)} />
-          {prefs.memberId && (
-            <span className="sc-prose !text-[15px]">
-              You&rsquo;re on <Num className="font-semibold text-accent">{myCount}</Num> of{' '}
-              <Num className="font-semibold text-ink">{songCount}</Num>
-            </span>
-          )}
-          <Link to={`${base}/print`} className="ml-auto">
-            <Button size="sm">
-              <Printer size={11} strokeWidth={2} /> Print
-            </Button>
-          </Link>
-        </div>
-
-        <div className="mt-2">
-          <Facts
-            items={[
-              { label: 'Songs', value: songCount },
-              { label: 'Sets', value: items.filter((i) => i.kind === 'break').length + 1 },
-              {
-                label: 'Runtime',
-                value:
-                  runtime.known > runtime.unknown ? `≈${formatDuration(runtime.seconds)}` : '—',
-              },
-              { label: 'Charts', value: items.filter((i) => i.kind === 'song' && i.song_.structure.length > 0).length },
-            ]}
-          />
-        </div>
-      </Masthead>
-
-      <CrumbBar
-        crumbs={[
-          { label: 'Soundcheck', to: '/' },
-          { label: 'Bands', to: '/bands' },
-          { label: band.name, to: `/bands/${band.slug}` },
-          { label: concert.title },
-        ]}
-      />
-
-      <Page className="pt-12">
-        <SectionHead
-          num="01"
-          tag="Running order"
-          tagTone="accent"
-          title="Setlist"
+      <Page>
+        <PageHead
+          title={concert.title}
+          kicker={
+            concert.date || concert.venue ? (
+              <>
+                {concert.date && <span>{concert.date}</span>}
+                {concert.date && concert.venue && <Dot />}
+                {concert.venue && <span>{concert.venue}</span>}
+              </>
+            ) : undefined
+          }
         >
-          Top to bottom is the order you play. Tap a song for words, chart, key and tempo.
+          <div className="flex flex-wrap items-center gap-3">
+            <IdentityButton onClick={() => setIdentityOpen(true)} />
+            {prefs.memberId && (
+              <span className="text-[14.5px] text-ink-2">
+                You&rsquo;re on <span className="font-bold text-accent">{myCount}</span> of{' '}
+                <span className="font-bold text-ink">{songCount}</span>
+              </span>
+            )}
+            <Link to={`${base}/print`} className="ml-auto">
+              <IconButton aria-label="Printable setlist" title="Printable setlist">
+                <Printer size={16} strokeWidth={2} />
+              </IconButton>
+            </Link>
+          </div>
+
+          <div className="mt-4">
+            <Stats
+              items={[
+                { label: 'Songs', value: songCount },
+                { label: 'Sets', value: items.filter((i) => i.kind === 'break').length + 1 },
+                {
+                  label: 'Runtime',
+                  value: runtime.known > runtime.unknown ? `≈${formatDuration(runtime.seconds)}` : '—',
+                },
+              ]}
+            />
+          </div>
+        </PageHead>
+
+        <SectionHead title="Running order">
+          Top to bottom is the order you play. Tap a song for words, chords, key and tempo.
         </SectionHead>
 
         {items.length === 0 ? (
-          <Empty>No songs in this set yet.</Empty>
+          <Empty>Nothing on this setlist yet.</Empty>
         ) : (
-          <div className="border-t border-line-soft">
+          <div className="sc-card divide-y divide-line overflow-hidden">
             {items.map((item, index) =>
               item.kind === 'break' ? (
                 <BreakRow key={`break-${item.position}`} title={item.title} minutes={item.minutes} />
@@ -133,7 +117,6 @@ export function SetlistScreen() {
       </Page>
 
       <IdentitySheet open={identityOpen} onClose={() => setIdentityOpen(false)} />
-      <Foot />
     </>
   )
 }
@@ -169,62 +152,57 @@ function SongRow({
     <Link
       to={`${base}/${song.id}`}
       className={cx(
-        'group relative flex items-baseline gap-3.5 border-b border-line-soft py-3.5 pr-1 pl-1',
-        'transition-colors hover:bg-panel',
+        'group relative flex items-center gap-3.5 px-4 py-3.5 transition-colors duration-150',
+        'hover:bg-sunk',
         sittingOut && 'opacity-45 hover:opacity-100',
       )}
     >
-      {iPlay && <span aria-hidden className="absolute inset-y-1 left-0 w-0.5 bg-accent" />}
+      {iPlay && <span aria-hidden className="absolute inset-y-0 left-0 w-[3px] bg-accent" />}
       {segueFromPrevious && (
-        <CornerDownRight
-          size={10}
-          strokeWidth={2}
+        <span
           aria-hidden
-          className="absolute top-0.5 left-8 text-muted"
-        />
+          title="Runs straight on from the previous song"
+          className="absolute top-0 left-9 text-ink-3"
+        >
+          <CornerDownRight size={11} strokeWidth={2.25} />
+        </span>
       )}
 
       <Num
         className={cx(
-          'w-6 shrink-0 pt-0.5 text-right text-[11px]',
-          iPlay ? 'text-accent' : 'text-muted',
+          'w-6 shrink-0 text-right text-[13px] font-semibold',
+          iPlay ? 'text-accent' : 'text-ink-3',
         )}
       >
-        {String(item.number).padStart(2, '0')}
+        {item.number}
       </Num>
 
       <div className="min-w-0 flex-1">
-        <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
-          <h3 className="m-0 text-[16.5px] font-medium tracking-[-0.012em] group-hover:text-accent">
-            {song.title}
-          </h3>
-          {item.segue && (
-            <span className="font-mono text-[9.5px] tracking-[0.1em] text-muted uppercase">
-              segue
-            </span>
-          )}
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+          <h3 className="sc-tight m-0 text-[16px] font-semibold">{song.title}</h3>
+          {item.segue && <Chip tone="warm">segue</Chip>}
           {myRoles.length > 0 && (
-            <Tag tone="accent">
+            <Chip tone="accent">
               {myRoles.map((r) => roleById.get(r)?.label ?? r).join(' + ')}
-            </Tag>
+            </Chip>
           )}
         </div>
-        <p className="sc-prose m-0 mt-0.5 truncate !text-[14.5px] !leading-snug">
-          {song.artist && <span className="text-ink-soft">{song.artist}</span>}
-          {song.artist && others.length > 0 && <span className="text-line"> · </span>}
-          {others.length > 0 && <span className="text-muted">{others.join(', ')}</span>}
+        <p className="m-0 mt-0.5 truncate text-[13.5px] text-ink-3">
+          {song.artist}
+          {song.artist && others.length > 0 && ' · '}
+          {others.join(', ')}
         </p>
       </div>
 
-      <div className="flex w-16 shrink-0 items-baseline justify-end gap-2">
-        <Num className="text-[14px] font-semibold text-ink">{song.key ?? '—'}</Num>
-        <Num className="text-[11px] text-muted">{song.tempo ?? ''}</Num>
+      <div className="flex shrink-0 items-baseline gap-2">
+        <Num className="text-[14.5px] font-bold">{song.key ?? '—'}</Num>
+        <Num className="w-7 text-right text-[12.5px] text-ink-3">{song.tempo ?? ''}</Num>
       </div>
 
       <ArrowRight
-        size={13}
-        strokeWidth={1.75}
-        className="shrink-0 self-center text-line transition-all group-hover:translate-x-0.5 group-hover:text-accent"
+        size={15}
+        strokeWidth={2}
+        className="shrink-0 text-ink-3/60 transition-transform duration-200 ease-[var(--ease-smooth)] group-hover:translate-x-0.5"
       />
     </Link>
   )
@@ -232,13 +210,9 @@ function SongRow({
 
 function BreakRow({ title, minutes }: { title: string; minutes?: number }) {
   return (
-    <div className="flex items-center gap-4 border-b border-line-soft py-5">
-      <div className="h-px flex-1 bg-line" />
-      <span className="font-mono text-[10px] font-semibold tracking-[0.16em] text-warm uppercase">
-        {title}
-        {minutes ? ` · ${minutes} min` : ''}
-      </span>
-      <div className="h-px flex-1 bg-line" />
+    <div className="flex items-center justify-center gap-2 bg-sunk px-4 py-3">
+      <span className="text-[12.5px] font-bold text-ink-2">{title}</span>
+      {minutes && <span className="text-[12.5px] text-ink-3">{minutes} min</span>}
     </div>
   )
 }

@@ -58,9 +58,9 @@ test.describe('song', () => {
     await page.goto('/bands/funky-monkey/february/bad-romance')
   })
 
-  test('shows the chart from the band iReal book', async ({ page }) => {
+  test('shows the chords from the band iReal book', async ({ page }) => {
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Bad Romance')
-    await page.getByRole('tab', { name: 'Chart' }).click()
+    await page.getByRole('tab', { name: 'Chords' }).click()
 
     await expect(page.getByText(/Who.s on this/)).toBeVisible()
     await expect(page.getByText('Drum fill into Kandırdım')).toBeVisible()
@@ -68,7 +68,7 @@ test.describe('song', () => {
   })
 
   test('transposes the key and every chord with it', async ({ page }) => {
-    await page.getByRole('tab', { name: 'Chart' }).click()
+    await page.getByRole('tab', { name: 'Chords' }).click()
     const grid = page.locator('section').filter({ hasText: 'Intro' }).first()
     await expect(grid).toContainText('F')
 
@@ -95,8 +95,8 @@ test.describe('song', () => {
 
   test('switches between lyrics and chart', async ({ page }) => {
     await page.getByRole('tab', { name: 'Lyrics' }).click()
-    await expect(page.getByText(/No lyrics for this song yet/)).toBeVisible()
-    await page.getByRole('tab', { name: 'Chart' }).click()
+    await expect(page.getByText(/Nobody has added the words/)).toBeVisible()
+    await page.getByRole('tab', { name: 'Chords' }).click()
     await expect(page.getByText(/Who.s on this/)).toBeVisible()
   })
 })

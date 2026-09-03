@@ -1,14 +1,14 @@
 const CHORD_RE = /^([A-G])([#b]{0,2})(.*?)(?:\/([A-G][#b]{0,2}))?$/
 
 /**
- * Renders a chord the way a chart does: full-size root, raised quality, and a
- * quieter slash bass. Anything unrecognised (N.C., a rehearsal note) is printed
- * as-is rather than mangled.
+ * Renders a chord the way a chart does: full-size root, smaller quality sitting
+ * on the baseline, and a quieter slash bass. Anything unrecognised (N.C., a
+ * rehearsal note) is printed as-is rather than mangled.
  */
 export function ChordSymbol({
   symbol,
   className,
-  muted = 'text-muted',
+  muted = 'text-ink-3',
 }: {
   symbol: string
   className?: string

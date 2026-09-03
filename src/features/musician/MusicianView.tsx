@@ -1,7 +1,7 @@
 import { ArrowDownLeft, ArrowUpRight } from 'lucide-react'
 import { band, memberName, roleById } from '@/content'
 import type { SetlistItem, Song } from '@/content/types'
-import { Callout, Empty, Label, SectionHead, cx } from '@/design/primitives'
+import { Callout, Chip, Empty, SectionHead, cx } from '@/design/primitives'
 import { ChartGrid } from './ChartGrid'
 
 export function MusicianView({
@@ -23,28 +23,19 @@ export function MusicianView({
   return (
     <div className="flex flex-col gap-10">
       <section>
-        <SectionHead num="01" title="Chart">
-          {hasChart
-            ? 'Bars run left to right, four to a row. Repeats are marked on the section rule.'
-            : undefined}
+        <SectionHead title="Chords">
+          {hasChart ? 'Four bars to a row, top to bottom.' : undefined}
         </SectionHead>
         {hasChart ? (
           <ChartGrid song={song} keyOffset={keyOffset} playingBar={playingBar} />
         ) : (
-          <Empty>
-            No chart for this song yet — add a <code className="font-mono text-[0.9em]">structure:</code>{' '}
-            block to
-            <br />
-            <code className="mt-1.5 inline-block bg-sunk px-1.5 py-0.5 font-mono text-[13px] text-ink">
-              content/songs/{song.id}.yaml
-            </code>
-          </Empty>
+          <Empty>Nobody has added chords for this one yet.</Empty>
         )}
       </section>
 
       {generalCues.length > 0 && (
         <section>
-          <SectionHead num="02" tag="Do not miss" tagTone="accent" title="Cues" />
+          <SectionHead title="Don't miss" />
           <div className="flex flex-col gap-2.5">
             {generalCues.map((cue, i) => (
               <Callout key={i}>{cue.text}</Callout>
@@ -55,38 +46,41 @@ export function MusicianView({
 
       {(song.transitions.in || song.transitions.out) && (
         <section>
-          <SectionHead num={generalCues.length > 0 ? '03' : '02'} title="Transitions">
-            How this song is joined to the ones either side of it.
+          <SectionHead title="Transitions">
+            How this song joins the ones either side of it.
           </SectionHead>
-          <div className="sc-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))' }}>
+          <div
+            className="grid gap-3"
+            style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))' }}
+          >
             {song.transitions.in && (
-              <TransitionCell icon="in" direction="Coming in" text={song.transitions.in} />
+              <TransitionCard icon="in" direction="Coming in" text={song.transitions.in} />
             )}
             {song.transitions.out && (
-              <TransitionCell icon="out" direction="Going out" text={song.transitions.out} />
+              <TransitionCard icon="out" direction="Going out" text={song.transitions.out} />
             )}
           </div>
         </section>
       )}
 
       <section>
-        <SectionHead num="—" title="Who's on this">
-          The lineup for this song at this concert.
-        </SectionHead>
+        <SectionHead title="Who's on this">The lineup for this song at this show.</SectionHead>
         <Lineup item={item} memberId={memberId} />
       </section>
 
       {song.notes && (
         <section>
-          <SectionHead num="—" title="Notes" />
-          <p className="sc-prose m-0 whitespace-pre-wrap">{song.notes.trim()}</p>
+          <SectionHead title="Notes" />
+          <p className="m-0 text-[15px] leading-relaxed whitespace-pre-wrap text-ink-2">
+            {song.notes.trim()}
+          </p>
         </section>
       )}
     </div>
   )
 }
 
-function TransitionCell({
+function TransitionCard({
   icon,
   direction,
   text,
@@ -97,11 +91,11 @@ function TransitionCell({
 }) {
   const Icon = icon === 'in' ? ArrowDownLeft : ArrowUpRight
   return (
-    <div className="bg-panel px-4 py-3.5">
-      <div className="sc-label mb-1.5 flex items-center gap-1.5">
-        <Icon size={11} strokeWidth={2} /> {direction}
+    <div className="sc-card p-4">
+      <div className="mb-1.5 flex items-center gap-1.5 text-[12.5px] font-semibold text-ink-3">
+        <Icon size={13} strokeWidth={2.25} /> {direction}
       </div>
-      <p className="sc-prose m-0 !text-[16px] !leading-snug !text-ink">{text}</p>
+      <p className="m-0 text-[15px] leading-snug">{text}</p>
     </div>
   )
 }
@@ -121,24 +115,27 @@ function Lineup({
 
   return (
     <>
-      <div className="sc-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))' }}>
+      <div
+        className="grid gap-3"
+        style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(158px, 1fr))' }}
+      >
         {rows.map(({ role, people }) => (
-          <div key={role.id} className="bg-panel px-4 py-3.5">
-            <Label className="mb-2">{roleById.get(role.id)?.label ?? role.id}</Label>
-            <ul className="m-0 flex list-none flex-col gap-1 p-0">
+          <div key={role.id} className="sc-card p-4">
+            <div className="mb-2 text-[12.5px] font-bold text-accent">
+              {roleById.get(role.id)?.label ?? role.id}
+            </div>
+            <ul className="m-0 flex list-none flex-col gap-1.5 p-0">
               {people.map((id, index) => (
                 <li
                   key={id}
                   className={cx(
-                    'flex items-baseline gap-1.5 text-[15px] tracking-[-0.01em]',
-                    id === memberId ? 'font-semibold text-accent' : 'font-medium',
+                    'sc-tight flex items-center gap-2 text-[15px]',
+                    id === memberId ? 'font-bold text-accent' : 'font-medium',
                   )}
                 >
                   {memberName(id)}
                   {role.id === 'vocals' && index === 0 && people.length > 1 && (
-                    <span className="font-mono text-[9px] tracking-[0.1em] text-muted uppercase">
-                      lead
-                    </span>
+                    <Chip>lead</Chip>
                   )}
                 </li>
               ))}
@@ -146,7 +143,7 @@ function Lineup({
           </div>
         ))}
       </div>
-      {item.notes && <p className="sc-prose mt-3 !text-[15px]">{item.notes}</p>}
+      {item.notes && <p className="mt-3 text-[14.5px] text-ink-2">{item.notes}</p>}
     </>
   )
 }
