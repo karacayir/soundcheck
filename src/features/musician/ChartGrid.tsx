@@ -1,14 +1,14 @@
 import { useMemo } from 'react'
 import type { Song } from '@/content/types'
-import { Num, cx } from '@/design/primitives'
+import { Num, Tag, cx } from '@/design/primitives'
 import { flattenBars, songToChart, type ChartSection } from '@/features/music/chart'
 import { accidentalFor, transposeChord } from '@/features/music/transpose'
 import { ChordSymbol } from './ChordSymbol'
 
 /**
- * The bar grid. Four bars to a row, hairline cells, chord centred. While the
- * transport runs, the sounding bar lights up in the accent so you can find
- * your place from across a stage.
+ * The bar grid. Four bars to a row, hairline cells over a rule-coloured ground.
+ * While the transport runs the sounding bar washes accent, so you can find your
+ * place from across a stage.
  */
 export function ChartGrid({
   song,
@@ -57,50 +57,49 @@ function SectionBlock({ section, activeBar }: { section: ChartSection; activeBar
 
   return (
     <section>
-      <div className="mb-2.5 flex flex-wrap items-center gap-x-3 gap-y-1.5">
+      <div className="mb-2 flex flex-wrap items-center gap-x-3 gap-y-1.5 border-b border-line pb-2">
         <span
           className={cx(
-            'rounded-sm px-2 py-1 text-2xs font-semibold tracking-[0.11em] uppercase transition-colors',
-            live ? 'bg-accent text-accent-fg' : 'bg-surface-2 text-fg',
+            'font-mono text-[11px] font-bold tracking-[0.12em] uppercase transition-colors',
+            live ? 'text-accent' : 'text-ink',
           )}
         >
           {section.label}
         </span>
-        <Num className="text-2xs text-dim">{section.bars.length} bars</Num>
-        {section.repeat > 1 && (
-          <span className="sc-num rounded-sm border border-line px-1.5 py-0.5 text-2xs text-muted">
-            ×{section.repeat}
-          </span>
+        <Num className="text-[10px] text-muted">{section.bars.length} bars</Num>
+        {section.repeat > 1 && <Tag>×{section.repeat}</Tag>}
+        {section.cue && (
+          <span className="sc-prose !text-[14.5px] !text-muted italic">{section.cue}</span>
         )}
-        {section.cue && <span className="text-xs text-muted italic">{section.cue}</span>}
       </div>
 
-      <div className="grid grid-cols-4 overflow-hidden rounded-lg border border-line">
-        {section.bars.map((bar, i) => {
+      <div className="sc-grid" style={{ gridTemplateColumns: 'repeat(4, minmax(0, 1fr))' }}>
+        {section.bars.map((bar) => {
           const isActive = activeBar === bar.index
           return (
             <div
               key={bar.index}
               className={cx(
-                'relative flex min-h-[4.5rem] items-center justify-center gap-2 px-1 py-4',
-                'transition-colors duration-100',
-                // Internal hairlines drawn as borders keeps the outer radius clean.
-                i % 4 !== 3 && 'border-r border-line',
-                i >= 4 && 'border-t border-line',
-                isActive ? 'bg-accent text-accent-fg' : 'bg-surface',
+                'flex min-h-[4.25rem] items-center justify-center gap-2 px-1 py-3.5 transition-colors',
+                'duration-100',
+                isActive ? 'bg-accent text-white' : 'bg-panel',
               )}
             >
               {bar.chords.length === 0 ? (
-                <span className={isActive ? 'text-accent-fg/40' : 'text-dim'}>·</span>
+                <span className={isActive ? 'text-white/45' : 'text-line'}>·</span>
               ) : (
                 bar.chords.map((chord, index) => (
                   <ChordSymbol
                     key={`${chord}-${index}`}
                     symbol={chord}
-                    muted={isActive ? 'text-accent-fg/60' : 'text-muted'}
+                    muted={isActive ? 'text-white/65' : 'text-muted'}
                     className={cx(
-                      'sc-num leading-none font-medium',
-                      bar.chords.length > 1 ? 'text-base' : 'text-xl',
+                      'sc-num leading-none font-semibold',
+                      bar.chords.length > 2
+                        ? 'text-[14px]'
+                        : bar.chords.length > 1
+                          ? 'text-[16px]'
+                          : 'text-[21px]',
                     )}
                   />
                 ))

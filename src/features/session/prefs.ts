@@ -4,7 +4,8 @@ import { createStore, safeStorage, useStore } from '@/lib/store'
 const KEY = 'soundcheck:prefs:v1'
 
 export type ViewMode = 'singer' | 'musician'
-export type Theme = 'dark' | 'light'
+/** 'system' follows the OS; the other two pin it. */
+export type Theme = 'system' | 'dark' | 'light'
 
 export interface SongPrefs {
   /** Semitones away from the written key. */
@@ -28,7 +29,7 @@ export interface Prefs {
 
 const DEFAULTS: Prefs = {
   memberId: null,
-  theme: 'dark',
+  theme: 'system',
   view: null,
   lyricSize: 30,
   keepAwake: true,
@@ -52,14 +53,29 @@ function load(): Prefs {
   }
 }
 
+/**
+ * Only stamp `data-theme` when the user has actually chosen one. Leaving the
+ * attribute off is what lets the stylesheet fall through to
+ * `prefers-color-scheme`, which is the default we want.
+ */
+function applyTheme(theme: Theme): void {
+  if (typeof document === 'undefined') return
+  if (theme === 'system') delete document.documentElement.dataset['theme']
+  else document.documentElement.dataset['theme'] = theme
+}
+
 export const prefsStore = createStore<Prefs>(load(), (value) => {
   safeStorage.write(KEY, JSON.stringify(value))
-  document.documentElement.dataset['theme'] = value.theme
+  applyTheme(value.theme)
 })
 
-// Apply the persisted theme before first paint of the app tree.
-if (typeof document !== 'undefined') {
-  document.documentElement.dataset['theme'] = prefsStore.get().theme
+applyTheme(prefsStore.get().theme)
+
+/** What the user is actually looking at right now. */
+export function effectiveTheme(theme: Theme): 'light' | 'dark' {
+  if (theme !== 'system') return theme
+  if (typeof window === 'undefined' || !window.matchMedia) return 'light'
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
 }
 
 export function usePrefs(): Prefs {

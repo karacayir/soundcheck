@@ -1,7 +1,7 @@
-import { ArrowDownLeft, ArrowUpRight, Info } from 'lucide-react'
+import { ArrowDownLeft, ArrowUpRight } from 'lucide-react'
 import { band, memberName, roleById } from '@/content'
 import type { SetlistItem, Song } from '@/content/types'
-import { Chip, Empty, Label } from '@/design/primitives'
+import { Callout, Empty, Label, SectionHead, cx } from '@/design/primitives'
 import { ChartGrid } from './ChartGrid'
 
 export function MusicianView({
@@ -21,16 +21,21 @@ export function MusicianView({
   const generalCues = song.cues.filter((c) => !c.at)
 
   return (
-    <div className="flex flex-col gap-9 pb-8">
-      <section className="flex flex-col gap-3">
-        <Label>Chart</Label>
+    <div className="flex flex-col gap-10">
+      <section>
+        <SectionHead num="01" title="Chart">
+          {hasChart
+            ? 'Bars run left to right, four to a row. Repeats are marked on the section rule.'
+            : undefined}
+        </SectionHead>
         {hasChart ? (
           <ChartGrid song={song} keyOffset={keyOffset} playingBar={playingBar} />
         ) : (
           <Empty>
-            No chart for this song yet.
+            No chart for this song yet — add a <code className="font-mono text-[0.9em]">structure:</code>{' '}
+            block to
             <br />
-            <code className="sc-num mt-2 inline-block text-2xs text-dim">
+            <code className="mt-1.5 inline-block bg-sunk px-1.5 py-0.5 font-mono text-[13px] text-ink">
               content/songs/{song.id}.yaml
             </code>
           </Empty>
@@ -38,49 +43,50 @@ export function MusicianView({
       </section>
 
       {generalCues.length > 0 && (
-        <section className="flex flex-col gap-3">
-          <Label>Cues</Label>
-          <ul className="flex flex-col gap-2">
+        <section>
+          <SectionHead num="02" tag="Do not miss" tagTone="accent" title="Cues" />
+          <div className="flex flex-col gap-2.5">
             {generalCues.map((cue, i) => (
-              <li
-                key={i}
-                className="flex items-start gap-2.5 rounded-lg border border-accent/25 bg-accent/8 px-3.5 py-3"
-              >
-                <Info size={14} strokeWidth={1.75} className="mt-0.5 shrink-0 text-accent" />
-                <span className="text-sm leading-snug">{cue.text}</span>
-              </li>
+              <Callout key={i}>{cue.text}</Callout>
             ))}
-          </ul>
+          </div>
         </section>
       )}
 
       {(song.transitions.in || song.transitions.out) && (
-        <section className="flex flex-col gap-3">
-          <Label>Transitions</Label>
-          <div className="sc-panel divide-y divide-line overflow-hidden">
+        <section>
+          <SectionHead num={generalCues.length > 0 ? '03' : '02'} title="Transitions">
+            How this song is joined to the ones either side of it.
+          </SectionHead>
+          <div className="sc-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))' }}>
             {song.transitions.in && (
-              <TransitionRow icon="in" direction="Into this" text={song.transitions.in} />
+              <TransitionCell icon="in" direction="Coming in" text={song.transitions.in} />
             )}
             {song.transitions.out && (
-              <TransitionRow icon="out" direction="Out of this" text={song.transitions.out} />
+              <TransitionCell icon="out" direction="Going out" text={song.transitions.out} />
             )}
           </div>
         </section>
       )}
 
-      <Lineup item={item} memberId={memberId} />
+      <section>
+        <SectionHead num="—" title="Who's on this">
+          The lineup for this song at this concert.
+        </SectionHead>
+        <Lineup item={item} memberId={memberId} />
+      </section>
 
       {song.notes && (
-        <section className="flex flex-col gap-3">
-          <Label>Arrangement</Label>
-          <p className="text-sm leading-relaxed whitespace-pre-wrap text-muted">{song.notes}</p>
+        <section>
+          <SectionHead num="—" title="Notes" />
+          <p className="sc-prose m-0 whitespace-pre-wrap">{song.notes.trim()}</p>
         </section>
       )}
     </div>
   )
 }
 
-function TransitionRow({
+function TransitionCell({
   icon,
   direction,
   text,
@@ -91,12 +97,11 @@ function TransitionRow({
 }) {
   const Icon = icon === 'in' ? ArrowDownLeft : ArrowUpRight
   return (
-    <div className="flex items-start gap-3 px-3.5 py-3">
-      <Icon size={14} strokeWidth={1.75} className="mt-0.5 shrink-0 text-dim" />
-      <div className="min-w-0">
-        <div className="sc-label mb-1">{direction}</div>
-        <div className="text-sm leading-snug">{text}</div>
+    <div className="bg-panel px-4 py-3.5">
+      <div className="sc-label mb-1.5 flex items-center gap-1.5">
+        <Icon size={11} strokeWidth={2} /> {direction}
       </div>
+      <p className="sc-prose m-0 !text-[16px] !leading-snug !text-ink">{text}</p>
     </div>
   )
 }
@@ -115,28 +120,33 @@ function Lineup({
   if (rows.length === 0) return null
 
   return (
-    <section className="flex flex-col gap-3">
-      <Label>Who&rsquo;s on this</Label>
-      <div className="sc-panel divide-y divide-line overflow-hidden">
+    <>
+      <div className="sc-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))' }}>
         {rows.map(({ role, people }) => (
-          <div key={role.id} className="flex items-center gap-3 px-3.5 py-2.5">
-            <span className="sc-label w-16 shrink-0">
-              {roleById.get(role.id)?.label ?? role.id}
-            </span>
-            <div className="flex flex-wrap gap-1.5">
+          <div key={role.id} className="bg-panel px-4 py-3.5">
+            <Label className="mb-2">{roleById.get(role.id)?.label ?? role.id}</Label>
+            <ul className="m-0 flex list-none flex-col gap-1 p-0">
               {people.map((id, index) => (
-                <Chip key={id} tone={id === memberId ? 'accent' : 'default'}>
+                <li
+                  key={id}
+                  className={cx(
+                    'flex items-baseline gap-1.5 text-[15px] tracking-[-0.01em]',
+                    id === memberId ? 'font-semibold text-accent' : 'font-medium',
+                  )}
+                >
                   {memberName(id)}
                   {role.id === 'vocals' && index === 0 && people.length > 1 && (
-                    <span className="opacity-55">lead</span>
+                    <span className="font-mono text-[9px] tracking-[0.1em] text-muted uppercase">
+                      lead
+                    </span>
                   )}
-                </Chip>
+                </li>
               ))}
-            </div>
+            </ul>
           </div>
         ))}
       </div>
-      {item.notes && <p className="text-xs leading-relaxed text-muted">{item.notes}</p>}
-    </section>
+      {item.notes && <p className="sc-prose mt-3 !text-[15px]">{item.notes}</p>}
+    </>
   )
 }

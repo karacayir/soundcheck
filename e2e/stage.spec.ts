@@ -6,7 +6,7 @@ import { expect, test } from '@playwright/test'
  */
 
 test('works with the network switched off', async ({ page, context }) => {
-  await page.goto('/funky-monkey/february')
+  await page.goto('/bands/funky-monkey/february')
   await page.waitForFunction(
     async () => {
       const reg = await navigator.serviceWorker?.ready
@@ -20,17 +20,17 @@ test('works with the network switched off', async ({ page, context }) => {
 
   await context.setOffline(true)
 
-  await page.goto('/funky-monkey/february/bad-romance')
+  await page.goto('/bands/funky-monkey/february/bad-romance')
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Bad Romance')
 
-  await page.goto('/funky-monkey/february')
+  await page.goto('/bands/funky-monkey/february')
   await expect(page.getByText('SHORT BREAK')).toBeVisible()
 
   await context.setOffline(false)
 })
 
 test('the click advances through the bar', async ({ page }) => {
-  await page.goto('/funky-monkey/february/bad-romance')
+  await page.goto('/bands/funky-monkey/february/bad-romance')
   await page.getByRole('button', { name: 'Play' }).click()
 
   // Bad Romance is 119 BPM, so a bar is a little over two seconds.

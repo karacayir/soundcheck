@@ -22,16 +22,17 @@ export function PlayButton({ disabled }: { disabled?: boolean }) {
       disabled={disabled}
       aria-label={playing ? 'Stop' : 'Play'}
       className={cx(
-        'inline-flex size-11 shrink-0 items-center justify-center rounded-full',
-        'transition-all duration-150 ease-[var(--ease-out-quick)] active:scale-90',
-        'disabled:pointer-events-none disabled:opacity-25',
-        playing ? 'bg-accent text-accent-fg sc-live' : 'bg-fg text-bg hover:opacity-90',
+        'inline-flex size-10 shrink-0 items-center justify-center rounded-xs border transition-colors',
+        'disabled:pointer-events-none disabled:opacity-30',
+        playing
+          ? 'border-accent bg-accent text-white'
+          : 'border-ink bg-ink text-paper hover:border-accent hover:bg-accent',
       )}
     >
       {playing ? (
-        <Pause size={16} strokeWidth={0} fill="currentColor" />
+        <Pause size={15} strokeWidth={0} fill="currentColor" />
       ) : (
-        <Play size={16} strokeWidth={0} fill="currentColor" className="ml-0.5" />
+        <Play size={15} strokeWidth={0} fill="currentColor" className="ml-0.5" />
       )}
     </button>
   )
@@ -51,11 +52,8 @@ export function BeatIndicator({ beatsPerBar }: { beatsPerBar: number }) {
           <span
             key={i}
             className={cx(
-              'block rounded-full transition-all duration-100',
-              on ? 'size-2' : 'size-1.5',
-              !playing && 'bg-line-2',
-              playing && !on && 'bg-line-2',
-              on && (countIn ? 'bg-muted' : i === 0 ? 'bg-accent' : 'bg-fg'),
+              'block size-1.5 transition-colors duration-100',
+              on ? (countIn ? 'bg-warm' : i === 0 ? 'bg-accent' : 'bg-ink') : 'bg-line',
             )}
           />
         )
@@ -69,13 +67,15 @@ export function BarCounter({ totalBars }: { totalBars: number }) {
   if (!playing || !position) return null
   if (position.isCountIn) {
     return (
-      <span className="sc-label !text-accent whitespace-nowrap">count in</span>
+      <span className="font-mono text-[10px] font-medium tracking-[0.12em] whitespace-nowrap text-warm uppercase">
+        count in
+      </span>
     )
   }
   return (
-    <Num className="text-2xs whitespace-nowrap text-muted">
+    <Num className="text-[10px] whitespace-nowrap text-muted">
       bar {(position.bar % Math.max(1, totalBars)) + 1}
-      <span className="text-dim">/{totalBars}</span>
+      <span className="text-line">/{totalBars}</span>
     </Num>
   )
 }
@@ -98,20 +98,20 @@ export function MixerSheet({
       <div className="flex flex-col gap-7">
         <section className="flex flex-col gap-3">
           <Label>Channels</Label>
-          <div className="sc-panel divide-y divide-line overflow-hidden">
+          <div className="sc-grid" style={{ gridTemplateColumns: '1fr' }}>
             {CHANNELS.map((channel) => {
               const on = mixer.levels[channel.id] > 0
               return (
-                <div key={channel.id} className="flex items-center gap-3 px-3 py-2.5">
+                <div key={channel.id} className="flex items-center gap-3 bg-panel px-3 py-2.5">
                   <button
                     type="button"
                     onClick={() => toggleChannel(channel.id)}
                     className={cx(
-                      'flex h-8 w-[4.5rem] shrink-0 items-center justify-center rounded-sm border',
-                      'text-2xs font-medium tracking-[0.09em] uppercase transition-all duration-150',
+                      'flex h-8 w-[4.5rem] shrink-0 items-center justify-center rounded-xs border',
+                      'font-mono text-[10px] font-medium tracking-[0.09em] uppercase transition-colors',
                       on
-                        ? 'border-accent bg-accent text-accent-fg'
-                        : 'border-line text-muted hover:border-line-2 hover:text-fg',
+                        ? 'border-accent bg-accent text-white'
+                        : 'border-line text-muted hover:border-accent hover:text-accent',
                     )}
                   >
                     {channel.label}
@@ -125,14 +125,14 @@ export function MixerSheet({
                     className="h-8 flex-1"
                     aria-label={`${channel.label} level`}
                   />
-                  <Num className="w-7 text-right text-2xs text-dim">
+                  <Num className="w-7 text-right text-[10px] text-muted">
                     {Math.round(mixer.levels[channel.id] * 100)}
                   </Num>
                 </div>
               )
             })}
           </div>
-          <p className="text-2xs text-dim">
+          <p className="sc-prose m-0 !text-[14.5px]">
             On stage you usually want click only. Turn the band up for rehearsal.
           </p>
         </section>

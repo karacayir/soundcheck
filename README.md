@@ -1,6 +1,6 @@
 # Soundcheck
 
-A live-performance companion for bands. One URL — `/funky-monkey/february` —
+A live-performance companion for bands. One URL — `/bands/funky-monkey/february` —
 that every member opens on stage.
 
 Tap a song and you get the lineup for *that* song plus two purpose-built
@@ -29,6 +29,19 @@ npm run dev            # http://localhost:5173
 | `npm test` | Unit tests (chart parsing, transposition, lyrics, content) |
 | `npm run test:e2e` | Browser tests, including offline and the transport |
 | `npm run icons` | Regenerates the PWA icons from `public/favicon.svg`'s motif |
+
+## Routes
+
+```
+/                                          landing
+/bands                                     every band
+/bands/funky-monkey                        concerts + roster
+/bands/funky-monkey/february               the setlist
+/bands/funky-monkey/february/bad-romance   one song: lyrics or chart
+/bands/funky-monkey/february/print         printable running order
+```
+
+Old flat URLs (`/funky-monkey/february/...`) redirect to the `/bands` ones.
 
 ## Editing the setlist
 
@@ -59,8 +72,9 @@ second set. CI runs the same check on every pull request.
 | Transport | [`src/features/audio/engine.ts`](src/features/audio/engine.ts) | One AudioContext, one lookahead scheduler. |
 | Voices | [`src/features/audio/synth.ts`](src/features/audio/synth.ts) | Everything is synthesised — no samples to precache. |
 | Grooves | [`src/features/audio/styles.ts`](src/features/audio/styles.ts) | Eighth-note grid per style. |
-| Design tokens | [`src/design/tokens.css`](src/design/tokens.css) | Cool-tinted neutral ramp, one signal colour. |
-| Type | [`src/design/fonts.css`](src/design/fonts.css) | Geist + Geist Mono, self-hosted, latin + latin-ext. |
+| Design tokens | [`src/design/tokens.css`](src/design/tokens.css) | Paper/panel/ink editorial palette, one blue accent. |
+| Type | [`src/design/fonts.css`](src/design/fonts.css) | Archivo + Newsreader + JetBrains Mono, self-hosted. |
+| Shell | [`src/app/Shell.tsx`](src/app/Shell.tsx) | Masthead, sticky breadcrumb rail, footer. |
 
 ### Some decisions worth knowing about
 
@@ -88,10 +102,18 @@ de-obfuscate with a 50-character block permutation: swap `i ↔ 49-i` for
 `i ∈ [0,5) ∪ [10,24)`, leaving a trailing block shorter than 50 characters
 untouched). An importer is a small script away if it earns its place.
 
-**One accent colour, spent carefully.** The palette is monochrome apart from an
-electric lime, and it only ever marks things that are *live*: the sounding bar
-in the chart, the running transport, downbeat one, and the parts you personally
-play. Highlighting everything would mean highlighting nothing.
+**The design is editorial, not app chrome.** Paper and panel rather than
+background and card, ink rather than foreground, hairline rules doing the work
+borders and shadows usually do. Three faces with three jobs: Archivo sets
+headlines, Newsreader carries prose and lyrics, JetBrains Mono handles anything
+that has to line up in a column — keys, tempos, bar counts, chord grids. The
+single blue accent is spent only on things that are live or selected: the
+sounding bar, the songs you personally play, the current breadcrumb.
+
+**Light by default, dark when the room is.** No `data-theme` attribute is set
+until someone picks one, so the stylesheet falls through to
+`prefers-color-scheme`. A setlist is a document in daylight and a stage tool at
+night; both palettes are first-class.
 
 **No sync layer yet.** When follow-along sync is added, it plugs in at the
 transport: `engine.start()`/`engine.stop()` and the current song id are the only

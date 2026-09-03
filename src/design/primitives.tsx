@@ -1,12 +1,19 @@
 import { X } from 'lucide-react'
-import type { ButtonHTMLAttributes, ReactNode } from 'react'
-import { useEffect } from 'react'
+import { useEffect, type ButtonHTMLAttributes, type ReactNode } from 'react'
 
 export function cx(...parts: Array<string | false | null | undefined>): string {
   return parts.filter(Boolean).join(' ')
 }
 
 /* ------------------------------------------------------------------ text -- */
+
+export function Eyebrow({ children, className }: { children: ReactNode; className?: string }) {
+  return (
+    <div className={cx('sc-eyebrow flex flex-wrap items-baseline gap-x-3.5 gap-y-2', className)}>
+      {children}
+    </div>
+  )
+}
 
 export function Label({ children, className }: { children: ReactNode; className?: string }) {
   return <div className={cx('sc-label', className)}>{children}</div>
@@ -16,19 +23,86 @@ export function Num({ children, className }: { children: ReactNode; className?: 
   return <span className={cx('sc-num', className)}>{children}</span>
 }
 
+export function Tag({
+  children,
+  tone = 'default',
+  className,
+}: {
+  children: ReactNode
+  tone?: 'default' | 'accent' | 'ok' | 'warm'
+  className?: string
+}) {
+  const tones = {
+    default: '',
+    accent: 'sc-tag-accent',
+    ok: '!border-ok !text-ok',
+    warm: '!border-warm !text-warm',
+  } as const
+  return <span className={cx('sc-tag', tones[tone], className)}>{children}</span>
+}
+
+/**
+ * Masthead section heading: mono number, optional tag, headline, serif standfirst,
+ * all sitting on a heavy ink rule.
+ */
+export function SectionHead({
+  num,
+  tag,
+  tagTone,
+  title,
+  children,
+  action,
+}: {
+  num?: string
+  tag?: string
+  tagTone?: 'default' | 'accent' | 'ok' | 'warm'
+  title: ReactNode
+  children?: ReactNode
+  action?: ReactNode
+}) {
+  return (
+    <div className="sc-rule mb-6 flex items-start gap-4 pb-3.5">
+      {num && <div className="sc-num pt-1.5 text-xs font-bold tracking-[0.06em] text-accent">{num}</div>}
+      <div className="min-w-0 flex-1">
+        {tag && (
+          <div className="mb-2">
+            <Tag tone={tagTone}>{tag}</Tag>
+          </div>
+        )}
+        <h2 className="sc-display m-0 text-[clamp(20px,3vw,27px)] !leading-[1.12] !tracking-[-0.022em]">
+          {title}
+        </h2>
+        {children && <p className="sc-prose mt-1.5 !text-[16px] !text-muted">{children}</p>}
+      </div>
+      {action && <div className="shrink-0 pt-1">{action}</div>}
+    </div>
+  )
+}
+
+/** The hairline fact grid from the masthead: label over value. */
+export function Facts({ items }: { items: Array<{ label: string; value: ReactNode }> }) {
+  return (
+    <dl
+      className="sc-grid m-0"
+      style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))' }}
+    >
+      {items.map((item) => (
+        <div key={item.label} className="bg-panel px-3.5 py-3">
+          <dt className="sc-label mb-1">{item.label}</dt>
+          <dd className="sc-num m-0 text-[15px] font-semibold tracking-[-0.01em]">{item.value}</dd>
+        </div>
+      ))}
+    </dl>
+  )
+}
+
 /* --------------------------------------------------------------- buttons -- */
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant?: 'solid' | 'outline' | 'ghost' | 'accent'
-  size?: 'sm' | 'md' | 'lg'
+  variant?: 'outline' | 'solid' | 'ghost'
+  size?: 'sm' | 'md'
   active?: boolean
 }
-
-const SIZES = {
-  sm: 'h-8 px-3 text-2xs tracking-[0.09em] uppercase gap-1.5',
-  md: 'h-10 px-4 text-xs tracking-[0.07em] uppercase gap-2',
-  lg: 'h-12 px-6 text-sm tracking-[0.05em] uppercase gap-2',
-} as const
 
 export function Button({
   variant = 'outline',
@@ -37,44 +111,30 @@ export function Button({
   className,
   ...rest
 }: ButtonProps) {
-  const base =
-    'inline-flex items-center justify-center rounded-md font-medium select-none ' +
-    'transition-all duration-150 ease-[var(--ease-out-quick)] active:scale-[0.98] ' +
-    'disabled:pointer-events-none disabled:opacity-30'
-
-  const variants = {
-    solid: 'bg-fg text-bg hover:opacity-90',
-    accent: 'bg-accent text-accent-fg hover:brightness-105',
-    outline: active
-      ? 'border border-accent bg-accent text-accent-fg'
-      : 'border border-line bg-surface text-fg hover:border-line-2 hover:bg-surface-2',
-    ghost: active ? 'bg-surface-2 text-fg' : 'text-muted hover:bg-surface hover:text-fg',
+  const sizes = {
+    sm: 'h-7 px-2.5 text-[10px] tracking-[0.08em]',
+    md: 'h-9 px-3.5 text-[11px] tracking-[0.06em]',
   } as const
 
-  return <button type="button" className={cx(base, SIZES[size], variants[variant], className)} {...rest} />
-}
+  const variants = {
+    outline: active
+      ? 'border-accent bg-accent-wash text-accent'
+      : 'border-line bg-panel text-ink-soft hover:border-accent hover:text-accent',
+    solid: 'border-accent bg-accent text-white hover:brightness-110',
+    ghost: active
+      ? 'border-transparent bg-sunk text-ink'
+      : 'border-transparent text-muted hover:bg-sunk hover:text-ink',
+  } as const
 
-export function IconButton({
-  className,
-  active,
-  tone = 'default',
-  ...rest
-}: ButtonHTMLAttributes<HTMLButtonElement> & {
-  active?: boolean
-  tone?: 'default' | 'accent'
-}) {
   return (
     <button
       type="button"
       className={cx(
-        'inline-flex size-10 shrink-0 items-center justify-center rounded-md border',
-        'transition-all duration-150 ease-[var(--ease-out-quick)] active:scale-[0.94]',
-        'disabled:pointer-events-none disabled:opacity-25',
-        active
-          ? tone === 'accent'
-            ? 'border-accent bg-accent text-accent-fg'
-            : 'border-fg bg-fg text-bg'
-          : 'border-line bg-surface text-muted hover:border-line-2 hover:bg-surface-2 hover:text-fg',
+        'inline-flex shrink-0 items-center justify-center gap-1.5 rounded-xs border font-mono',
+        'font-medium uppercase transition-colors duration-150',
+        'disabled:pointer-events-none disabled:opacity-35',
+        sizes[size],
+        variants[variant],
         className,
       )}
       {...rest}
@@ -82,8 +142,29 @@ export function IconButton({
   )
 }
 
-/** Two or more mutually exclusive options in one enclosure. */
-export function SegmentedControl<T extends string>({
+export function IconButton({
+  className,
+  active,
+  ...rest
+}: ButtonHTMLAttributes<HTMLButtonElement> & { active?: boolean }) {
+  return (
+    <button
+      type="button"
+      className={cx(
+        'inline-flex size-9 shrink-0 items-center justify-center rounded-xs border transition-colors',
+        'duration-150 disabled:pointer-events-none disabled:opacity-30',
+        active
+          ? 'border-accent bg-accent text-white'
+          : 'border-line bg-panel text-muted hover:border-accent hover:text-accent',
+        className,
+      )}
+      {...rest}
+    />
+  )
+}
+
+/** Mono pill row — used for the lyrics/chart switch and mixer options. */
+export function Segmented<T extends string>({
   options,
   value,
   onChange,
@@ -95,11 +176,7 @@ export function SegmentedControl<T extends string>({
   className?: string
 }) {
   return (
-    <div
-      role="tablist"
-      className={cx('grid gap-1 rounded-lg border border-line bg-surface p-1', className)}
-      style={{ gridTemplateColumns: `repeat(${options.length}, minmax(0, 1fr))` }}
-    >
+    <div role="tablist" className={cx('flex gap-1.5', className)}>
       {options.map((option) => {
         const selected = option.value === value
         return (
@@ -110,11 +187,11 @@ export function SegmentedControl<T extends string>({
             aria-selected={selected}
             onClick={() => onChange(option.value)}
             className={cx(
-              'flex h-9 items-center justify-center gap-2 rounded-md text-xs font-medium',
-              'tracking-[0.07em] uppercase transition-all duration-150 ease-[var(--ease-out-quick)]',
+              'flex h-9 flex-1 items-center justify-center gap-1.5 rounded-xs border font-mono',
+              'text-[11px] font-medium tracking-[0.06em] uppercase transition-colors duration-150',
               selected
-                ? 'bg-fg text-bg shadow-sm'
-                : 'text-muted hover:bg-surface-2 hover:text-fg',
+                ? 'border-accent bg-accent text-white'
+                : 'border-line bg-panel text-muted hover:border-accent hover:text-accent',
             )}
           >
             {option.label}
@@ -125,71 +202,30 @@ export function SegmentedControl<T extends string>({
   )
 }
 
-/* ----------------------------------------------------------------- chips -- */
+/* ---------------------------------------------------------------- blocks -- */
 
-export function Chip({
-  children,
-  tone = 'default',
-  className,
-}: {
-  children: ReactNode
-  tone?: 'default' | 'accent' | 'solid' | 'quiet'
-  className?: string
-}) {
-  const tones = {
-    default: 'border-line bg-surface-2 text-fg',
-    accent: 'border-accent/40 bg-accent/12 text-accent',
-    solid: 'border-fg bg-fg text-bg',
-    quiet: 'border-transparent bg-surface-2 text-muted',
-  } as const
+/** Accent-washed aside, for cues and anything the band must not miss. */
+export function Callout({ title, children }: { title?: string; children: ReactNode }) {
   return (
-    <span
-      className={cx(
-        'inline-flex h-6 items-center gap-1 rounded-sm border px-2 text-2xs font-medium',
-        'tracking-[0.02em] whitespace-nowrap',
-        tones[tone],
-        className,
+    <div className="border border-accent/25 bg-accent-wash px-4 py-3.5">
+      {title && (
+        <h3 className="m-0 mb-2 font-mono text-[12px] font-bold tracking-[0.08em] text-accent-ink uppercase">
+          {title}
+        </h3>
       )}
-    >
-      {children}
-    </span>
-  )
-}
-
-/** A small filled dot that breathes while something is live. */
-export function LiveDot({ active }: { active: boolean }) {
-  return (
-    <span
-      aria-hidden
-      className={cx(
-        'block size-1.5 rounded-full transition-colors',
-        active ? 'bg-accent' : 'bg-dim',
-      )}
-      style={active ? { animation: 'sc-pulse 1.6s ease-in-out infinite' } : undefined}
-    />
-  )
-}
-
-/* --------------------------------------------------------------- layout -- */
-
-export function Field({
-  label,
-  children,
-  className,
-}: {
-  label: string
-  children: ReactNode
-  className?: string
-}) {
-  return (
-    <div className={cx('flex min-w-0 flex-col gap-2', className)}>
-      <Label>{label}</Label>
-      <div className="min-w-0">{children}</div>
+      <div className="sc-prose !text-[16px]">{children}</div>
     </div>
   )
 }
 
-/** Value with −/+ on either side. Tapping the value resets it. */
+export function Empty({ children }: { children: ReactNode }) {
+  return (
+    <div className="border border-dashed border-line px-5 py-10 text-center">
+      <div className="sc-prose !text-[16px] !text-muted">{children}</div>
+    </div>
+  )
+}
+
 export function Stepper({
   value,
   onDecrease,
@@ -211,18 +247,17 @@ export function Stepper({
   decreaseLabel: string
   increaseLabel: string
   highlight?: boolean
-  /** Optional extra segment welded onto the right-hand end. */
   trailing?: ReactNode
 }) {
   const arrow =
     'flex w-7 items-center justify-center text-base text-muted transition-colors ' +
-    'hover:bg-surface-2 hover:text-fg disabled:opacity-20 disabled:hover:bg-transparent'
+    'hover:bg-sunk hover:text-ink disabled:opacity-20 disabled:hover:bg-transparent'
 
   return (
     <div
       className={cx(
-        'inline-flex h-10 items-stretch overflow-hidden rounded-md border bg-surface',
-        highlight ? 'border-accent/50' : 'border-line',
+        'inline-flex h-9 items-stretch overflow-hidden rounded-xs border bg-panel',
+        highlight ? 'border-accent' : 'border-line',
       )}
     >
       <button type="button" aria-label={decreaseLabel} disabled={!canDecrease} onClick={onDecrease} className={arrow}>
@@ -234,9 +269,9 @@ export function Stepper({
         disabled={!onReset}
         title={onReset ? 'Reset' : undefined}
         className={cx(
-          'sc-num flex min-w-12 items-center justify-center border-x px-2 text-base font-medium',
-          highlight ? 'border-accent/30 text-accent' : 'border-line text-fg',
-          onReset ? 'hover:bg-surface-2' : 'cursor-default',
+          'sc-num flex min-w-12 items-center justify-center border-x px-2 text-[15px] font-semibold',
+          highlight ? 'border-accent/40 text-accent' : 'border-line text-ink',
+          onReset ? 'hover:bg-sunk' : 'cursor-default',
         )}
       >
         {value}
@@ -249,7 +284,6 @@ export function Stepper({
   )
 }
 
-/** Bottom sheet. Escape and backdrop both close it. */
 export function Sheet({
   open,
   onClose,
@@ -273,39 +307,17 @@ export function Sheet({
   if (!open) return null
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col justify-end">
-      <button
-        type="button"
-        aria-label="Close"
-        onClick={onClose}
-        className="absolute inset-0 bg-black/60 backdrop-blur-[2px]"
-        style={{ animation: 'sc-rise 180ms var(--ease-out-quick)' }}
-      />
-      <div
-        className="safe-b relative max-h-[82vh] overflow-y-auto rounded-t-xl border-t border-line-2 bg-bg"
-        style={{ animation: 'sc-rise 240ms var(--ease-spring)' }}
-      >
-        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-line bg-bg/95 px-5 py-4 backdrop-blur">
+    <div className="fixed inset-0 z-50 flex flex-col justify-end sm:justify-center sm:p-6">
+      <button type="button" aria-label="Close" onClick={onClose} className="absolute inset-0 bg-ink/40" />
+      <div className="sc-shadow relative mx-auto max-h-[82vh] w-full max-w-lg overflow-y-auto border border-line bg-panel">
+        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-line bg-panel px-5 py-3.5">
           <Label>{title}</Label>
-          <button
-            type="button"
-            onClick={onClose}
-            aria-label="Close"
-            className="text-muted transition-colors hover:text-fg"
-          >
-            <X size={16} strokeWidth={2} />
+          <button type="button" onClick={onClose} aria-label="Close" className="text-muted hover:text-ink">
+            <X size={15} strokeWidth={2} />
           </button>
         </div>
         <div className="px-5 py-5">{children}</div>
       </div>
-    </div>
-  )
-}
-
-export function Empty({ children }: { children: ReactNode }) {
-  return (
-    <div className="rounded-lg border border-dashed border-line px-5 py-10 text-center text-sm text-muted">
-      {children}
     </div>
   )
 }

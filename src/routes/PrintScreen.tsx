@@ -21,8 +21,8 @@ export function PrintScreen() {
 
       <header className="mb-4 flex items-end justify-between border-b-2 border-black pb-2">
         <div>
-          <div className="text-[10px] tracking-[0.14em] uppercase">{band.name}</div>
-          <h1 className="text-2xl leading-none font-bold">{concert.title}</h1>
+          <div className="font-mono text-[10px] tracking-[0.14em] uppercase">{band.name}</div>
+          <h1 className="text-2xl leading-none font-bold tracking-[-0.028em]">{concert.title}</h1>
         </div>
         <div className="text-right text-[10px]">
           {concert.date && <div>{concert.date}</div>}

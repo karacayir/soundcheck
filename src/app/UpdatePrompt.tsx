@@ -20,7 +20,7 @@ export function UpdatePrompt() {
         <Button size="sm" variant="ghost" onClick={() => setNeedRefresh(false)}>
           Later
         </Button>
-        <Button size="sm" variant="accent" onClick={() => void updateServiceWorker(true)}>
+        <Button size="sm" variant="solid" onClick={() => void updateServiceWorker(true)}>
           Update
         </Button>
       </div>

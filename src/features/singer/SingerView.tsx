@@ -1,7 +1,7 @@
 import { AArrowDown, AArrowUp, Info } from 'lucide-react'
 import { useEffect, useMemo } from 'react'
 import type { Song } from '@/content/types'
-import { Empty, IconButton, Label, Num, cx } from '@/design/primitives'
+import { Empty, IconButton, Num, SectionHead, cx } from '@/design/primitives'
 import { parseLyrics } from '@/features/music/lyrics'
 import { setPrefs, usePrefs } from '@/features/session/prefs'
 
@@ -9,9 +9,10 @@ const MIN_SIZE = 18
 const MAX_SIZE = 64
 
 /**
- * Lyrics sized for a music stand rather than a desk. Sections are labelled so
- * you can find the second chorus at a glance, and cues sit inline where they
- * happen instead of in a footnote nobody reads mid-song.
+ * Lyrics set in the serif at whatever size reaches your eyes from the stand.
+ * Sections are labelled so you can find the second chorus at a glance, and
+ * cues sit inline where they happen rather than in a footnote nobody reads
+ * mid-song.
  */
 export function SingerView({ song, autoScroll }: { song: Song; autoScroll: boolean }) {
   const prefs = usePrefs()
@@ -30,25 +31,34 @@ export function SingerView({ song, autoScroll }: { song: Song; autoScroll: boole
 
   if (sections.length === 0) {
     return (
-      <div className="flex flex-col gap-7 pb-8">
-        <Empty>
-          No lyrics for this song yet.
-          <br />
-          <code className="sc-num mt-2 inline-block text-2xs text-dim">
-            content/songs/{song.id}.yaml → lyrics:
-          </code>
-        </Empty>
+      <div className="flex flex-col gap-10">
+        <section>
+          <SectionHead num="01" title="Lyrics" />
+          <Empty>
+            No lyrics for this song yet — add a{' '}
+            <code className="font-mono text-[0.9em]">lyrics:</code> block to
+            <br />
+            <code className="mt-1.5 inline-block bg-sunk px-1.5 py-0.5 font-mono text-[13px] text-ink">
+              content/songs/{song.id}.yaml
+            </code>
+          </Empty>
+        </section>
+
         {song.structure.length > 0 && (
-          <section className="flex flex-col gap-3">
-            <Label>Form</Label>
-            <ol className="sc-panel divide-y divide-line overflow-hidden">
+          <section>
+            <SectionHead num="02" title="Form">
+              What you have until the words go in.
+            </SectionHead>
+            <ol className="sc-grid m-0 list-none p-0" style={{ gridTemplateColumns: '1fr' }}>
               {song.structure.map((section) => (
-                <li key={section.id} className="flex items-baseline gap-3 px-3.5 py-2.5">
-                  <span className="text-sm font-medium">{section.label}</span>
-                  {section.repeat > 1 && (
-                    <Num className="text-2xs text-dim">×{section.repeat}</Num>
+                <li key={section.id} className="flex flex-wrap items-baseline gap-x-3 gap-y-1 bg-panel px-4 py-3">
+                  <span className="font-mono text-[11px] font-bold tracking-[0.12em] uppercase">
+                    {section.label}
+                  </span>
+                  {section.repeat > 1 && <Num className="text-[10px] text-muted">×{section.repeat}</Num>}
+                  {section.cue && (
+                    <span className="sc-prose !text-[14.5px] !text-muted italic">{section.cue}</span>
                   )}
-                  {section.cue && <span className="text-xs text-muted italic">{section.cue}</span>}
                 </li>
               ))}
             </ol>
@@ -59,57 +69,60 @@ export function SingerView({ song, autoScroll }: { song: Song; autoScroll: boole
   }
 
   return (
-    <div className="flex flex-col gap-5 pb-8">
-      <div className="flex items-center justify-between gap-3">
-        <Label>Lyrics</Label>
-        <div className="flex items-center gap-1.5">
-          <Num className="mr-1 text-2xs text-dim">{prefs.lyricSize}px</Num>
-          <IconButton
-            aria-label="Smaller text"
-            disabled={prefs.lyricSize <= MIN_SIZE}
-            onClick={() => setPrefs({ lyricSize: Math.max(MIN_SIZE, prefs.lyricSize - 3) })}
-          >
-            <AArrowDown size={16} strokeWidth={1.75} />
-          </IconButton>
-          <IconButton
-            aria-label="Bigger text"
-            disabled={prefs.lyricSize >= MAX_SIZE}
-            onClick={() => setPrefs({ lyricSize: Math.min(MAX_SIZE, prefs.lyricSize + 3) })}
-          >
-            <AArrowUp size={16} strokeWidth={1.75} />
-          </IconButton>
-        </div>
-      </div>
+    <section>
+      <SectionHead
+        num="01"
+        title="Lyrics"
+        action={
+          <div className="flex items-center gap-1.5">
+            <Num className="mr-0.5 text-[10px] text-muted">{prefs.lyricSize}</Num>
+            <IconButton
+              aria-label="Smaller text"
+              disabled={prefs.lyricSize <= MIN_SIZE}
+              onClick={() => setPrefs({ lyricSize: Math.max(MIN_SIZE, prefs.lyricSize - 3) })}
+            >
+              <AArrowDown size={15} strokeWidth={1.75} />
+            </IconButton>
+            <IconButton
+              aria-label="Bigger text"
+              disabled={prefs.lyricSize >= MAX_SIZE}
+              onClick={() => setPrefs({ lyricSize: Math.min(MAX_SIZE, prefs.lyricSize + 3) })}
+            >
+              <AArrowUp size={15} strokeWidth={1.75} />
+            </IconButton>
+          </div>
+        }
+      />
 
       <div className="flex flex-col gap-9">
         {sections.map((section, sectionIndex) => {
           const cues = section.label ? cuesBySection.get(slugish(section.label)) : undefined
           return (
-            <section key={`${section.label}-${sectionIndex}`}>
+            <div key={`${section.label}-${sectionIndex}`}>
               {section.label && (
-                <div className="mb-3 flex flex-wrap items-center gap-2.5">
-                  <span className="rounded-sm bg-surface-2 px-2 py-1 text-2xs font-semibold tracking-[0.11em] text-fg uppercase">
+                <div className="mb-3 flex flex-wrap items-center gap-x-3 gap-y-1.5">
+                  <span className="font-mono text-[11px] font-bold tracking-[0.12em] text-accent uppercase">
                     {section.label}
                   </span>
                   {cues?.map((cue) => (
-                    <span key={cue} className="flex items-center gap-1.5 text-xs text-accent">
-                      <Info size={12} strokeWidth={2} />
+                    <span key={cue} className="flex items-center gap-1.5 font-mono text-[10px] tracking-[0.06em] text-warm uppercase">
+                      <Info size={11} strokeWidth={2} />
                       {cue}
                     </span>
                   ))}
                 </div>
               )}
               <div
-                style={{ fontSize: `${prefs.lyricSize}px`, lineHeight: 1.32 }}
-                className="sc-tight font-medium"
+                style={{ fontSize: `${prefs.lyricSize}px`, lineHeight: 1.34 }}
+                className="font-text tracking-[-0.008em] text-ink"
               >
                 {section.lines.map((line, lineIndex) => (
-                  <p key={lineIndex} className={cx(line.chordsOnly && 'text-muted')}>
+                  <p key={lineIndex} className={cx('m-0', line.chordsOnly && 'text-muted')}>
                     {line.chunks.map((chunk, chunkIndex) => (
                       <span key={chunkIndex}>
                         {chunk.chord && (
                           <span
-                            className="sc-num mr-1 align-super text-[0.46em] font-medium text-accent"
+                            className="sc-num mr-1 align-super text-[0.44em] font-semibold text-accent"
                             aria-hidden
                           >
                             {chunk.chord}
@@ -121,11 +134,11 @@ export function SingerView({ song, autoScroll }: { song: Song; autoScroll: boole
                   </p>
                 ))}
               </div>
-            </section>
+            </div>
           )
         })}
       </div>
-    </div>
+    </section>
   )
 }
 

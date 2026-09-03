@@ -8,10 +8,11 @@ import {
   SlidersHorizontal,
 } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { band, getConcert, rolesInSong, setlistItems } from '@/content'
 import type { SetlistItem } from '@/content/types'
-import { Chip, IconButton, Label, Num, SegmentedControl, Stepper, cx } from '@/design/primitives'
+import { CrumbBar, Foot, Masthead, Page } from '@/app/Shell'
+import { Eyebrow, IconButton, Label, Segmented, Stepper, Tag, cx } from '@/design/primitives'
 import {
   BarCounter,
   BeatIndicator,
@@ -33,51 +34,51 @@ import { NotFound } from '@/routes/NotFound'
 type SongItem = Extract<SetlistItem, { kind: 'song' }> & { number: number }
 
 export function SongScreen() {
-  const { concertSlug, songId } = useParams()
+  const { bandSlug, concertSlug, songId } = useParams()
   const navigate = useNavigate()
   const concert = getConcert(concertSlug)
-  const prefs = usePrefs()
 
   const items = useMemo(() => (concert ? setlistItems(concert) : []), [concert])
   const songs = useMemo(() => items.filter((i) => i.kind === 'song') as SongItem[], [items])
   const index = songs.findIndex((i) => i.song === songId)
   const item = index >= 0 ? songs[index]! : null
 
-  if (!concert || !item) return <NotFound />
+  if (!concert || !item || bandSlug !== band.slug) return <NotFound />
 
   return (
     <SongScreenBody
       key={item.song}
       concertSlug={concert.slug}
+      concertTitle={concert.title}
       item={item}
       total={songs.length}
       prev={index > 0 ? songs[index - 1]! : null}
       next={index < songs.length - 1 ? songs[index + 1]! : null}
       onNavigate={navigate}
-      memberId={prefs.memberId}
     />
   )
 }
 
 function SongScreenBody({
   concertSlug,
+  concertTitle,
   item,
   total,
   prev,
   next,
   onNavigate,
-  memberId,
 }: {
   concertSlug: string
+  concertTitle: string
   item: SongItem
   total: number
   prev: SongItem | null
   next: SongItem | null
   onNavigate: (to: string) => void
-  memberId: string | null
 }) {
   const song = item.song_
   const prefs = usePrefs()
+  const memberId = prefs.memberId
   const songPrefs = useSongPrefs(song.id)
   const [mixerOpen, setMixerOpen] = useState(false)
   const [stage, setStage] = useState(false)
@@ -97,13 +98,15 @@ function SongScreenBody({
   const { position, playing } = useTransport()
   const playingBar = playing && position && !position.isCountIn ? position.bar : null
 
+  const base = `/bands/${band.slug}/${concertSlug}`
+
   const goto = useCallback(
     (target: SongItem | null) => {
       if (!target) return
       engine.stop()
-      onNavigate(`/${band.slug}/${concertSlug}/${target.song}`)
+      onNavigate(`${base}/${target.song}`)
     },
-    [concertSlug, onNavigate],
+    [base, onNavigate],
   )
 
   useKeyboardNav({
@@ -116,92 +119,102 @@ function SongScreenBody({
 
   const transposedKey = transposeKey(song.key, songPrefs.keyOffset)
   const transposed = songPrefs.keyOffset !== 0
-  const tempoChanged = song.tempo !== null && songPrefs.tempo !== null
+  const tempoDiffers = song.tempo !== null && songPrefs.tempo !== null && songPrefs.tempo !== song.tempo
 
   return (
-    <div className={cx('mx-auto w-full max-w-2xl px-5 pb-32', !stage && 'safe-t')}>
+    <>
       {!stage && (
-        <header className="flex items-center justify-between gap-3 pt-6 pb-5">
-          <Link
-            to={`/${band.slug}/${concertSlug}`}
-            className="group -ml-1.5 flex items-center gap-1 rounded-md py-1 pr-2 pl-1 text-muted transition-colors hover:bg-surface hover:text-fg"
-          >
-            <ChevronLeft size={15} strokeWidth={2} className="transition-transform group-hover:-translate-x-0.5" />
-            <span className="text-2xs font-medium tracking-[0.1em] uppercase">Setlist</span>
-          </Link>
-          <Num className="text-2xs text-dim">
-            {String(item.number).padStart(2, '0')} <span className="text-line-2">/</span>{' '}
-            {String(total).padStart(2, '0')}
-          </Num>
-        </header>
-      )}
+        <Masthead>
+          <Eyebrow>
+            <span>
+              {String(item.number).padStart(2, '0')} / {String(total).padStart(2, '0')}
+            </span>
+            <span>{concertTitle}</span>
+            {song.artist && <span>{song.artist}</span>}
+          </Eyebrow>
 
-      <div className={cx(stage && 'pt-6')}>
-        <h1 className={cx('sc-display', stage ? 'text-3xl' : 'text-2xl')}>{song.title}</h1>
-        <div className="mt-2 flex flex-wrap items-center gap-2">
-          {song.artist && <span className="text-sm text-muted">{song.artist}</span>}
-          {myRoles.length > 0 && (
-            <Chip tone="accent">
-              You:{' '}
-              {myRoles.map((r) => band.roles.find((role) => role.id === r)?.label ?? r).join(' + ')}
-            </Chip>
-          )}
-        </div>
-      </div>
-
-      {!stage && (
-        <section className="mt-6 grid grid-cols-2 gap-x-5 gap-y-5 rounded-xl border border-line bg-surface p-4 sm:grid-cols-4">
-          <div className="flex flex-col gap-2">
-            <Label>Key</Label>
-            <Stepper
-              decreaseLabel="Down a semitone"
-              increaseLabel="Up a semitone"
-              highlight={transposed}
-              canDecrease={songPrefs.keyOffset > -11}
-              canIncrease={songPrefs.keyOffset < 11}
-              onDecrease={() => setSongPrefs(song.id, { keyOffset: songPrefs.keyOffset - 1 })}
-              onIncrease={() => setSongPrefs(song.id, { keyOffset: songPrefs.keyOffset + 1 })}
-              onReset={transposed ? () => setSongPrefs(song.id, { keyOffset: 0 }) : undefined}
-              value={transposedKey ?? song.key ?? '—'}
-            />
-            {transposed && (
-              <span className="sc-num text-2xs text-muted">
-                {song.key} → {transposedKey} ({offsetLabel(songPrefs.keyOffset)})
-              </span>
+          <div className="flex flex-wrap items-center gap-3">
+            <h1 className="sc-display m-0 text-[clamp(28px,5vw,42px)]">{song.title}</h1>
+            {myRoles.length > 0 && (
+              <Tag tone="accent">
+                You:{' '}
+                {myRoles
+                  .map((r) => band.roles.find((role) => role.id === r)?.label ?? r)
+                  .join(' + ')}
+              </Tag>
             )}
           </div>
 
-          <TempoControl songId={song.id} written={song.tempo ?? null} tempo={tempo} changed={tempoChanged} />
+          <div className="sc-grid mt-1" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))' }}>
+            <div className="bg-panel px-3.5 py-3">
+              <Label className="mb-2">Key</Label>
+              <Stepper
+                decreaseLabel="Down a semitone"
+                increaseLabel="Up a semitone"
+                highlight={transposed}
+                canDecrease={songPrefs.keyOffset > -11}
+                canIncrease={songPrefs.keyOffset < 11}
+                onDecrease={() => setSongPrefs(song.id, { keyOffset: songPrefs.keyOffset - 1 })}
+                onIncrease={() => setSongPrefs(song.id, { keyOffset: songPrefs.keyOffset + 1 })}
+                onReset={transposed ? () => setSongPrefs(song.id, { keyOffset: 0 }) : undefined}
+                value={transposedKey ?? song.key ?? '—'}
+              />
+              {transposed && (
+                <div className="sc-num mt-1.5 text-[10px] text-accent">
+                  {song.key} → {transposedKey} ({offsetLabel(songPrefs.keyOffset)})
+                </div>
+              )}
+            </div>
 
-          <div className="flex flex-col gap-2">
-            <Label>Meter</Label>
-            <div className="flex h-10 items-center">
-              <Num className="text-base font-medium">{song.meter}</Num>
+            <div className="bg-panel px-3.5 py-3">
+              <Label className="mb-2">Tempo</Label>
+              <TempoControl songId={song.id} written={song.tempo ?? null} tempo={tempo} differs={tempoDiffers} />
+              {tempoDiffers && song.tempo && (
+                <div className="sc-num mt-1.5 text-[10px] text-muted">written {song.tempo}</div>
+              )}
+            </div>
+
+            <div className="bg-panel px-3.5 py-3">
+              <Label className="mb-2">Meter</Label>
+              <div className="sc-num flex h-9 items-center text-[15px] font-semibold">{song.meter}</div>
+            </div>
+
+            <div className="bg-panel px-3.5 py-3">
+              <Label className="mb-2">Length</Label>
+              <div className="sc-num flex h-9 items-center text-[15px] font-semibold">
+                {song.duration ?? '—'}
+              </div>
             </div>
           </div>
 
-          <div className="flex flex-col gap-2">
-            <Label>Length</Label>
-            <div className="flex h-10 items-center">
-              <Num className="text-base font-medium">{song.duration ?? '—'}</Num>
-            </div>
-          </div>
-        </section>
+          <Segmented
+            className="mt-1"
+            value={view}
+            onChange={(nextView) => setPrefs({ view: nextView })}
+            options={[
+              { value: 'singer', label: 'Lyrics' },
+              { value: 'musician', label: 'Chart' },
+            ]}
+          />
+        </Masthead>
       )}
 
       {!stage && (
-        <SegmentedControl
-          className="mt-5"
-          value={view}
-          onChange={(next) => setPrefs({ view: next })}
-          options={[
-            { value: 'singer', label: 'Lyrics' },
-            { value: 'musician', label: 'Chart' },
+        <CrumbBar
+          crumbs={[
+            { label: 'Soundcheck', to: '/' },
+            { label: 'Bands', to: '/bands' },
+            { label: band.name, to: `/bands/${band.slug}` },
+            { label: concertTitle, to: base },
+            { label: song.title },
           ]}
         />
       )}
 
-      <div className="mt-7">
+      <Page className={stage ? 'pt-8' : 'pt-12'}>
+        {stage && (
+          <h1 className="sc-display mb-8 text-[clamp(28px,5vw,42px)]">{song.title}</h1>
+        )}
         {view === 'singer' ? (
           <SingerView song={song} autoScroll={autoScroll} />
         ) : (
@@ -213,20 +226,22 @@ function SongScreenBody({
             memberId={memberId}
           />
         )}
-      </div>
+      </Page>
 
-      <nav className="safe-b fixed inset-x-0 bottom-0 z-40 border-t border-line bg-bg/85 backdrop-blur-xl">
+      {!stage && <Foot />}
+
+      <nav className="safe-b fixed inset-x-0 bottom-0 z-40 border-t border-line bg-paper/90 backdrop-blur-[10px]">
         {next && item.segue && (
-          <div className="flex items-center justify-center gap-1.5 border-b border-line py-1.5">
-            <CornerDownRight size={11} strokeWidth={2} className="text-dim" />
-            <span className="text-2xs tracking-[0.1em] text-muted uppercase">
+          <div className="flex items-center justify-center gap-1.5 border-b border-line-soft py-1.5">
+            <CornerDownRight size={10} strokeWidth={2} className="text-muted" />
+            <span className="font-mono text-[10px] tracking-[0.1em] text-muted uppercase">
               segue into {next.song_.title}
             </span>
           </div>
         )}
-        <div className="mx-auto flex w-full max-w-2xl items-center gap-2 px-4 py-2.5">
+        <div className="mx-auto flex w-full max-w-[880px] items-center gap-2 px-5 py-2.5">
           <IconButton onClick={() => goto(prev)} disabled={!prev} aria-label="Previous song" title={prev?.song_.title}>
-            <ChevronLeft size={17} strokeWidth={2} />
+            <ChevronLeft size={16} strokeWidth={2} />
           </IconButton>
 
           <PlayButton disabled={!song.tempo && !songPrefs.tempo} />
@@ -237,34 +252,33 @@ function SongScreenBody({
           </div>
 
           <IconButton onClick={() => setMixerOpen(true)} aria-label="Sound" title="Sound">
-            <SlidersHorizontal size={16} strokeWidth={1.75} />
+            <SlidersHorizontal size={15} strokeWidth={1.75} />
           </IconButton>
 
           {view === 'singer' && (
             <IconButton
               onClick={() => setAutoScroll((s) => !s)}
               active={autoScroll}
-              tone="accent"
               aria-label="Auto-scroll"
               title="Auto-scroll"
             >
-              <MoveVertical size={16} strokeWidth={1.75} />
+              <MoveVertical size={15} strokeWidth={1.75} />
             </IconButton>
           )}
 
           <IconButton onClick={() => setStage((s) => !s)} active={stage} aria-label="Stage mode" title="Stage mode">
-            {stage ? <Minimize2 size={16} strokeWidth={1.75} /> : <Maximize2 size={16} strokeWidth={1.75} />}
+            {stage ? <Minimize2 size={15} strokeWidth={1.75} /> : <Maximize2 size={15} strokeWidth={1.75} />}
           </IconButton>
 
           <IconButton onClick={() => goto(next)} disabled={!next} aria-label="Next song" title={next?.song_.title}>
-            <ChevronRight size={17} strokeWidth={2} />
+            <ChevronRight size={16} strokeWidth={2} />
           </IconButton>
         </div>
       </nav>
 
       <MixerSheet open={mixerOpen} onClose={() => setMixerOpen(false)} style={style} onStyleChange={setStyle} />
       <AudioWarning />
-    </div>
+    </>
   )
 }
 
@@ -272,44 +286,37 @@ function TempoControl({
   songId,
   written,
   tempo,
-  changed,
+  differs,
 }: {
   songId: string
   written: number | null
   tempo: number
-  changed: boolean
+  differs: boolean
 }) {
   const { tap, taps } = useTapTempo((bpm) => setSongPrefs(songId, { tempo: bpm }))
-  const differs = changed && written !== null && tempo !== written
 
   return (
-    <div className="flex flex-col gap-2">
-      <Label>Tempo</Label>
-      <Stepper
-        decreaseLabel="Slower"
-        increaseLabel="Faster"
-        highlight={differs}
-        canDecrease={tempo > 30}
-        canIncrease={tempo < 300}
-        onDecrease={() => setSongPrefs(songId, { tempo: tempo - 1 })}
-        onIncrease={() => setSongPrefs(songId, { tempo: tempo + 1 })}
-        onReset={differs ? () => setSongPrefs(songId, { tempo: null }) : undefined}
-        value={written === null && !changed ? '—' : tempo}
-        trailing={
-          <button
-            type="button"
-            onClick={tap}
-            aria-label="Tap tempo"
-            className="border-l border-line px-2 text-2xs font-medium tracking-[0.09em] text-muted uppercase transition-colors hover:bg-surface-2 hover:text-fg"
-          >
-            {taps > 0 && taps < 4 ? `tap ${taps}` : 'tap'}
-          </button>
-        }
-      />
-      {differs && written !== null && (
-        <span className="sc-num text-2xs text-muted">written {written}</span>
-      )}
-    </div>
+    <Stepper
+      decreaseLabel="Slower"
+      increaseLabel="Faster"
+      highlight={differs}
+      canDecrease={tempo > 30}
+      canIncrease={tempo < 300}
+      onDecrease={() => setSongPrefs(songId, { tempo: tempo - 1 })}
+      onIncrease={() => setSongPrefs(songId, { tempo: tempo + 1 })}
+      onReset={differs ? () => setSongPrefs(songId, { tempo: null }) : undefined}
+      value={written === null && tempo === 120 ? '—' : tempo}
+      trailing={
+        <button
+          type="button"
+          onClick={tap}
+          aria-label="Tap tempo"
+          className="border-l border-line px-2 font-mono text-[10px] font-medium tracking-[0.09em] text-muted uppercase transition-colors hover:bg-sunk hover:text-ink"
+        >
+          {taps > 0 && taps < 4 ? `tap ${taps}` : 'tap'}
+        </button>
+      }
+    />
   )
 }
 
@@ -332,7 +339,10 @@ function AudioWarning() {
     <button
       type="button"
       onClick={() => void engine.unlock()}
-      className="fixed inset-x-5 bottom-24 z-50 rounded-lg border border-accent bg-accent/15 px-4 py-3 text-xs text-accent backdrop-blur"
+      className={cx(
+        'fixed inset-x-5 bottom-24 z-50 border border-accent bg-accent-wash px-4 py-3',
+        'font-mono text-[11px] tracking-[0.04em] text-accent-ink',
+      )}
     >
       Audio was suspended — tap to resume.
     </button>

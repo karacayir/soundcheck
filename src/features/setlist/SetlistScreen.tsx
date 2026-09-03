@@ -1,19 +1,20 @@
-import { ArrowRight, CornerDownRight, Printer, Settings2 } from 'lucide-react'
+import { ArrowRight, CornerDownRight, Printer } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { band, getConcert, memberName, roleById, rolesInSong, setlistItems } from '@/content'
 import type { SetlistItem } from '@/content/types'
-import { Chip, Empty, IconButton, Label, Num } from '@/design/primitives'
+import { CrumbBar, Foot, Masthead, Page } from '@/app/Shell'
+import { Button, Empty, Eyebrow, Facts, Num, SectionHead, Tag, cx } from '@/design/primitives'
 import { estimateSeconds } from '@/features/music/chart'
-import { IdentityButton, IdentitySheet, SettingsSheet } from '@/features/session/IdentityPicker'
+import { IdentityButton, IdentitySheet } from '@/features/session/IdentityPicker'
 import { usePrefs } from '@/features/session/prefs'
 import { NotFound } from '@/routes/NotFound'
 
 export function SetlistScreen() {
-  const { concertSlug } = useParams()
+  const { bandSlug, concertSlug } = useParams()
   const concert = getConcert(concertSlug)
   const prefs = usePrefs()
-  const [sheet, setSheet] = useState<'identity' | 'settings' | null>(null)
+  const [identityOpen, setIdentityOpen] = useState(false)
 
   const items = useMemo(() => (concert ? setlistItems(concert) : []), [concert])
 
@@ -36,100 +37,105 @@ export function SetlistScreen() {
     return { seconds, known, unknown }
   }, [items])
 
-  if (!concert) return <NotFound />
+  if (!concert || bandSlug !== band.slug) return <NotFound />
 
   const songCount = items.filter((i) => i.kind === 'song').length
   const myCount = prefs.memberId
     ? items.filter((i) => rolesInSong(i, prefs.memberId).length > 0).length
     : 0
+  const base = `/bands/${band.slug}/${concert.slug}`
 
   return (
-    <div className="mx-auto min-h-dvh w-full max-w-2xl px-5 pb-24 safe-t">
-      <header className="pt-10 pb-8">
-        <div className="flex items-start justify-between gap-4">
-          <div className="min-w-0">
-            <div className="flex items-center gap-2">
-              <Label>{band.name}</Label>
-            </div>
-            <h1 className="sc-display mt-3 text-3xl">{concert.title}</h1>
-            <div className="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1.5 text-xs text-muted">
-              {concert.date && (
-                <>
-                  <Num>{formatDate(concert.date)}</Num>
-                  <Dot />
-                </>
-              )}
-              {concert.venue && (
-                <>
-                  <span>{concert.venue}</span>
-                  <Dot />
-                </>
-              )}
-              <span>
-                <Num className="text-fg">{songCount}</Num> songs
-              </span>
-              {runtime.known > runtime.unknown && (
-                <>
-                  <Dot />
-                  <span>
-                    ≈<Num className="text-fg">{formatDuration(runtime.seconds)}</Num>
-                  </span>
-                </>
-              )}
-            </div>
-          </div>
+    <>
+      <Masthead>
+        <Eyebrow>
+          <span>{band.name}</span>
+          {concert.date && <span>{concert.date}</span>}
+          {concert.venue && <span>{concert.venue}</span>}
+          <span>{songCount} songs</span>
+        </Eyebrow>
 
-          <div className="flex shrink-0 gap-2">
-            <Link to={`/${band.slug}/${concert.slug}/print`}>
-              <IconButton aria-label="Printable setlist" title="Printable setlist">
-                <Printer size={16} strokeWidth={1.75} />
-              </IconButton>
-            </Link>
-            <IconButton onClick={() => setSheet('settings')} aria-label="Settings" title="Settings">
-              <Settings2 size={16} strokeWidth={1.75} />
-            </IconButton>
-          </div>
-        </div>
+        <h1 className="sc-display m-0 text-[clamp(30px,5.4vw,46px)]">{concert.title}</h1>
 
-        <div className="mt-7 flex flex-wrap items-center gap-3">
-          <IdentityButton onClick={() => setSheet('identity')} />
+        {concert.notes && (
+          <p className="sc-prose m-0 max-w-[52ch] !text-[18px]">{concert.notes.trim()}</p>
+        )}
+
+        <div className="mt-1 flex flex-wrap items-center gap-3">
+          <IdentityButton onClick={() => setIdentityOpen(true)} />
           {prefs.memberId && (
-            <span className="text-xs text-muted">
-              You&rsquo;re on <Num className="text-accent">{myCount}</Num> of{' '}
-              <Num className="text-fg">{songCount}</Num>
+            <span className="sc-prose !text-[15px]">
+              You&rsquo;re on <Num className="font-semibold text-accent">{myCount}</Num> of{' '}
+              <Num className="font-semibold text-ink">{songCount}</Num>
             </span>
           )}
+          <Link to={`${base}/print`} className="ml-auto">
+            <Button size="sm">
+              <Printer size={11} strokeWidth={2} /> Print
+            </Button>
+          </Link>
         </div>
-      </header>
 
-      <div className="flex flex-col gap-1">
+        <div className="mt-2">
+          <Facts
+            items={[
+              { label: 'Songs', value: songCount },
+              { label: 'Sets', value: items.filter((i) => i.kind === 'break').length + 1 },
+              {
+                label: 'Runtime',
+                value:
+                  runtime.known > runtime.unknown ? `≈${formatDuration(runtime.seconds)}` : '—',
+              },
+              { label: 'Charts', value: items.filter((i) => i.kind === 'song' && i.song_.structure.length > 0).length },
+            ]}
+          />
+        </div>
+      </Masthead>
+
+      <CrumbBar
+        crumbs={[
+          { label: 'Soundcheck', to: '/' },
+          { label: 'Bands', to: '/bands' },
+          { label: band.name, to: `/bands/${band.slug}` },
+          { label: concert.title },
+        ]}
+      />
+
+      <Page className="pt-12">
+        <SectionHead
+          num="01"
+          tag="Running order"
+          tagTone="accent"
+          title="Setlist"
+        >
+          Top to bottom is the order you play. Tap a song for words, chart, key and tempo.
+        </SectionHead>
+
         {items.length === 0 ? (
           <Empty>No songs in this set yet.</Empty>
         ) : (
-          items.map((item, index) =>
-            item.kind === 'break' ? (
-              <BreakRow key={`break-${item.position}`} title={item.title} minutes={item.minutes} />
-            ) : (
-              <SongRow
-                key={item.song}
-                item={item}
-                concertSlug={concert.slug}
-                memberId={prefs.memberId}
-                segueFromPrevious={isSegue(items[index - 1])}
-              />
-            ),
-          )
+          <div className="border-t border-line-soft">
+            {items.map((item, index) =>
+              item.kind === 'break' ? (
+                <BreakRow key={`break-${item.position}`} title={item.title} minutes={item.minutes} />
+              ) : (
+                <SongRow
+                  key={item.song}
+                  item={item}
+                  base={base}
+                  memberId={prefs.memberId}
+                  segueFromPrevious={isSegue(items[index - 1])}
+                />
+              ),
+            )}
+          </div>
         )}
-      </div>
+      </Page>
 
-      <IdentitySheet open={sheet === 'identity'} onClose={() => setSheet(null)} />
-      <SettingsSheet open={sheet === 'settings'} onClose={() => setSheet(null)} />
-    </div>
+      <IdentitySheet open={identityOpen} onClose={() => setIdentityOpen(false)} />
+      <Foot />
+    </>
   )
-}
-
-function Dot() {
-  return <span className="text-dim">·</span>
 }
 
 function isSegue(item: SetlistItem | undefined): boolean {
@@ -138,12 +144,12 @@ function isSegue(item: SetlistItem | undefined): boolean {
 
 function SongRow({
   item,
-  concertSlug,
+  base,
   memberId,
   segueFromPrevious,
 }: {
   item: Extract<SetlistItem, { kind: 'song' }>
-  concertSlug: string
+  base: string
   memberId: string | null
   segueFromPrevious: boolean
 }) {
@@ -161,74 +167,64 @@ function SongRow({
 
   return (
     <Link
-      to={`/${band.slug}/${concertSlug}/${song.id}`}
-      className={[
-        'group relative flex items-center gap-3.5 rounded-lg border px-3.5 py-2.5',
-        'transition-all duration-150 ease-[var(--ease-out-quick)]',
-        iPlay
-          ? 'border-line bg-surface hover:border-line-2 hover:bg-surface-2'
-          : 'border-transparent hover:border-line hover:bg-surface',
-        sittingOut ? 'opacity-40 hover:opacity-100' : '',
-      ].join(' ')}
+      to={`${base}/${song.id}`}
+      className={cx(
+        'group relative flex items-baseline gap-3.5 border-b border-line-soft py-3.5 pr-1 pl-1',
+        'transition-colors hover:bg-panel',
+        sittingOut && 'opacity-45 hover:opacity-100',
+      )}
     >
-      {/* A left rail marks the songs you are actually on. */}
-      {iPlay && (
-        <span
+      {iPlay && <span aria-hidden className="absolute inset-y-1 left-0 w-0.5 bg-accent" />}
+      {segueFromPrevious && (
+        <CornerDownRight
+          size={10}
+          strokeWidth={2}
           aria-hidden
-          className="absolute inset-y-3 left-0 w-0.5 rounded-full bg-accent"
+          className="absolute top-0.5 left-8 text-muted"
         />
       )}
-      {segueFromPrevious && (
-        <span
-          aria-hidden
-          title="Runs straight on from the previous song"
-          className="absolute -top-2 left-8 text-dim"
-        >
-          <CornerDownRight size={11} strokeWidth={2} />
-        </span>
-      )}
 
-      <Num className={'w-6 shrink-0 text-right text-xs ' + (iPlay ? 'text-muted' : 'text-dim')}>
+      <Num
+        className={cx(
+          'w-6 shrink-0 pt-0.5 text-right text-[11px]',
+          iPlay ? 'text-accent' : 'text-muted',
+        )}
+      >
         {String(item.number).padStart(2, '0')}
       </Num>
 
       <div className="min-w-0 flex-1">
-        <div className="flex items-baseline gap-2">
-          <h2 className="sc-tight truncate text-base font-medium">{song.title}</h2>
+        <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+          <h3 className="m-0 text-[16.5px] font-medium tracking-[-0.012em] group-hover:text-accent">
+            {song.title}
+          </h3>
           {item.segue && (
-            <span className="shrink-0 text-2xs tracking-[0.1em] text-dim uppercase">segue</span>
+            <span className="font-mono text-[9.5px] tracking-[0.1em] text-muted uppercase">
+              segue
+            </span>
+          )}
+          {myRoles.length > 0 && (
+            <Tag tone="accent">
+              {myRoles.map((r) => roleById.get(r)?.label ?? r).join(' + ')}
+            </Tag>
           )}
         </div>
-        <div className="mt-0.5 flex min-w-0 items-center gap-2">
-          {song.artist && <span className="shrink-0 truncate text-xs text-muted">{song.artist}</span>}
-          {song.artist && others.length > 0 && <Dot />}
-          {others.length > 0 && (
-            <span className="truncate text-xs text-dim">{others.join(', ')}</span>
-          )}
-        </div>
+        <p className="sc-prose m-0 mt-0.5 truncate !text-[14.5px] !leading-snug">
+          {song.artist && <span className="text-ink-soft">{song.artist}</span>}
+          {song.artist && others.length > 0 && <span className="text-line"> · </span>}
+          {others.length > 0 && <span className="text-muted">{others.join(', ')}</span>}
+        </p>
       </div>
 
-      {myRoles.length > 0 && (
-        <Chip tone="accent" className="shrink-0">
-          {myRoles.map((r) => roleById.get(r)?.label ?? r).join(' + ')}
-        </Chip>
-      )}
-
-      <div className="flex w-11 shrink-0 flex-col items-end gap-0.5">
-        {song.key || song.tempo ? (
-          <>
-            <Num className="text-sm font-medium">{song.key ?? '·'}</Num>
-            <Num className="text-2xs text-dim">{song.tempo ?? '·'}</Num>
-          </>
-        ) : (
-          <Num className="text-sm text-dim">—</Num>
-        )}
+      <div className="flex w-16 shrink-0 items-baseline justify-end gap-2">
+        <Num className="text-[14px] font-semibold text-ink">{song.key ?? '—'}</Num>
+        <Num className="text-[11px] text-muted">{song.tempo ?? ''}</Num>
       </div>
 
       <ArrowRight
         size={13}
         strokeWidth={1.75}
-        className="shrink-0 text-line-2 transition-all duration-150 group-hover:translate-x-0.5 group-hover:text-fg"
+        className="shrink-0 self-center text-line transition-all group-hover:translate-x-0.5 group-hover:text-accent"
       />
     </Link>
   )
@@ -236,27 +232,15 @@ function SongRow({
 
 function BreakRow({ title, minutes }: { title: string; minutes?: number }) {
   return (
-    <div className="my-3 flex items-center gap-4">
+    <div className="flex items-center gap-4 border-b border-line-soft py-5">
       <div className="h-px flex-1 bg-line" />
-      <div className="flex items-center gap-2 rounded-full border border-line bg-surface px-3.5 py-1.5">
-        <span className="text-2xs font-medium tracking-[0.14em] text-muted uppercase">{title}</span>
-        {minutes && <Num className="text-2xs text-dim">{minutes}m</Num>}
-      </div>
+      <span className="font-mono text-[10px] font-semibold tracking-[0.16em] text-warm uppercase">
+        {title}
+        {minutes ? ` · ${minutes} min` : ''}
+      </span>
       <div className="h-px flex-1 bg-line" />
     </div>
   )
-}
-
-/* ----------------------------------------------------------------- utils -- */
-
-function formatDate(iso: string): string {
-  const date = new Date(iso)
-  if (Number.isNaN(date.getTime())) return iso
-  return new Intl.DateTimeFormat('en-GB', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  }).format(date)
 }
 
 function formatDuration(seconds: number): string {

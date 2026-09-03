@@ -1,12 +1,13 @@
-import { Check, ChevronDown, Monitor, Moon, Sun, UserRound } from 'lucide-react'
+import { Check, ChevronDown, UserRound } from 'lucide-react'
 import { band, memberById, roleById } from '@/content'
-import { Button, Label, SegmentedControl, Sheet, cx } from '@/design/primitives'
+import { Button, Label, Segmented, Sheet, cx } from '@/design/primitives'
 import { setPrefs, usePrefs } from './prefs'
 
 /**
- * "I am ___". Picking yourself once turns the setlist from a spreadsheet into
- * *your* setlist: your songs marked, the ones you sit out dimmed, and each
- * song opening in the view your instrument actually needs.
+ * "Who are you". Picking yourself once turns the setlist from a running order
+ * into *your* running order: your songs marked with an accent rail, the ones
+ * you sit out faded back, and each song opening in the view your instrument
+ * actually needs.
  */
 export function IdentityButton({ onClick }: { onClick: () => void }) {
   const { memberId } = usePrefs()
@@ -17,26 +18,21 @@ export function IdentityButton({ onClick }: { onClick: () => void }) {
       type="button"
       onClick={onClick}
       className={cx(
-        'group flex items-center gap-2.5 rounded-lg border py-2 pr-3 pl-3 transition-all',
-        'duration-150 ease-[var(--ease-out-quick)] active:scale-[0.98]',
+        'group flex items-center gap-2 rounded-xs border py-1.5 pr-2 pl-2.5 transition-colors',
         member
-          ? 'border-line bg-surface hover:border-line-2 hover:bg-surface-2'
-          : 'border-accent/40 bg-accent/10 hover:bg-accent/15',
+          ? 'border-line bg-panel hover:border-accent'
+          : 'border-accent bg-accent-wash hover:brightness-[0.98]',
       )}
     >
-      <UserRound size={14} strokeWidth={1.75} className={member ? 'text-muted' : 'text-accent'} />
+      <UserRound size={13} strokeWidth={1.75} className={member ? 'text-muted' : 'text-accent'} />
       {member ? (
-        <span className="sc-tight text-sm font-medium">{member.name}</span>
+        <span className="text-[14px] font-medium tracking-[-0.01em]">{member.name}</span>
       ) : (
-        <span className="text-xs font-medium tracking-[0.07em] text-accent uppercase">
+        <span className="font-mono text-[11px] font-medium tracking-[0.06em] text-accent uppercase">
           Who are you?
         </span>
       )}
-      <ChevronDown
-        size={14}
-        strokeWidth={2}
-        className="text-dim transition-colors group-hover:text-muted"
-      />
+      <ChevronDown size={12} strokeWidth={2} className="text-muted" />
     </button>
   )
 }
@@ -46,12 +42,12 @@ export function IdentitySheet({ open, onClose }: { open: boolean; onClose: () =>
 
   return (
     <Sheet open={open} onClose={onClose} title="Who are you?">
-      <p className="mb-5 text-sm text-muted">
-        Your songs get marked, the ones you sit out fade back, and each song opens in the view your
-        instrument needs.
+      <p className="sc-prose mb-5 !text-[16px]">
+        Your songs get an accent rail, the ones you sit out fade back, and each song opens in the
+        view your instrument needs. Saved on this device only.
       </p>
 
-      <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+      <div className="sc-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))' }}>
         {band.members.map((member) => {
           const selected = prefs.memberId === member.id
           return (
@@ -65,15 +61,19 @@ export function IdentitySheet({ open, onClose }: { open: boolean; onClose: () =>
                 onClose()
               }}
               className={cx(
-                'flex flex-col items-start gap-1.5 rounded-lg border px-3 py-3 text-left',
-                'transition-all duration-150 ease-[var(--ease-out-quick)] active:scale-[0.98]',
-                selected
-                  ? 'border-accent bg-accent/12'
-                  : 'border-line bg-surface hover:border-line-2 hover:bg-surface-2',
+                'flex flex-col items-start gap-1 px-3.5 py-3 text-left transition-colors',
+                selected ? 'bg-accent-wash' : 'bg-panel hover:bg-sunk',
               )}
             >
               <span className="flex w-full items-center justify-between gap-2">
-                <span className="sc-tight truncate text-sm font-medium">{member.name}</span>
+                <span
+                  className={cx(
+                    'truncate text-[15px] font-semibold tracking-[-0.012em]',
+                    selected && 'text-accent-ink',
+                  )}
+                >
+                  {member.name}
+                </span>
                 {selected && <Check size={13} strokeWidth={2.5} className="shrink-0 text-accent" />}
               </span>
               <span className={cx('sc-label', selected && '!text-accent')}>
@@ -84,8 +84,48 @@ export function IdentitySheet({ open, onClose }: { open: boolean; onClose: () =>
         })}
       </div>
 
+      <div className="mt-6 flex flex-col gap-2.5">
+        <Label>Default view</Label>
+        <Segmented
+          value={prefs.view ?? 'auto'}
+          onChange={(view) => setPrefs({ view: view === 'auto' ? null : view })}
+          options={[
+            { value: 'auto', label: 'Auto' },
+            { value: 'singer', label: 'Lyrics' },
+            { value: 'musician', label: 'Chart' },
+          ]}
+        />
+        <p className="sc-prose m-0 !text-[14.5px]">
+          Auto follows your instrument — vocalists get lyrics, everyone else gets the chart.
+        </p>
+      </div>
+
+      <div className="mt-6 flex flex-col gap-2.5">
+        <Label>Appearance</Label>
+        <Segmented
+          value={prefs.theme}
+          onChange={(theme) => setPrefs({ theme })}
+          options={[
+            { value: 'system', label: 'System' },
+            { value: 'light', label: 'Light' },
+            { value: 'dark', label: 'Dark' },
+          ]}
+        />
+      </div>
+
+      <div className="mt-6 flex flex-col gap-2.5">
+        <Label>Screen</Label>
+        <Button
+          active={prefs.keepAwake}
+          onClick={() => setPrefs({ keepAwake: !prefs.keepAwake })}
+          className="justify-start"
+        >
+          {prefs.keepAwake && <Check size={12} strokeWidth={2.5} />} Keep screen awake
+        </Button>
+      </div>
+
       {prefs.memberId && (
-        <div className="mt-5 flex items-center gap-3">
+        <div className="mt-6 border-t border-line pt-4">
           <Button
             size="sm"
             variant="ghost"
@@ -94,89 +134,10 @@ export function IdentitySheet({ open, onClose }: { open: boolean; onClose: () =>
               onClose()
             }}
           >
-            Clear
+            Clear selection
           </Button>
-          <span className="text-2xs text-dim">Saved on this device only.</span>
         </div>
       )}
-    </Sheet>
-  )
-}
-
-export function SettingsSheet({ open, onClose }: { open: boolean; onClose: () => void }) {
-  const prefs = usePrefs()
-
-  return (
-    <Sheet open={open} onClose={onClose} title="Settings">
-      <div className="flex flex-col gap-7">
-        <section className="flex flex-col gap-2.5">
-          <Label>Appearance</Label>
-          <SegmentedControl
-            value={prefs.theme}
-            onChange={(theme) => setPrefs({ theme })}
-            options={[
-              {
-                value: 'dark',
-                label: (
-                  <>
-                    <Moon size={13} strokeWidth={1.75} /> Dark
-                  </>
-                ),
-              },
-              {
-                value: 'light',
-                label: (
-                  <>
-                    <Sun size={13} strokeWidth={1.75} /> Light
-                  </>
-                ),
-              },
-            ]}
-          />
-          <p className="text-2xs text-dim">Dark is easier on the eyes under stage lighting.</p>
-        </section>
-
-        <section className="flex flex-col gap-2.5">
-          <Label>Default view</Label>
-          <SegmentedControl
-            value={prefs.view ?? 'auto'}
-            onChange={(view) => setPrefs({ view: view === 'auto' ? null : view })}
-            options={[
-              {
-                value: 'auto',
-                label: (
-                  <>
-                    <Monitor size={13} strokeWidth={1.75} /> Auto
-                  </>
-                ),
-              },
-              { value: 'singer', label: 'Lyrics' },
-              { value: 'musician', label: 'Chart' },
-            ]}
-          />
-          <p className="text-2xs text-dim">
-            Auto follows your instrument: vocalists get lyrics, everyone else gets the chart.
-          </p>
-        </section>
-
-        <section className="flex flex-col gap-2.5">
-          <Label>Screen</Label>
-          <Button
-            size="md"
-            active={prefs.keepAwake}
-            onClick={() => setPrefs({ keepAwake: !prefs.keepAwake })}
-            className="justify-start"
-          >
-            {prefs.keepAwake && <Check size={13} strokeWidth={2.5} />}
-            Keep screen awake
-          </Button>
-          <p className="text-2xs text-dim">Your phone won&rsquo;t sleep while a song is open.</p>
-        </section>
-
-        <div className="flex items-center gap-2 border-t border-line pt-5">
-          <span className="sc-num text-2xs text-dim">Soundcheck v{__APP_VERSION__}</span>
-        </div>
-      </div>
     </Sheet>
   )
 }

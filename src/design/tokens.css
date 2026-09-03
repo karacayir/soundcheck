@@ -3,125 +3,127 @@
 /* ==========================================================================
    Soundcheck — design tokens
 
-   Monochrome foundation, one signal colour. The greys are cool-tinted rather
-   than pure neutral, and the "black" is #08090A rather than #000: on an OLED
-   phone under stage lighting a true black clips against the bezel and every
-   hairline on top of it looks harsher than it should.
+   An editorial system rather than an app-chrome one: paper and panel instead
+   of background and card, ink instead of foreground, hairline rules doing the
+   work that borders and shadows usually do. One blue accent, spent only on
+   things that are live or selected.
 
-   Depth comes from four layered surfaces plus hairlines. The accent — an
-   electric lime — is reserved for things that are *live*: the sounding bar,
-   the running transport, downbeat one, and the part you personally play.
-   If everything is highlighted, nothing is.
+   Light is the default because the setlist is a document. Stage mode flips
+   the whole thing to the dark palette, which is where a phone on a mic stand
+   actually lives.
    ========================================================================== */
 
 @theme {
-  --color-bg: var(--sc-bg);
-  --color-surface: var(--sc-surface);
-  --color-surface-2: var(--sc-surface-2);
-  --color-surface-3: var(--sc-surface-3);
-  --color-fg: var(--sc-fg);
+  --color-paper: var(--sc-paper);
+  --color-panel: var(--sc-panel);
+  --color-sunk: var(--sc-sunk);
+  --color-ink: var(--sc-ink);
+  --color-ink-soft: var(--sc-ink-soft);
   --color-muted: var(--sc-muted);
-  --color-dim: var(--sc-dim);
   --color-line: var(--sc-line);
-  --color-line-2: var(--sc-line-2);
+  --color-line-soft: var(--sc-line-soft);
   --color-accent: var(--sc-accent);
-  --color-accent-fg: var(--sc-accent-fg);
-  --color-accent-dim: var(--sc-accent-dim);
+  --color-accent-ink: var(--sc-accent-ink);
+  --color-accent-wash: var(--sc-accent-wash);
+  --color-ok: var(--sc-ok);
+  --color-warm: var(--sc-warm);
 
-  --font-sans: 'Geist', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --font-mono: 'Geist Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  --font-display: 'Archivo Variable', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-text: 'Newsreader Variable', Georgia, 'Times New Roman', serif;
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, SFMono-Regular, Menlo, monospace;
 
-  /* A 1.25-ish scale, tuned so display sizes stay tight and body stays calm. */
-  --text-2xs: 0.6875rem;
-  --text-2xs--line-height: 1;
-  --text-xs: 0.75rem;
-  --text-xs--line-height: 1.1rem;
-  --text-sm: 0.8125rem;
-  --text-sm--line-height: 1.25rem;
-  --text-base: 0.9375rem;
-  --text-base--line-height: 1.45rem;
-  --text-lg: 1.0625rem;
-  --text-lg--line-height: 1.5rem;
-  --text-xl: 1.375rem;
-  --text-xl--line-height: 1.6rem;
-  --text-2xl: 1.75rem;
-  --text-2xl--line-height: 1.9rem;
-  --text-3xl: 2.375rem;
-  --text-3xl--line-height: 2.4rem;
-  --text-4xl: 3.25rem;
-  --text-4xl--line-height: 3.1rem;
+  /* Almost square. 2px is the whole radius budget. */
+  --radius-xs: 2px;
+  --radius-sm: 2px;
+  --radius-md: 2px;
+  --radius-lg: 2px;
+  --radius-xl: 2px;
+  --radius-2xl: 2px;
 
-  --radius-xs: 4px;
-  --radius-sm: 6px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
-  --radius-xl: 16px;
-
-  --ease-out-quick: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
+  --ease-out-quick: cubic-bezier(0.2, 0, 0, 1);
 }
 
 @layer base {
-  :root,
-  [data-theme='dark'] {
-    --sc-bg: #08090a;
-    --sc-surface: #0e1011;
-    --sc-surface-2: #141719;
-    --sc-surface-3: #1c2023;
-    --sc-fg: #f4f5f6;
-    --sc-muted: #8b9298;
-    --sc-dim: #5a6066;
-    --sc-line: #1f2325;
-    --sc-line-2: #2b3035;
-    --sc-accent: #d8ff3e;
-    --sc-accent-fg: #0b0f02;
-    --sc-accent-dim: #6f8420;
-    color-scheme: dark;
+  :root {
+    --sc-paper: #f1f2f5;
+    --sc-panel: #ffffff;
+    --sc-sunk: #e8eaf0;
+    --sc-ink: #14171f;
+    --sc-ink-soft: #3e4553;
+    --sc-muted: #6c7385;
+    --sc-line: #d8dbe4;
+    --sc-line-soft: #e5e7ee;
+    --sc-accent: #2440d9;
+    --sc-accent-ink: #1b32a8;
+    --sc-accent-wash: #e4e8fc;
+    --sc-ok: #1c6b4a;
+    --sc-warm: #8a2e63;
+    --sc-shadow: 0 1px 2px rgb(20 23 31 / 0.05), 0 8px 24px -16px rgb(20 23 31 / 0.28);
+    color-scheme: light;
   }
 
-  [data-theme='light'] {
-    --sc-bg: #ffffff;
-    --sc-surface: #fafafa;
-    --sc-surface-2: #f2f3f4;
-    --sc-surface-3: #e8eaeb;
-    --sc-fg: #0a0b0c;
-    --sc-muted: #62696f;
-    --sc-dim: #969ba1;
-    --sc-line: #e6e8ea;
-    --sc-line-2: #d3d7db;
-    /* The same hue, darkened until it carries text contrast on white. */
-    --sc-accent: #4d6b00;
-    --sc-accent-fg: #ffffff;
-    --sc-accent-dim: #93a856;
-    color-scheme: light;
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) {
+      --sc-paper: #0e1116;
+      --sc-panel: #161a22;
+      --sc-sunk: #1d222c;
+      --sc-ink: #e8eaf0;
+      --sc-ink-soft: #c0c6d4;
+      --sc-muted: #8a92a4;
+      --sc-line: #29303c;
+      --sc-line-soft: #232935;
+      --sc-accent: #8aa0ff;
+      --sc-accent-ink: #a9baff;
+      --sc-accent-wash: #1b2340;
+      --sc-ok: #62c79b;
+      --sc-warm: #e58fbe;
+      --sc-shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 10px 30px -18px rgb(0 0 0 / 0.9);
+      color-scheme: dark;
+    }
+  }
+
+  :root[data-theme='dark'] {
+    --sc-paper: #0e1116;
+    --sc-panel: #161a22;
+    --sc-sunk: #1d222c;
+    --sc-ink: #e8eaf0;
+    --sc-ink-soft: #c0c6d4;
+    --sc-muted: #8a92a4;
+    --sc-line: #29303c;
+    --sc-line-soft: #232935;
+    --sc-accent: #8aa0ff;
+    --sc-accent-ink: #a9baff;
+    --sc-accent-wash: #1b2340;
+    --sc-ok: #62c79b;
+    --sc-warm: #e58fbe;
+    --sc-shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 10px 30px -18px rgb(0 0 0 / 0.9);
+    color-scheme: dark;
   }
 
   html {
     -webkit-text-size-adjust: 100%;
-    scrollbar-width: thin;
-    scrollbar-color: var(--sc-line-2) transparent;
   }
 
   body {
-    background-color: var(--sc-bg);
-    color: var(--sc-fg);
-    font-family: var(--font-sans);
+    background: var(--sc-paper);
+    color: var(--sc-ink);
+    font-family: var(--font-display);
+    font-size: 16px;
+    line-height: 1.5;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    text-rendering: optimizeLegibility;
     overscroll-behavior-y: none;
     -webkit-tap-highlight-color: transparent;
   }
 
   ::selection {
     background: var(--sc-accent);
-    color: var(--sc-accent-fg);
+    color: #fff;
   }
 
   :focus-visible {
     outline: 2px solid var(--sc-accent);
     outline-offset: 2px;
-    border-radius: 2px;
   }
 
   button,
@@ -144,51 +146,102 @@
 }
 
 @layer components {
-  /* Uppercase micro-label. Wide tracking is what stops 11px from reading cheap. */
+  /* The mono eyebrow that sits above every headline. */
+  .sc-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--sc-accent);
+  }
+
+  /* Quieter version, for column headings and field labels. */
   .sc-label {
-    font-size: var(--text-2xs);
-    line-height: 1;
-    letter-spacing: 0.11em;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--sc-muted);
-    font-weight: 500;
     font-variant-numeric: tabular-nums;
   }
 
-  /* Numbers that must not jitter: tempo, bar counts, keys. */
+  /* Anything that must line up in a column: keys, tempos, bar numbers. */
   .sc-num {
     font-family: var(--font-mono);
     font-variant-numeric: tabular-nums;
-    font-feature-settings: 'tnum' 1, 'ss01' 1;
+    font-feature-settings: 'tnum' 1;
   }
 
-  /* Display type wants negative tracking; it looks loose otherwise. */
+  /* Prose. Serif is the single biggest reason this reads as edited. */
+  .sc-prose {
+    font-family: var(--font-text);
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--sc-ink-soft);
+  }
+
   .sc-display {
-    letter-spacing: -0.032em;
-    font-weight: 600;
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: -0.028em;
+    line-height: 1.04;
+    text-wrap: balance;
   }
 
-  .sc-tight {
-    letter-spacing: -0.018em;
-  }
-
-  /* A raised panel: surface, hairline, and a 1px top highlight so it catches
-     an edge of light instead of sitting flat on the background. */
-  .sc-panel {
-    background: var(--sc-surface);
+  /* Small outlined mono tag. */
+  .sc-tag {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--sc-muted);
     border: 1px solid var(--sc-line);
-    border-radius: var(--radius-lg);
-    box-shadow: inset 0 1px 0 0 rgb(255 255 255 / 0.03);
+    border-radius: 2px;
+    padding: 3px 7px;
+    white-space: nowrap;
   }
 
-  [data-theme='light'] .sc-panel {
-    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.04);
+  .sc-tag-accent {
+    color: var(--sc-accent);
+    border-color: var(--sc-accent);
   }
 
-  /* The "live" glow, used only while the transport is running. */
-  .sc-live {
-    box-shadow: 0 0 0 1px var(--sc-accent), 0 0 24px -6px var(--sc-accent);
+  /* The hairline grid.
+     Each cell draws its own 1px ring rather than the container painting a
+     ground behind 1px gaps — otherwise a row that runs out of items leaves
+     filled-looking empty cells. Adjacent rings land in the same gap and
+     collapse into one clean rule. */
+  .sc-grid {
+    display: grid;
+    gap: 1px;
+    padding: 1px;
   }
+
+  .sc-grid > * {
+    box-shadow: 0 0 0 1px var(--sc-line-soft);
+  }
+
+  .sc-panel {
+    background: var(--sc-panel);
+    border: 1px solid var(--sc-line);
+  }
+
+  .sc-shadow {
+    box-shadow: var(--sc-shadow);
+  }
+
+  /* Section rule: a heavy ink line under the heading, like a masthead. */
+  .sc-rule {
+    border-bottom: 2px solid var(--sc-ink);
+  }
+}
+
+@utility font-text {
+  font-family: var(--font-text);
 }
 
 @utility safe-b {
@@ -199,24 +252,12 @@
   padding-top: env(safe-area-inset-top, 0px);
 }
 
-/* A slow breathing pulse for the record-style live dot. */
 @keyframes sc-pulse {
   0%,
   100% {
     opacity: 1;
   }
   50% {
-    opacity: 0.35;
-  }
-}
-
-@keyframes sc-rise {
-  from {
-    opacity: 0;
-    transform: translateY(6px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
+    opacity: 0.3;
   }
 }
