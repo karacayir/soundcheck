@@ -17,10 +17,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
           cache: npm
@@ -42,7 +42,7 @@ jobs:
 
       - name: Restore Playwright browser
         id: playwright-cache
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/.cache/ms-playwright
           key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
@@ -67,7 +67,7 @@ jobs:
       # Only on an e2e failure — an earlier step failing leaves no report.
       - name: Upload the Playwright report
         if: ${{ !cancelled() && steps.e2e.conclusion == 'failure' }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: playwright-report
           path: playwright-report
@@ -76,12 +76,12 @@ jobs:
       # Deploys download this rather than rebuilding, so dev and production
       # serve the exact bytes these tests just ran against.
       - name: Upload the build
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: dist
           path: dist
           retention-days: 1
-          # v4 drops dotfiles by default. Nothing in dist starts with a dot
-          # today, but a .well-known/ for domain verification would vanish
-          # from production without a word.
+          # upload-artifact drops dotfiles by default. Nothing in dist starts
+          # with a dot today, but a .well-known/ for domain verification would
+          # vanish from production without a word.
           include-hidden-files: true
