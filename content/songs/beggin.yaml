@@ -6,20 +6,38 @@
 id: beggin
 title: "Beggin'"
 artist: "Måneskin"
-# key:               # TODO - e.g. Am, Bb, F#m
+key: Bm
 tempo: 134
 meter: "4/4"
 style: rock
 duration: "3:31"
 
 notes: |
-  No chart in the band's book yet.
+  Draft chart from published chord sheets — the shape is right, but check
+  the bar counts against the record before the show. Four-bar loop throughout, like the original
+  Four Seasons chart.
 
-structure: []        # TODO - sections and chords
-#  - id: intro
-#    label: "Intro"
-#    chords: "| Am | F | C | G |"   # % repeats the previous bar
-#    repeat: 2
+structure:
+  - id: intro
+    label: "Intro"
+    chords: "| Bm | Em7 | C#m7 | F#7 |"
+    cue: "Vocal alone on the first pass"
+  - id: verse
+    label: "Verse"
+    chords: "| Bm | Em7 | C#m7 | F#7 |"
+    repeat: 2
+  - id: chorus
+    label: "Chorus"
+    chords: "| Bm | Em7 | C#m7 | F#7 |"
+    repeat: 2
+  - id: break
+    label: "Break"
+    chords: "| Bm | % | % | % |"
+    cue: "Drop to bass and vocal"
+  - id: outro
+    label: "Outro"
+    chords: "| Bm | Em7 | C#m7 | F#7 |"
+    repeat: 2
 
 # Lyrics. Use [Section] headings; chords can go inline as [Am] if you want
 # them shown on the chart view.

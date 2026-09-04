@@ -7,13 +7,14 @@ id: sopa
 title: "Sopa"
 artist: "Hande Yener"
 key: Cm
-# tempo:             # TODO - BPM
+tempo: 125
 meter: "4/4"
 style: pop
+duration: "4:01"
 feel: swing
 
 notes: |
-  Chart transcribed from the band's iReal book. Marked medium swing — add the tempo.
+  Chart transcribed from the band's iReal book. Marked medium swing.
 
 structure:
   - id: intro

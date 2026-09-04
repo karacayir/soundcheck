@@ -7,13 +7,14 @@ id: bi-dans-etsek
 title: "Bi Dans Etsek"
 artist: "Bedük"
 key: Gm
-# tempo:             # TODO - BPM
+tempo: 119
 meter: "4/4"
 style: disco
+duration: "3:23"
 feel: swing
 
 notes: |
-  Chart transcribed from the band's iReal book. Add the tempo.
+  Chart transcribed from the band's iReal book.
 
 structure:
   - id: a

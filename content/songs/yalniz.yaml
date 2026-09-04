@@ -6,19 +6,38 @@
 id: yalniz
 title: "Yalnız"
 artist: "Şebnem Ferah"
-# key:               # TODO - e.g. Am, Bb, F#m
-# tempo:             # TODO - BPM
+key: Em
+tempo: 103
 meter: "4/4"
 style: rock
+duration: "5:08"
 
 notes: |
-  Artist confirmed. Key, tempo and chart still to add.
+  Draft chart from published chord sheets — the shape is right, but check
+  the bar counts against the record before the show.
 
-structure: []        # TODO - sections and chords
-#  - id: intro
-#    label: "Intro"
-#    chords: "| Am | F | C | G |"   # % repeats the previous bar
-#    repeat: 2
+structure:
+  - id: intro
+    label: "Intro"
+    chords: "| Em | Am | Em | % |"
+  - id: verse
+    label: "Verse"
+    chords: "| Em | Am | Em | % |"
+    repeat: 2
+  - id: pre
+    label: "Pre-chorus"
+    chords: "| Am | Em | Am | B |"
+  - id: chorus
+    label: "Chorus"
+    chords: "| Em | C | Em | C | Am | Em |"
+    repeat: 2
+  - id: bridge
+    label: "Bridge"
+    chords: "| Em | Am | Em | % |"
+    cue: "Build back into the last chorus"
+  - id: outro
+    label: "Outro"
+    chords: "| Em | Am | Em | % |"
 
 # Lyrics. Use [Section] headings; chords can go inline as [Am] if you want
 # them shown on the chart view.

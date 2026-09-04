@@ -6,19 +6,38 @@
 id: cambaz
 title: "Cambaz"
 artist: "Mor ve Ötesi"
-# key:               # TODO - e.g. Am, Bb, F#m
-# tempo:             # TODO - BPM
+key: Em
+tempo: 152
 meter: "4/4"
 style: rock
+duration: "3:51"
 
 notes: |
-  No chart in the band's book yet.
+  From "Dünya Yalan Söylüyor" (2004).
 
-structure: []        # TODO - sections and chords
-#  - id: intro
-#    label: "Intro"
-#    chords: "| Am | F | C | G |"   # % repeats the previous bar
-#    repeat: 2
+  Draft chart from published chord sheets — the shape is right, but check
+  the bar counts against the record before the show. The verse is a chromatic descent — take it
+  slowly in rehearsal before you play it at 152.
+
+structure:
+  - id: intro
+    label: "Intro"
+    chords: "| Em | % | % | % |"
+  - id: verse
+    label: "Verse"
+    chords: "| Em | Eb | D | Db | C | G# | % | % |"
+    cue: "Chromatic descent"
+    repeat: 2
+  - id: chorus
+    label: "Chorus"
+    chords: "| Am | D | G | C | Am | B | Em | E |"
+    repeat: 2
+  - id: bridge
+    label: "Bridge"
+    chords: "| Am | D | G | C | Am | B | Em | % |"
+  - id: outro
+    label: "Outro"
+    chords: "| Em | % | % | % |"
 
 # Lyrics. Use [Section] headings; chords can go inline as [Am] if you want
 # them shown on the chart view.

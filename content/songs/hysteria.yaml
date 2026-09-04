@@ -13,13 +13,38 @@ style: rock
 duration: "3:47"
 
 notes: |
-  No chart in the band's book yet — key and tempo are from the record.
+  Draft chart from published chord sheets — the shape is right, but check
+  the bar counts against the record before the show.
 
-structure: []        # TODO - sections and chords
-#  - id: intro
-#    label: "Intro"
-#    chords: "| Am | F | C | G |"   # % repeats the previous bar
-#    repeat: 2
+  Written at 84 so the click sits on the backbeat — the bass riff is straight
+  16ths on top of that. If it feels sluggish on stage, count it at 168.
+
+structure:
+  - id: intro
+    label: "Intro"
+    chords: "| Am | % | % | % |"
+    cue: "Bass riff alone — 16ths"
+    repeat: 2
+  - id: verse
+    label: "Verse"
+    chords: "| Am | % | Em | % |"
+    repeat: 2
+  - id: chorus
+    label: "Chorus"
+    chords: "| Dm | Am | C | G |"
+    repeat: 2
+  - id: solo
+    label: "Solo"
+    chords: "| Am | % | % | % |"
+    cue: "Guitar solo over the riff"
+    repeat: 2
+  - id: outro
+    label: "Outro"
+    chords: "| Am | % | % | % |"
+    cue: "Riff out, full stop"
+
+cues:
+  - { at: intro, text: "Bass starts alone — band in on the downbeat of the verse" }
 
 # Lyrics. Use [Section] headings; chords can go inline as [Am] if you want
 # them shown on the chart view.

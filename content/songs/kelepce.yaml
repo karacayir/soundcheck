@@ -6,19 +6,36 @@
 id: kelepce
 title: "Kelepçe"
 artist: "Hande Yener"
-# key:               # TODO - e.g. Am, Bb, F#m
-# tempo:             # TODO - BPM
+key: Bm
+tempo: 125
 meter: "4/4"
 style: pop
+duration: "3:45"
 
 notes: |
-  From "Apayrı" (2006). No chart in the band's book yet.
+  From "Apayrı" (2006).
 
-structure: []        # TODO - sections and chords
-#  - id: intro
-#    label: "Intro"
-#    chords: "| Am | F | C | G |"   # % repeats the previous bar
-#    repeat: 2
+  Draft chart from published chord sheets — the shape is right, but check
+  the bar counts against the record before the show. Sheets split between calling it Bm and D —
+  written here as Bm, which is how the vocal sits.
+
+structure:
+  - id: intro
+    label: "Intro"
+    chords: "| Bm | A | G | F# |"
+    repeat: 2
+  - id: verse
+    label: "Verse"
+    chords: "| Bm | A | G | F# |"
+    repeat: 2
+  - id: chorus
+    label: "Chorus"
+    chords: "| Bm | A | G | F# |"
+    cue: "Lift — full band"
+    repeat: 2
+  - id: outro
+    label: "Outro"
+    chords: "| Bm | A | G | F# | Bm |"
 
 # Lyrics. Use [Section] headings; chords can go inline as [Am] if you want
 # them shown on the chart view.

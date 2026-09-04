@@ -1,24 +1,40 @@
-# Haydi Gel İçelim?
+# Haydi Gel İçelim — Yüksek Sadakat
 #
 # Lyrics go in the `lyrics:` block at the bottom.
 # To see what is still missing across the whole set: npm run content:check
 
 id: haydi-gel-icelim
 title: "Haydi Gel İçelim?"
-# artist:            # TODO
-# key:               # TODO - e.g. Am, Bb, F#m
-# tempo:             # TODO - BPM
+artist: "Yüksek Sadakat"
+key: Dm
+tempo: 136
 meter: "4/4"
-style: pop
+style: rock
+duration: "4:10"
 
 notes: |
-  Artist still to confirm, then key, tempo and chart.
+  From "Katil ve Maktül" (2005).
 
-structure: []        # TODO - sections and chords
-#  - id: intro
-#    label: "Intro"
-#    chords: "| Am | F | C | G |"   # % repeats the previous bar
-#    repeat: 2
+  Draft chart from published chord sheets — the shape is right, but check
+  the bar counts against the record before the show. The published sheet gives the verse in the
+  original key and the chorus in a capo key — the chorus here is transposed
+  back to Dm to match, so play it against the record once before you trust it.
+
+structure:
+  - id: intro
+    label: "Intro"
+    chords: "| Dm | A | Dm | A |"
+  - id: verse
+    label: "Verse"
+    chords: "| Dm | A | Dm | A | Gm | A | Gm | A |"
+    repeat: 2
+  - id: chorus
+    label: "Chorus"
+    chords: "| Dm | C | Dm | C | Gm | C | Dm | C |"
+    repeat: 2
+  - id: outro
+    label: "Outro"
+    chords: "| Dm | C | Dm | C | Dm |"
 
 # Lyrics. Use [Section] headings; chords can go inline as [Am] if you want
 # them shown on the chart view.

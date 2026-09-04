@@ -6,19 +6,36 @@
 id: bir-derdim-var
 title: "Bir Derdim Var"
 artist: "Mor ve Ötesi"
-# key:               # TODO - e.g. Am, Bb, F#m
-# tempo:             # TODO - BPM
+key: Bm
+tempo: 122
 meter: "4/4"
 style: rock
+duration: "3:21"
 
 notes: |
-  No chart in the band's book yet.
+  Draft chart from published chord sheets — the shape is right, but check
+  the bar counts against the record before the show.
 
-structure: []        # TODO - sections and chords
-#  - id: intro
-#    label: "Intro"
-#    chords: "| Am | F | C | G |"   # % repeats the previous bar
-#    repeat: 2
+structure:
+  - id: intro
+    label: "Intro"
+    chords: "| Bm | A | Em | % |"
+  - id: verse
+    label: "Verse"
+    chords: "| Bm | A | Em | % |"
+    repeat: 2
+  - id: chorus
+    label: "Chorus"
+    chords: "| Bm | A | Em | G A |"
+    repeat: 2
+  - id: bridge
+    label: "Bridge"
+    chords: "| Bm | G | Bm | G |"
+    repeat: 2
+  - id: outro
+    label: "Outro"
+    chords: "| D | F# | Bm | G | Em | G | Em | G A | Bm |"
+    cue: "Big finish — land together on Bm"
 
 # Lyrics. Use [Section] headings; chords can go inline as [Am] if you want
 # them shown on the chart view.

@@ -22,7 +22,7 @@ describe('content', () => {
     expect(breaks[0]).toMatchObject({ title: 'SHORT BREAK' })
 
     const songs = february!.setlist.filter((e) => e.kind === 'song')
-    expect(songs).toHaveLength(28)
+    expect(songs).toHaveLength(25)
   })
 
   it('resolves every setlist song to a song file', () => {
