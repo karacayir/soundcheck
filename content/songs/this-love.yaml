@@ -13,13 +13,33 @@ style: pop
 duration: "3:26"
 
 notes: |
-  No chart in the band's book yet — key and tempo are from the record. Add the chart when you have it.
+  Draft chart from published chord sheets — the shape is right, but check
+  the bar counts against the record before the show.
 
-structure: []        # TODO - sections and chords
-#  - id: intro
-#    label: "Intro"
-#    chords: "| Am | F | C | G |"   # % repeats the previous bar
-#    repeat: 2
+structure:
+  - id: intro
+    label: "Intro"
+    chords: "| Cm | Fm7 | Bb7 | Ebmaj7 |"
+    cue: "Keys riff"
+  - id: verse
+    label: "Verse"
+    chords: "| Cm | Fm7 | Bb7 | Ebmaj7 |"
+    repeat: 2
+  - id: pre
+    label: "Pre-chorus"
+    chords: "| Bdim | Cm | Fm7 | G7/D |"
+  - id: chorus
+    label: "Chorus"
+    chords: "| Cm | Fm7 | Bb7 | Ebmaj7 |"
+    repeat: 2
+  - id: bridge
+    label: "Bridge"
+    chords: "| Ab | Eb | Fm7 | G7 |"
+  - id: outro
+    label: "Outro"
+    chords: "| Cm | Fm7 | Bb7 | Ebmaj7 |"
+    cue: "Vocal ad lib. to the end"
+    repeat: 2
 
 # Lyrics. Use [Section] headings; chords can go inline as [Am] if you want
 # them shown on the chart view.

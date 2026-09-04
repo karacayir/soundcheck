@@ -6,20 +6,26 @@
 id: lets-get-it-started
 title: "Let's Get It Started"
 artist: "The Black Eyed Peas"
-# key:               # TODO - e.g. Am, Bb, F#m
+key: Bm
 tempo: 105
 meter: "4/4"
 style: funk
 duration: "3:36"
 
 notes: |
-  No chart in the band's book yet.
+  Draft chart from published chord sheets — the shape is right, but check
+  the bar counts against the record before the show. Four-bar loop the whole way — the arrangement
+  is in the vocal and the dynamics, not the chords.
 
-structure: []        # TODO - sections and chords
-#  - id: intro
-#    label: "Intro"
-#    chords: "| Am | F | C | G |"   # % repeats the previous bar
-#    repeat: 2
+structure:
+  - id: loop
+    label: "Loop"
+    chords: "| Bm | D | G | F# |"
+    cue: "The whole song is this four-bar loop"
+    repeat: 8
+
+cues:
+  - { text: "Opener — set the tempo before anyone plays" }
 
 # Lyrics. Use [Section] headings; chords can go inline as [Am] if you want
 # them shown on the chart view.

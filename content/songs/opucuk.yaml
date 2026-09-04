@@ -6,19 +6,37 @@
 id: opucuk
 title: "Öpücük"
 artist: "Athena"
-# key:               # TODO - e.g. Am, Bb, F#m
-# tempo:             # TODO - BPM
+key: C#m
+tempo: 96
 meter: "4/4"
 style: rock
+duration: "3:31"
 
 notes: |
-  Ska-punk feel. Key, tempo and chart still to add.
+  Ska-punk feel — guitar on the offbeats.
 
-structure: []        # TODO - sections and chords
-#  - id: intro
-#    label: "Intro"
-#    chords: "| Am | F | C | G |"   # % repeats the previous bar
-#    repeat: 2
+  Draft chart from published chord sheets — the shape is right, but check
+  the bar counts against the record before the show. Sheets disagree on whether to call this
+  C#m or F#m; it is written here as C#m, so the verse reads iv - i - V.
+
+structure:
+  - id: intro
+    label: "Intro"
+    chords: "| F#m | C#m | G# | % |"
+  - id: verse
+    label: "Verse"
+    chords: "| F#m | C#m | G# | % |"
+    repeat: 2
+  - id: pre
+    label: "Pre-chorus"
+    chords: "| F#m | C#m | D# | G# |"
+  - id: chorus
+    label: "Chorus"
+    chords: "| F#m | C#m | A | F#m G# |"
+    repeat: 2
+  - id: outro
+    label: "Outro"
+    chords: "| F#m | C#m | G# | % |"
 
 # Lyrics. Use [Section] headings; chords can go inline as [Am] if you want
 # them shown on the chart view.

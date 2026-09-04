@@ -26,12 +26,6 @@ setlist:
   - song: haydi-gel-icelim
     lineup: { vocals: [doga, berfin], guitar: [itri, yilmaz], keys: [seco], bass: [kerem], drums: [burak] }
 
-  - song: tbd-1
-    lineup: { vocals: [doga, berfin], guitar: [gonen], keys: [seco], bass: [doruk], drums: [burak] }
-
-  - song: tbd-2
-    lineup: { vocals: [doga, berfin], guitar: [gonen], keys: [seco], bass: [doruk], drums: [burak] }
-
   - song: opucuk
     lineup: { vocals: [doga], guitar: [yilmaz], bass: [doruk], drums: [burak] }
 
@@ -40,9 +34,6 @@ setlist:
 
   - song: hysteria
     lineup: { vocals: [doga], guitar: [ozan-a, yilmaz], keys: [misra], bass: [doruk], drums: [burak] }
-
-  - song: yapboz
-    lineup: { vocals: [doga], guitar: [ozan-a], keys: [misra], drums: [burak] }
 
   - song: cambaz
     lineup: { vocals: [doga], guitar: [ozan-a, yilmaz], keys: [misra], bass: [doruk], drums: [selcuk] }

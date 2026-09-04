@@ -7,13 +7,14 @@ id: kandirdim
 title: "Kandırdım"
 artist: "Kenan Doğulu"
 key: Dm
-# tempo:             # TODO - BPM
+tempo: 96
 meter: "4/4"
 style: pop
+duration: "4:23"
 feel: swing
 
 notes: |
-  Chart transcribed from the band's iReal book. Marked medium swing — add the tempo.
+  Chart transcribed from the band's iReal book. Marked medium swing.
 
 structure:
   - id: intro

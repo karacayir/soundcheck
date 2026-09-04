@@ -1,24 +1,50 @@
-# Kara Sevda
+# Kara Sevda — Barış Manço
 #
 # Lyrics go in the `lyrics:` block at the bottom.
 # To see what is still missing across the whole set: npm run content:check
 
 id: kara-sevda
 title: "Kara Sevda"
-# artist:            # TODO
-# key:               # TODO - e.g. Am, Bb, F#m
-# tempo:             # TODO - BPM
+artist: "Barış Manço"
+key: C#m
+tempo: 88
 meter: "4/4"
 style: rock
+duration: "3:46"
 
 notes: |
-  Artist still to confirm, then key, tempo and chart.
+  From "Darısı Başınıza" (1989).
 
-structure: []        # TODO - sections and chords
-#  - id: intro
-#    label: "Intro"
-#    chords: "| Am | F | C | G |"   # % repeats the previous bar
-#    repeat: 2
+  Draft chart from published chord sheets — the shape is right, but check
+  the bar counts against the record before the show.
+
+  Tempo: every BPM site reports this at ~175, which is the double-time
+  reading. Written here as 88 so the click sits on the backbeat. If it feels
+  wrong in rehearsal, 175 is the other half of the same coin.
+
+  Guitarists: the original key is full of barre chords. Capo 3 and play the
+  Am shapes if you would rather.
+
+structure:
+  - id: intro
+    label: "Intro"
+    chords: "| C#m | % | % | % |"
+    repeat: 2
+  - id: verse
+    label: "Verse"
+    chords: "| C#m | F#m | G# | C#m |"
+    repeat: 2
+  - id: chorus
+    label: "Chorus"
+    chords: "| C#m | B | C#m | % |"
+    repeat: 2
+  - id: bridge
+    label: "Bridge"
+    chords: "| F#m | C#m | G# | C#m |"
+  - id: outro
+    label: "Outro"
+    chords: "| C#m | B | C#m | % |"
+    cue: "Land together on C#m"
 
 # Lyrics. Use [Section] headings; chords can go inline as [Am] if you want
 # them shown on the chart view.

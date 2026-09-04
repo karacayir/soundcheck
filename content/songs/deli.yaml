@@ -6,19 +6,37 @@
 id: deli
 title: "Deli"
 artist: "Mor ve Ötesi"
-# key:               # TODO - e.g. Am, Bb, F#m
-# tempo:             # TODO - BPM
+key: Em
+tempo: 151
 meter: "4/4"
 style: rock
+duration: "3:05"
 
 notes: |
-  Eurovision 2008 entry. No chart in the band's book yet.
+  Turkey's Eurovision 2008 entry.
 
-structure: []        # TODO - sections and chords
-#  - id: intro
-#    label: "Intro"
-#    chords: "| Am | F | C | G |"   # % repeats the previous bar
-#    repeat: 2
+  Draft chart from published chord sheets — the shape is right, but check
+  the bar counts against the record before the show.
+
+structure:
+  - id: intro
+    label: "Intro"
+    chords: "| Em | % | % | % |"
+  - id: verse
+    label: "Verse"
+    chords: "| Em | F# | G | B | C | B | C | C#m |"
+    repeat: 2
+  - id: chorus
+    label: "Chorus"
+    chords: "| B | Em | Am | D | C | B | % | % |"
+    repeat: 2
+  - id: bridge
+    label: "Bridge"
+    chords: "| Em | G | A | C | B | % |"
+    cue: "Solo section"
+  - id: outro
+    label: "Outro"
+    chords: "| B | Em | Am | D | C | B | Em |"
 
 # Lyrics. Use [Section] headings; chords can go inline as [Am] if you want
 # them shown on the chart view.

@@ -8,15 +8,16 @@ test.describe('setlist', () => {
     // The print link shares the URL prefix, so match on rows that carry a title.
     await expect(
       page.locator('a[href*="/february/"]').filter({ has: page.locator('h3') }),
-    ).toHaveCount(28)
+    ).toHaveCount(25)
     await expect(page.getByText('SHORT BREAK')).toBeVisible()
 
     // Order matters more than anything else on this screen.
     const titles = await page.locator('a[href*="/february/"] h3').allInnerTexts()
     expect(titles[0]).toBe('You Give Love A Bad Name')
-    expect(titles[14]).toBe('Careless Whisper')
-    expect(titles[15]).toBe("Let's Get It Started")
-    expect(titles[27]).toBe('Bi Dans Etsek')
+    // Either side of the break.
+    expect(titles[11]).toBe('Careless Whisper')
+    expect(titles[12]).toBe("Let's Get It Started")
+    expect(titles.at(-1)).toBe('Bi Dans Etsek')
   })
 
   test('the landing page leads to the band and its concert', async ({ page }) => {
@@ -103,7 +104,7 @@ test.describe('song', () => {
 
 test('the printable list mirrors the old spreadsheet', async ({ page }) => {
   await page.goto('/bands/funky-monkey/february/print')
-  // 28 songs + the break row.
-  await expect(page.locator('tbody tr')).toHaveCount(29)
+  // 25 songs + the break row.
+  await expect(page.locator('tbody tr')).toHaveCount(26)
   await expect(page.locator('thead th')).toHaveCount(9)
 })

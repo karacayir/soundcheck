@@ -13,13 +13,37 @@ style: ballad
 duration: "5:00"
 
 notes: |
-  No chart in the band's book yet — key and tempo are from the record.
+  Draft chart from published chord sheets — the shape is right, but check
+  the bar counts against the record before the show.
 
-structure: []        # TODO - sections and chords
-#  - id: intro
-#    label: "Intro"
-#    chords: "| Am | F | C | G |"   # % repeats the previous bar
-#    repeat: 2
+  Deezer reports 152 BPM for this — that is the double-time reading. 77 is
+  what you count on stage.
+
+structure:
+  - id: intro
+    label: "Intro — Sax"
+    chords: "| Dm7 | Gm7 | Bbmaj7 | Am7 |"
+    cue: "The sax hook — everyone waits"
+    repeat: 2
+  - id: verse
+    label: "Verse"
+    chords: "| Dm7 | Gm7 | Bbmaj7 | Am7 |"
+    repeat: 2
+  - id: chorus
+    label: "Chorus"
+    chords: "| Dm7 | Gm7 | Am7 | Bbmaj7 Am7 |"
+    repeat: 2
+  - id: bridge
+    label: "Bridge"
+    chords: "| Bbmaj7 | Am7 | Gm7 | A7 |"
+  - id: outro
+    label: "Outro"
+    chords: "| Dm7 | Gm7 | Bbmaj7 | Am7 |"
+    cue: "Sax hook again — repeat and fade"
+    repeat: 4
+
+cues:
+  - { at: intro, text: "Sax hook is the whole intro — hold the band back" }
 
 # Lyrics. Use [Section] headings; chords can go inline as [Am] if you want
 # them shown on the chart view.
