@@ -1,0 +1,74 @@
+name: Deploy to production
+
+# Merging runs CI, then dev, then production — one build, verified once,
+# deployed twice. Dev is not redefined here; this calls dev.yml, which calls
+# ci.yml, and both deploys download that single build artifact.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  # For the pull request comment in the called dev.yml. A called workflow
+  # cannot be granted more than its caller, and dropping this would leave that
+  # step to fail with a 403 the day it runs.
+  pull-requests: write
+
+env:
+  CF_PAGES_PROJECT: soundcheck
+  # See dev.yml: the assigned subdomain, which is not the project name.
+  CF_PAGES_DOMAIN: soundcheck-eo3.pages.dev
+
+# Merges go live in the order they landed, and a production deploy is never
+# cancelled halfway.
+concurrency:
+  group: production
+  cancel-in-progress: false
+
+jobs:
+  # Puts main back on dev, which otherwise keeps showing whichever pull
+  # request deployed to it last — including the one that just merged.
+  dev:
+    name: Dev
+    uses: ./.github/workflows/dev.yml
+    secrets: inherit
+
+  production:
+    name: Deploy to production
+    needs: dev
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      # Literal, not ${{ env }} — the environment key has no env context.
+      url: https://soundcheck-eo3.pages.dev
+    steps:
+      # No rebuild: this is the artifact CI built and tested and dev just
+      # served, so production gets bytes that have already been exercised.
+      - name: Take the build from CI
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+
+      # The Pages project already exists. Creating it is a one-time step run
+      # from a laptop (see docs/DEPLOYMENT.md) rather than on every deploy —
+      # as a step here it failed on every run and flagged the whole job red.
+      - name: Deploy to production
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy dist --project-name=${{ env.CF_PAGES_PROJECT }} --branch=main
+
+      - name: Summarise
+        run: |
+          echo "### 🎸 Live" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "https://$CF_PAGES_DOMAIN — commit \`${GITHUB_SHA:0:7}\`" >> "$GITHUB_STEP_SUMMARY"
+
+      # Required repository secrets (Settings → Secrets and variables → Actions):
+      #   CLOUDFLARE_API_TOKEN  — API token with "Cloudflare Pages — Edit" permission
+      #   CLOUDFLARE_ACCOUNT_ID — from the Cloudflare dashboard sidebar
+      # See docs/DEPLOYMENT.md for full setup instructions.

@@ -1,27 +1,87 @@
 name: CI
 
+# The one definition of "is this commit good?". Nothing triggers it directly:
+# dev.yml calls it on every pull request, and prod.yml reaches it through
+# dev.yml on every merge. So a commit is checked exactly once, and the build
+# those checks ran against is the artifact that gets deployed — no deploy job
+# ever installs dependencies or runs vite again.
 on:
-  push:
-    branches: [main]
-  pull_request:
+  workflow_call:
+
+permissions:
+  contents: read
 
 jobs:
-  check:
+  verify:
+    name: Test & build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version-file: .nvmrc
           cache: npm
-      - run: npm ci
 
-      # Runs first and on its own: a bad setlist edit should fail with a
-      # readable message, not somewhere inside a bundler stack trace.
-      - name: Validate content
-        run: npm run content:check
+      - name: Install dependencies
+        run: npm ci
 
-      - run: npm run typecheck
-      - run: npm test
-      - run: npx playwright install --with-deps chromium
-      - run: npm run test:e2e
+      - name: Type check
+        run: npm run typecheck
+
+      - name: Unit tests
+        run: npm test
+
+      # `npm run build` validates content first, so a bad setlist edit still
+      # fails with the content checker's message rather than a bundler stack
+      # trace. A separate content:check step would only run it a second time.
+      - name: Build
+        run: npm run build
+
+      - name: Restore Playwright browser
+        id: playwright-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
+      - name: Install Playwright browser and system libraries
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps chromium
+
+      # The cache holds the browser, not the system libraries it links against,
+      # and the runner is a fresh machine every time.
+      - name: Install Playwright system libraries
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps chromium
+
+      # Serves the dist built above: under CI the Playwright web server is
+      # `vite preview` alone (see playwright.config.ts), so the app is not
+      # built a second time to test it.
+      - name: End-to-end tests
+        id: e2e
+        run: npm run test:e2e
+
+      # Only on an e2e failure — an earlier step failing leaves no report.
+      - name: Upload the Playwright report
+        if: ${{ !cancelled() && steps.e2e.conclusion == 'failure' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report
+          retention-days: 7
+
+      # Deploys download this rather than rebuilding, so dev and production
+      # serve the exact bytes these tests just ran against.
+      - name: Upload the build
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist
+          retention-days: 1
+          # v4 drops dotfiles by default. Nothing in dist starts with a dot
+          # today, but a .well-known/ for domain verification would vanish
+          # from production without a word.
+          include-hidden-files: true

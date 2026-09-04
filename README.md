@@ -127,8 +127,16 @@ state that has to travel. Nothing else in the app needs to know.
 
 ## Deploying
 
-Static build, so anything works. `vercel.json` and `public/_redirects` already
-route all paths to `index.html` for Vercel and Cloudflare/Netlify respectively.
+Cloudflare Pages, via GitHub Actions. Every pull request builds once and
+deploys that build to <https://dev.soundcheck-eo3.pages.dev>; merging to `main`
+ships the same artifact to <https://soundcheck-eo3.pages.dev>. Nothing is rebuilt
+between the tests and the live site.
+
+Setup and the shape of the pipeline: [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
+
+The output is a plain static build, so anything else works too — `vercel.json`
+and `public/_redirects` route all paths to `index.html` for Vercel and
+Cloudflare/Netlify respectively.
 
 ```bash
 npm run build   # → dist/

@@ -1,0 +1,145 @@
+name: Deploy to dev
+
+# The one definition of the dev deployment. Two ways in:
+#   - a pull request (deploys that branch's build)
+#   - called by prod.yml on merge, so dev returns to matching main
+#
+# Dev is https://dev.soundcheck-eo3.pages.dev. It is a preview deployment pinned
+# to the branch alias `dev`, and `dev` is not the project's production branch —
+# so nothing here can reach the live site.
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  workflow_call:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+env:
+  # The Cloudflare Pages project. Named once here and once in prod.yml.
+  CF_PAGES_PROJECT: soundcheck
+  # Not derivable from the project name: `soundcheck.pages.dev` was already
+  # taken, so Cloudflare handed this project a suffixed subdomain. Deploys use
+  # the name above; only the URLs use this.
+  CF_PAGES_DOMAIN: soundcheck-eo3.pages.dev
+
+# A new push to a pull request supersedes the run before it, so three commits
+# in a row cost one run rather than three. The run_id fallback gives every
+# non-pull-request run its own group: a merge is never cancelled by anything.
+concurrency:
+  group: dev-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  # Runs for forked pull requests too. Only the deploy below is withheld.
+  verify:
+    name: CI
+    uses: ./.github/workflows/ci.yml
+
+  deploy:
+    name: Deploy to dev
+    needs: verify
+    runs-on: ubuntu-latest
+    # Secrets are not exposed to forked pull requests, so there is nothing to
+    # deploy with. The first clause keeps the workflow_call path (merges)
+    # alive, where there is no pull request.
+    if: >-
+      github.event_name != 'pull_request' ||
+      github.event.pull_request.head.repo.full_name == github.repository
+    # One dev site, one deploy at a time. Queued rather than cancelled, so a
+    # second pull request does not fail a first one's run. Job level, not
+    # workflow level, because the workflow-level group above cancels.
+    concurrency:
+      group: deploy-dev
+      cancel-in-progress: false
+    steps:
+      # No checkout, no npm install, no build: this is the artifact CI just
+      # tested, and it is what goes up.
+      - name: Take the build from CI
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+
+      - name: Deploy to dev
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy dist --project-name=${{ env.CF_PAGES_PROJECT }} --branch=dev
+
+      # Dev is redeployed on every push to every pull request, so without this
+      # the project would collect a deployment per commit, forever.
+      - name: Prune superseded dev deployments
+        env:
+          CF_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CF_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+          base="https://api.cloudflare.com/client/v4/accounts/$CF_ACCOUNT_ID/pages/projects/$CF_PAGES_PROJECT/deployments"
+
+          all="[]"
+          page=1
+          while :; do
+            resp=$(curl -sf -H "Authorization: Bearer $CF_API_TOKEN" "$base?env=preview&page=$page&per_page=25")
+            batch=$(echo "$resp" | jq \
+              '[.result[] | select(.deployment_trigger.metadata.branch == "dev") | {id, created_on}]')
+            all=$(jq -n --argjson a "$all" --argjson b "$batch" '$a + $b')
+            count=$(echo "$resp" | jq '.result | length')
+            [ "$count" -lt 25 ] && break
+            page=$((page + 1))
+          done
+
+          # Keep the newest; it owns the dev alias
+          stale=$(echo "$all" | jq -r 'sort_by(.created_on) | reverse | .[1:] | .[].id')
+          for id in $stale; do
+            echo "Pruning superseded dev deployment $id"
+            curl -sf -X DELETE -H "Authorization: Bearer $CF_API_TOKEN" "$base/$id?force=true" >/dev/null
+          done
+          echo "Dev deployments now: exactly one."
+
+      - name: Summarise
+        run: |
+          echo "### 🎤 Deployed to dev" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "https://dev.$CF_PAGES_DOMAIN — commit \`${GITHUB_SHA:0:7}\`" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Comment the dev URL on the pull request
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        env:
+          DEV_URL: https://dev.${{ env.CF_PAGES_DOMAIN }}
+        with:
+          script: |
+            const marker = "<!-- soundcheck-dev -->";
+            const body = [
+              marker,
+              "### 🎤 Deployed to dev",
+              "",
+              `**${process.env.DEV_URL}**`,
+              "",
+              `Commit: \`${context.payload.pull_request.head.sha.slice(0, 7)}\` · redeployed on every push to this branch.`,
+              "",
+              "> Dev is shared by every open PR — whichever deployed last is what you'll see. Production is untouched until this merges.",
+            ].join("\n");
+
+            const { data: comments } = await github.rest.issues.listComments({
+              ...context.repo,
+              issue_number: context.issue.number,
+            });
+            const existing = comments.find((c) => c.body?.includes(marker));
+            if (existing) {
+              await github.rest.issues.updateComment({
+                ...context.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                ...context.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+            }
