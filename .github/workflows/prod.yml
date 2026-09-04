@@ -17,9 +17,7 @@ permissions:
   pull-requests: write
 
 env:
-  CF_PAGES_PROJECT: soundcheck
-  # See dev.yml: the assigned subdomain, which is not the project name.
-  CF_PAGES_DOMAIN: soundcheck-eo3.pages.dev
+  CF_PAGES_PROJECT: soundcheck-live
 
 # Merges go live in the order they landed, and a production deploy is never
 # cancelled halfway.
@@ -42,7 +40,7 @@ jobs:
     environment:
       name: production
       # Literal, not ${{ env }} — the environment key has no env context.
-      url: https://soundcheck-eo3.pages.dev
+      url: https://soundcheck-live.pages.dev
     steps:
       # No rebuild: this is the artifact CI built and tested and dev just
       # served, so production gets bytes that have already been exercised.
@@ -66,7 +64,7 @@ jobs:
         run: |
           echo "### 🎸 Live" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "https://$CF_PAGES_DOMAIN — commit \`${GITHUB_SHA:0:7}\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "https://$CF_PAGES_PROJECT.pages.dev — commit \`${GITHUB_SHA:0:7}\`" >> "$GITHUB_STEP_SUMMARY"
 
       # Required repository secrets (Settings → Secrets and variables → Actions):
       #   CLOUDFLARE_API_TOKEN  — API token with "Cloudflare Pages — Edit" permission

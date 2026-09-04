@@ -128,8 +128,8 @@ state that has to travel. Nothing else in the app needs to know.
 ## Deploying
 
 Cloudflare Pages, via GitHub Actions. Every pull request builds once and
-deploys that build to <https://dev.soundcheck-eo3.pages.dev>; merging to `main`
-ships the same artifact to <https://soundcheck-eo3.pages.dev>. Nothing is rebuilt
+deploys that build to <https://dev.soundcheck-live.pages.dev>; merging to `main`
+ships the same artifact to <https://soundcheck-live.pages.dev>. Nothing is rebuilt
 between the tests and the live site.
 
 Setup and the shape of the pipeline: [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).

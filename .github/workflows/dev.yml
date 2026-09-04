@@ -4,9 +4,9 @@ name: Deploy to dev
 #   - a pull request (deploys that branch's build)
 #   - called by prod.yml on merge, so dev returns to matching main
 #
-# Dev is https://dev.soundcheck-eo3.pages.dev. It is a preview deployment pinned
-# to the branch alias `dev`, and `dev` is not the project's production branch —
-# so nothing here can reach the live site.
+# Dev is https://dev.soundcheck-live.pages.dev. It is a preview deployment
+# pinned to the branch alias `dev`, and `dev` is not the project's production
+# branch — so nothing here can reach the live site.
 
 on:
   pull_request:
@@ -19,11 +19,8 @@ permissions:
 
 env:
   # The Cloudflare Pages project. Named once here and once in prod.yml.
-  CF_PAGES_PROJECT: soundcheck
-  # Not derivable from the project name: `soundcheck.pages.dev` was already
-  # taken, so Cloudflare handed this project a suffixed subdomain. Deploys use
-  # the name above; only the URLs use this.
-  CF_PAGES_DOMAIN: soundcheck-eo3.pages.dev
+  # The project owns `<name>.pages.dev`, so every URL below derives from it.
+  CF_PAGES_PROJECT: soundcheck-live
 
 # A new push to a pull request supersedes the run before it, so three commits
 # in a row cost one run rather than three. The run_id fallback gives every
@@ -104,13 +101,13 @@ jobs:
         run: |
           echo "### 🎤 Deployed to dev" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "https://dev.$CF_PAGES_DOMAIN — commit \`${GITHUB_SHA:0:7}\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "https://dev.$CF_PAGES_PROJECT.pages.dev — commit \`${GITHUB_SHA:0:7}\`" >> "$GITHUB_STEP_SUMMARY"
 
       - name: Comment the dev URL on the pull request
         if: github.event_name == 'pull_request'
         uses: actions/github-script@v9
         env:
-          DEV_URL: https://dev.${{ env.CF_PAGES_DOMAIN }}
+          DEV_URL: https://dev.${{ env.CF_PAGES_PROJECT }}.pages.dev
         with:
           script: |
             const marker = "<!-- soundcheck-dev -->";

@@ -5,8 +5,8 @@ Actions. There are two sites:
 
 | | URL | Deployed by |
 | --- | --- | --- |
-| **dev** | `https://dev.soundcheck-eo3.pages.dev` | every pull request, and every merge |
-| **production** | `https://soundcheck-eo3.pages.dev` | every merge to `main` |
+| **dev** | `https://dev.soundcheck-live.pages.dev` | every pull request, and every merge |
+| **production** | `https://soundcheck-live.pages.dev` | every merge to `main` |
 
 Dev is a *preview* deployment pinned to the branch alias `dev`. `dev` is not the
 project's production branch, so nothing on the pull-request path can reach the
@@ -58,7 +58,7 @@ What this buys:
 
 ### 1. Create the Pages project — done
 
-The project `soundcheck` exists, created once through the Cloudflare API. It is
+The project `soundcheck-live` exists, created through the Cloudflare API. It is
 a Direct Upload project, which is what `wrangler pages deploy` expects. Doing
 this as a step in the deploy workflows would fail on every run after the first.
 
@@ -67,16 +67,18 @@ To recreate it from scratch:
 ```bash
 npm i -g wrangler
 wrangler login
-wrangler pages project create soundcheck --production-branch main
+wrangler pages project create soundcheck-live --production-branch main
 ```
 
-**The subdomain is not the project name.** `soundcheck.pages.dev` was already
-taken by someone else, so Cloudflare assigned `soundcheck-eo3.pages.dev`.
-Deploys address the project by name (`--project-name=soundcheck`); only the
-URLs use the subdomain, which is why `CF_PAGES_DOMAIN` exists alongside
-`CF_PAGES_PROJECT` in both workflows. To take a different name, delete the
-project in the Cloudflare dashboard, create it under the new name, and change
-both variables — or skip it entirely and attach a custom domain.
+**On the name.** A `pages.dev` subdomain is global, and `soundcheck.pages.dev`
+belongs to someone else — a project named `soundcheck` gets a suffixed
+subdomain like `soundcheck-eo3.pages.dev` instead, which no longer matches its
+own name. `soundcheck-live` owns `soundcheck-live.pages.dev` outright, so every
+URL in the workflows derives from `CF_PAGES_PROJECT` and there is nothing to
+keep in sync. Cloudflare only reveals whether a subdomain is free by creating
+the project and handing you the result, so a rename means: create the new
+project, confirm `.result.subdomain` matches, repoint `CF_PAGES_PROJECT` in
+`dev.yml` and `prod.yml`, delete the old one.
 
 ### 2. Create the API token
 
